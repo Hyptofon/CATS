@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: cats-db
+    environment:
+      POSTGRES_DB: cats_db         
+      POSTGRES_USER: cats_admin
+      POSTGRES_PASSWORD: cats_password_2026
+    ports:
+      - "5435:5435"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cats-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cats_admin -d cats_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cats-api
+    ports:
+      - "5099:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=cats_db;Username=cats_admin;Password=cats_password_2026
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cats-network
+
+volumes:
+  postgres_data:
+
+networks:
+  cats-network:
+    driver: bridge

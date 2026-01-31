@@ -1,0 +1,11 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/.DS_Store
+**/node_modules
+**/*.user
+**/*.suo
+**/.idea
+**/appsettings.Development.json
