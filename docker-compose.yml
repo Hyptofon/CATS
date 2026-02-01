@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: cats_admin
       POSTGRES_PASSWORD: cats_password_2026
     ports:
-      - "5435:5435"
+      - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
