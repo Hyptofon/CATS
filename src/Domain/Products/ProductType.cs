@@ -2,7 +2,7 @@
 
 public class ProductType
 {
-    public ProductTypeId Id { get; }
+    public int Id { get; private set; }
     public string Name { get; private set; }
     public int? ShelfLifeDays { get; private set; }
     public string? Meta { get; private set; }
@@ -14,14 +14,12 @@ public class ProductType
     public bool IsDeleted { get; private set; }
 
     private ProductType(
-        ProductTypeId id,
         string name,
         int? shelfLifeDays,
         string? meta,
         Guid? createdById,
         DateTime createdAt)
     {
-        Id = id;
         Name = name;
         ShelfLifeDays = shelfLifeDays;
         Meta = meta;
@@ -43,7 +41,6 @@ public class ProductType
             throw new ArgumentException("Shelf life days cannot be negative", nameof(shelfLifeDays));
 
         return new ProductType(
-            ProductTypeId.New(),
             name,
             shelfLifeDays,
             meta,

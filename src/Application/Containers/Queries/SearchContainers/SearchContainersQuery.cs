@@ -5,6 +5,6 @@ namespace Application.Containers.Queries.SearchContainers;
 
 public record SearchContainersQuery(
     string? SearchTerm,
-    Guid? ContainerTypeId,
+    int? ContainerTypeId,
     string? Status
 ) : IRequest<IReadOnlyList<Container>>;

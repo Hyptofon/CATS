@@ -8,9 +8,9 @@ public interface IContainerQueries
     Task<IReadOnlyList<Container>> GetAllAsync(CancellationToken cancellationToken);
     Task<IReadOnlyList<Container>> SearchAsync(
         string? searchTerm,
-        Guid? containerTypeId,
+        int? containerTypeId,
         string? status,
         CancellationToken cancellationToken);
-    Task<Option<Container>> GetByIdAsync(ContainerId id, CancellationToken cancellationToken);
+    Task<Option<Container>> GetByIdAsync(int id, CancellationToken cancellationToken);
     Task<Option<Container>> GetByCodeAsync(string code, CancellationToken cancellationToken);
 }

@@ -5,7 +5,7 @@ using Domain.ContainerTypes;
 namespace Api.Dtos;
 
 public record ContainerTypeDto(
-    Guid Id, 
+    int Id, 
     string Name, 
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
@@ -15,7 +15,7 @@ public record ContainerTypeDto(
 {
     public static ContainerTypeDto FromDomainModel(ContainerType containerType)
         => new(
-            containerType.Id.Value, 
+            containerType.Id, 
             containerType.Name, 
             containerType.Meta, 
             containerType.CreatedAt);

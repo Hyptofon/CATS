@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.ProductTypes.Commands;
 
-public record DeleteProductTypeCommand(Guid ProductTypeId) 
+public record DeleteProductTypeCommand(int ProductTypeId) 
     : IRequest<Either<ProductTypeException, ProductType>>;
 
 public class DeleteProductTypeCommandHandler(
@@ -19,7 +19,7 @@ public class DeleteProductTypeCommandHandler(
         DeleteProductTypeCommand request,
         CancellationToken cancellationToken)
     {
-        var productTypeId = new ProductTypeId(request.ProductTypeId);
+        var productTypeId = request.ProductTypeId;
         
         var existingProductType = await productTypeRepository.GetByIdAsync(
             productTypeId, 

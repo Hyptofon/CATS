@@ -36,8 +36,8 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var containers = await response.ToResponseModel<List<ContainerDto>>();
         containers.Should().HaveCount(2);
-        containers.Should().Contain(c => c.Id == _firstTestContainer!.Id.Value);
-        containers.Should().Contain(c => c.Id == _secondTestContainer!.Id.Value);
+        containers.Should().Contain(c => c.Id == _firstTestContainer!.Id);
+        containers.Should().Contain(c => c.Id == _secondTestContainer!.Id);
     }
 
     [Fact]
@@ -56,16 +56,16 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldGetContainerById()
     {
         // Act
-        var response = await Client.GetAsync($"{BaseRoute}/{_firstTestContainer!.Id.Value}");
+        var response = await Client.GetAsync($"{BaseRoute}/{_firstTestContainer!.Id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var container = await response.ToResponseModel<ContainerDto>();
-        container.Id.Should().Be(_firstTestContainer.Id.Value);
+        container.Id.Should().Be(_firstTestContainer.Id);
         container.Code.Should().Be(_firstTestContainer.Code);
         container.Name.Should().Be(_firstTestContainer.Name);
         container.Volume.Should().Be(_firstTestContainer.Volume);
-        container.ContainerTypeId.Should().Be(_testContainerType.Id.Value);
+        container.ContainerTypeId.Should().Be(_testContainerType.Id);
         container.Status.Should().Be(ContainerStatus.Empty.ToString());
     }
 
@@ -78,7 +78,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var container = await response.ToResponseModel<ContainerDto>();
-        container.Id.Should().Be(_firstTestContainer.Id.Value);
+        container.Id.Should().Be(_firstTestContainer.Id);
         container.Code.Should().Be(_firstTestContainer.Code);
     }
 
@@ -86,7 +86,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotGetContainerByIdBecauseNotFound()
     {
         // Arrange
-        var nonExistentId = Guid.NewGuid();
+        var nonExistentId = 999999;
 
         // Act
         var response = await Client.GetAsync($"{BaseRoute}/{nonExistentId}");
@@ -138,14 +138,14 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Act
         var response = await Client.GetAsync(
-            $"{BaseRoute}/search?containerTypeId={_testContainerType.Id.Value}");
+            $"{BaseRoute}/search?containerTypeId={_testContainerType.Id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var containers = await response.ToResponseModel<List<ContainerDto>>();
         containers.Should().HaveCount(2);
         containers.Should().AllSatisfy(c => 
-            c.ContainerTypeId.Should().Be(_testContainerType.Id.Value));
+            c.ContainerTypeId.Should().Be(_testContainerType.Id));
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Act
         var response = await Client.GetAsync(
-            $"{BaseRoute}/search?searchTerm=Container&containerTypeId={_testContainerType.Id.Value}&status=Empty");
+            $"{BaseRoute}/search?searchTerm=Container&containerTypeId={_testContainerType.Id}&status=Empty");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -182,7 +182,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldCreateContainer()
     {
         // Arrange
-        var request = ContainerData.CreateTestContainerDto(_testContainerType.Id.Value);
+        var request = ContainerData.CreateTestContainerDto(_testContainerType.Id);
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -196,11 +196,10 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         containerDto.Volume.Should().Be(request.Volume);
         containerDto.ContainerTypeId.Should().Be(request.ContainerTypeId);
         containerDto.Status.Should().Be(ContainerStatus.Empty.ToString());
-        containerDto.Id.Should().NotBeEmpty();
+        containerDto.Id.Should().BeGreaterThan(0);
 
-        var containerId = new ContainerId(containerDto.Id);
         var dbContainer = await Context.Containers
-            .FirstOrDefaultAsync(c => c.Id == containerId);
+            .FirstOrDefaultAsync(c => c.Id == containerDto.Id);
             
         dbContainer.Should().NotBeNull();
         dbContainer!.Code.Should().Be(request.Code);
@@ -216,7 +215,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             $"QR-{uniqueId}-NULL",
             "Test-NullMeta-Container",
             50.0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
@@ -237,7 +236,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             _firstTestContainer!.Code,
             "Test-Duplicate-Container",
             50.0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
@@ -257,7 +256,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             $"QR-{uniqueId}-FAIL",
             "Test-Fail-Container",
             50.0m,
-            Guid.NewGuid(),
+            999999,
             null
         );
 
@@ -281,7 +280,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             code,
             name,
             volume,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
@@ -305,7 +304,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             code,
             name,
             volume,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
@@ -325,7 +324,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             $"QR-{uniqueId}-ZERO",
             "Test-Zero-Volume",
             0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
@@ -345,7 +344,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             tooLongCode,
             "Test-Long-Code",
             50.0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
@@ -366,7 +365,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             $"QR-{uniqueId}-LONG",
             tooLongName,
             50.0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
@@ -388,13 +387,13 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Container-Name",
             75.0m,
-            _secondContainerType.Id.Value,
+            _secondContainerType.Id,
             "{\"location\":\"Updated Location\"}"
         );
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"{BaseRoute}/{_firstTestContainer!.Id.Value}",
+            $"{BaseRoute}/{_firstTestContainer!.Id}",
             request);
 
         // Assert
@@ -405,7 +404,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         container.Volume.Should().Be(request.Volume);
         container.ContainerTypeId.Should().Be(request.ContainerTypeId);
         container.Meta.Should().Be(request.Meta);
-        container.Id.Should().Be(_firstTestContainer.Id.Value);
+        container.Id.Should().Be(_firstTestContainer.Id);
 
         var dbContainer = await Context.Containers
             .AsNoTracking()
@@ -421,13 +420,13 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Name",
             60.0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"{BaseRoute}/{_firstTestContainer!.Id.Value}",
+            $"{BaseRoute}/{_firstTestContainer!.Id}",
             request);
 
         // Assert
@@ -443,10 +442,10 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Name",
             60.0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
-        var nonExistentId = Guid.NewGuid();
+        var nonExistentId = 999999;
 
         // Act
         var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
@@ -462,13 +461,13 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Name",
             60.0m,
-            Guid.NewGuid(),
+            999999,
             null
         );
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"{BaseRoute}/{_firstTestContainer!.Id.Value}",
+            $"{BaseRoute}/{_firstTestContainer!.Id}",
             request);
 
         // Assert
@@ -484,13 +483,13 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             name,
             volume,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"{BaseRoute}/{_firstTestContainer!.Id.Value}",
+            $"{BaseRoute}/{_firstTestContainer!.Id}",
             request);
 
         // Assert
@@ -504,13 +503,13 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Valid-Name",
             0m,
-            _testContainerType.Id.Value,
+            _testContainerType.Id,
             null
         );
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"{BaseRoute}/{_firstTestContainer!.Id.Value}",
+            $"{BaseRoute}/{_firstTestContainer!.Id}",
             request);
 
         // Assert
@@ -525,12 +524,12 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldDeleteContainer()
     {
         // Act
-        var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestContainer!.Id.Value}");
+        var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestContainer!.Id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var container = await response.ToResponseModel<ContainerDto>();
-        container.Id.Should().Be(_secondTestContainer.Id.Value);
+        container.Id.Should().Be(_secondTestContainer.Id);
 
         var dbContainer = await Context.Containers
             .FirstOrDefaultAsync(c => c.Id == _secondTestContainer.Id);
@@ -541,7 +540,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotDeleteContainerBecauseNotFound()
     {
         // Arrange
-        var nonExistentId = Guid.NewGuid();
+        var nonExistentId = 999999;
 
         // Act
         var response = await Client.DeleteAsync($"{BaseRoute}/{nonExistentId}");
@@ -551,10 +550,10 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     }
 
     [Fact]
-    public async Task ShouldNotDeleteContainerBecauseEmptyGuid()
+    public async Task ShouldNotDeleteContainerBecauseZeroId()
     {
         // Act
-        var response = await Client.DeleteAsync($"{BaseRoute}/{Guid.Empty}");
+        var response = await Client.DeleteAsync($"{BaseRoute}/0");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

@@ -2,7 +2,6 @@
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.ProductTypes.Commands;
-using Domain.Products;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,13 +21,13 @@ public class ProductTypesController(
         return productTypes.Select(ProductTypeDto.FromDomainModel).ToList();
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductTypeDto>> GetById(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         CancellationToken cancellationToken)
     {
         var productType = await productTypeQueries.GetByIdAsync(
-            new ProductTypeId(id), 
+            id, 
             cancellationToken);
 
         return productType.Match<ActionResult<ProductTypeDto>>(
@@ -55,9 +54,9 @@ public class ProductTypesController(
             e => e.ToObjectResult());
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult<ProductTypeDto>> Update(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         [FromBody] UpdateProductTypeDto request,
         CancellationToken cancellationToken)
     {
@@ -76,9 +75,9 @@ public class ProductTypesController(
             e => e.ToObjectResult());
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult<ProductTypeDto>> Delete(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         CancellationToken cancellationToken)
     {
         var command = new DeleteProductTypeCommand(id);

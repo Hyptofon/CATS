@@ -53,7 +53,7 @@ public class CreateProductTypeCommandHandler(
         }
         catch (Exception exception)
         {
-            return new UnhandledProductTypeException(ProductTypeId.Empty(), exception);
+            return new UnhandledProductTypeException(0, exception);
         }
     }
 }

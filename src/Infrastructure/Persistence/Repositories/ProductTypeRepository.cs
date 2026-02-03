@@ -38,7 +38,7 @@ public class ProductTypeRepository(ApplicationDbContext context)
     }
 
     public async Task<Option<ProductType>> GetByIdAsync(
-        ProductTypeId id, 
+        int id, 
         CancellationToken cancellationToken)
     {
         var entity = await context.ProductTypes

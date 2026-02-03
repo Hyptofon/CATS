@@ -1,26 +1,24 @@
-﻿using Domain.ContainerTypes;
-
-namespace Application.ContainerTypes.Exceptions;
+﻿namespace Application.ContainerTypes.Exceptions;
 
 public abstract class ContainerTypeException(
-    ContainerTypeId containerTypeId, 
+    int containerTypeId, 
     string message, 
     Exception? innerException = null)
     : Exception(message, innerException)
 {
-    public ContainerTypeId ContainerTypeId { get; } = containerTypeId;
+    public int ContainerTypeId { get; } = containerTypeId;
 }
 
-public class ContainerTypeAlreadyExistException(ContainerTypeId containerTypeId) 
+public class ContainerTypeAlreadyExistException(int containerTypeId) 
     : ContainerTypeException(containerTypeId, $"Container type already exists under id {containerTypeId}");
 
-public class ContainerTypeNotFoundException(ContainerTypeId containerTypeId) 
+public class ContainerTypeNotFoundException(int containerTypeId) 
     : ContainerTypeException(containerTypeId, $"Container type not found under id {containerTypeId}");
 
-public class ContainerTypeCannotBeDeletedException(ContainerTypeId containerTypeId)
+public class ContainerTypeCannotBeDeletedException(int containerTypeId)
     : ContainerTypeException(containerTypeId, $"Container type {containerTypeId} cannot be deleted because it contains containers.");
 
 public class UnhandledContainerTypeException(
-    ContainerTypeId containerTypeId, 
+    int containerTypeId, 
     Exception? innerException = null)
     : ContainerTypeException(containerTypeId, "Unexpected error occurred", innerException);

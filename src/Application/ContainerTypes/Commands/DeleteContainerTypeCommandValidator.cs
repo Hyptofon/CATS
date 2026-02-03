@@ -6,6 +6,6 @@ public class DeleteContainerTypeCommandValidator : AbstractValidator<DeleteConta
 {
     public DeleteContainerTypeCommandValidator()
     {
-        RuleFor(x => x.ContainerTypeId).NotEmpty();
+        RuleFor(x => x.ContainerTypeId).GreaterThan(0);
     }
 }

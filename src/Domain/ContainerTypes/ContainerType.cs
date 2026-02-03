@@ -2,7 +2,7 @@
 
 public class ContainerType
 {
-    public ContainerTypeId Id { get; }
+    public int Id { get; private set; }
     public string Name { get; private set; }
     public string? Meta { get; private set; }
     
@@ -13,13 +13,11 @@ public class ContainerType
     public bool IsDeleted { get; private set; }
 
     private ContainerType(
-        ContainerTypeId id,
         string name,
         string? meta,
         Guid? createdById,
         DateTime createdAt)
     {
-        Id = id;
         Name = name;
         Meta = meta;
         CreatedById = createdById;
@@ -36,7 +34,6 @@ public class ContainerType
             throw new ArgumentException("Container type name cannot be empty", nameof(name));
 
         return new ContainerType(
-            ContainerTypeId.New(),
             name,
             meta,
             createdById,

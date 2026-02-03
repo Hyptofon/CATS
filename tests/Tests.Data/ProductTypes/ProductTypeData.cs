@@ -11,7 +11,7 @@ public static class ProductTypeData
         return ProductType.New(
             $"{prefix}-{uniqueId}-Beer",
             30,
-            "{\"description\": \"Пиво\", \"storageTemp\": \"2-6C\"}",
+            "{\"description\":\"Пиво\",\"storageTemp\":\"2-6C\"}",
             new Guid("00000000-0000-0000-0000-000000000001")
         );
     }
@@ -22,7 +22,7 @@ public static class ProductTypeData
         return ProductType.New(
             $"{prefix}-{uniqueId}-Wine",
             365,
-            "{\"description\": \"Вино\", \"storageTemp\": \"10-15C\"}",
+            "{\"description\":\"Вино\",\"storageTemp\":\"10-15C\"}",
             new Guid("00000000-0000-0000-0000-000000000001")
         );
     }

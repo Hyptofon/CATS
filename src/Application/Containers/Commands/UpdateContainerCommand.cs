@@ -2,7 +2,6 @@
 using Application.Common.Interfaces.Repositories;
 using Application.Containers.Exceptions;
 using Domain.Containers;
-using Domain.ContainerTypes;
 using LanguageExt;
 using MediatR;
 
@@ -10,10 +9,10 @@ namespace Application.Containers.Commands;
 
 public record UpdateContainerCommand : IRequest<Either<ContainerException, Container>>
 {
-    public required Guid ContainerId { get; init; }
+    public required int ContainerId { get; init; }
     public required string Name { get; init; }
     public required decimal Volume { get; init; }
-    public required Guid ContainerTypeId { get; init; }
+    public required int ContainerTypeId { get; init; }
     public string? Meta { get; init; }
 }
 
@@ -28,7 +27,7 @@ public class UpdateContainerCommandHandler(
         UpdateContainerCommand request,
         CancellationToken cancellationToken)
     {
-        var containerId = new ContainerId(request.ContainerId);
+        var containerId = request.ContainerId;
         var existingContainer = await containerRepository.GetByIdAsync(containerId, cancellationToken);
 
         return await existingContainer.MatchAsync(
@@ -44,7 +43,7 @@ public class UpdateContainerCommandHandler(
     {
         try
         {
-            var containerTypeId = new ContainerTypeId(request.ContainerTypeId);
+            var containerTypeId = request.ContainerTypeId;
             var containerType = await containerTypeRepository.GetByIdAsync(
                 containerTypeId, 
                 cancellationToken);

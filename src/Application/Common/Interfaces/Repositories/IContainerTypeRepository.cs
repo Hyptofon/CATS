@@ -9,6 +9,6 @@ public interface IContainerTypeRepository
     void Update(ContainerType containerType);
     void Delete(ContainerType containerType);
     Task<Option<ContainerType>> GetByNameAsync(string name, CancellationToken cancellationToken);
-    Task<Option<ContainerType>> GetByIdAsync(ContainerTypeId id, CancellationToken cancellationToken);
-    Task<bool> HasContainersAsync(ContainerTypeId id, CancellationToken cancellationToken);
+    Task<Option<ContainerType>> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<bool> HasContainersAsync(int id, CancellationToken cancellationToken);
 }

@@ -6,7 +6,7 @@ public class UpdateContainerTypeCommandValidator : AbstractValidator<UpdateConta
 {
     public UpdateContainerTypeCommandValidator()
     {
-        RuleFor(x => x.ContainerTypeId).NotEmpty();
+        RuleFor(x => x.ContainerTypeId).GreaterThan(0);
         
         RuleFor(x => x.Name)
             .NotEmpty()

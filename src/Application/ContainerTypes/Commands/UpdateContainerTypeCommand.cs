@@ -9,7 +9,7 @@ namespace Application.ContainerTypes.Commands;
 
 public record UpdateContainerTypeCommand : IRequest<Either<ContainerTypeException, ContainerType>>
 {
-    public required Guid ContainerTypeId { get; init; }
+    public required int ContainerTypeId { get; init; }
     public required string Name { get; init; }
     public string? Meta { get; init; }
 }
@@ -24,7 +24,7 @@ public class UpdateContainerTypeCommandHandler(
         UpdateContainerTypeCommand request,
         CancellationToken cancellationToken)
     {
-        var containerTypeId = new ContainerTypeId(request.ContainerTypeId);
+        var containerTypeId = request.ContainerTypeId;
         var existingContainerType = await containerTypeRepository.GetByIdAsync(
             containerTypeId, 
             cancellationToken);

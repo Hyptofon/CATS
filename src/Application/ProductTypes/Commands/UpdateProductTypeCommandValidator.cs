@@ -6,7 +6,7 @@ public class UpdateProductTypeCommandValidator : AbstractValidator<UpdateProduct
 {
     public UpdateProductTypeCommandValidator()
     {
-        RuleFor(x => x.ProductTypeId).NotEmpty();
+        RuleFor(x => x.ProductTypeId).GreaterThan(0);
         
         RuleFor(x => x.Name)
             .NotEmpty()

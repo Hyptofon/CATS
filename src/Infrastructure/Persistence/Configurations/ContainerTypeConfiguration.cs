@@ -10,7 +10,7 @@ public class ContainerTypeConfiguration : IEntityTypeConfiguration<ContainerType
     public void Configure(EntityTypeBuilder<ContainerType> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasConversion(x => x.Value, x => new ContainerTypeId(x));
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
         builder.Property(x => x.Name)
             .HasColumnType("varchar(100)")

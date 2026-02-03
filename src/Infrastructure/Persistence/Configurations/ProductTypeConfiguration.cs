@@ -10,7 +10,7 @@ public class ProductTypeConfiguration : IEntityTypeConfiguration<ProductType>
     public void Configure(EntityTypeBuilder<ProductType> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasConversion(x => x.Value, x => new ProductTypeId(x));
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
         builder.Property(x => x.Name)
             .HasColumnType("varchar(100)")

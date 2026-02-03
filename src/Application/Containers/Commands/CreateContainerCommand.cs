@@ -3,7 +3,6 @@ using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.Containers.Exceptions;
 using Domain.Containers;
-using Domain.ContainerTypes;
 using LanguageExt;
 using MediatR;
 
@@ -14,7 +13,7 @@ public record CreateContainerCommand : IRequest<Either<ContainerException, Conta
     public required string Code { get; init; }
     public required string Name { get; init; }
     public required decimal Volume { get; init; }
-    public required Guid ContainerTypeId { get; init; }
+    public required int ContainerTypeId { get; init; }
     public string? Meta { get; init; }
 }
 
@@ -35,10 +34,10 @@ public class CreateContainerCommandHandler(
 
         if (existingContainer.IsSome)
         {
-            return new ContainerAlreadyExistException(ContainerId.Empty());
+            return new ContainerAlreadyExistException(0);
         }
 
-        var containerTypeId = new ContainerTypeId(request.ContainerTypeId);
+        var containerTypeId = request.ContainerTypeId;
         var containerType = await containerTypeRepository.GetByIdAsync(
             containerTypeId, 
             cancellationToken);
@@ -51,7 +50,7 @@ public class CreateContainerCommandHandler(
 
     private async Task<Either<ContainerException, Container>> CreateEntity(
         CreateContainerCommand request,
-        ContainerTypeId containerTypeId,
+        int containerTypeId,
         CancellationToken cancellationToken)
     {
         try
@@ -79,7 +78,7 @@ public class CreateContainerCommandHandler(
         }
         catch (Exception exception)
         {
-            return new UnhandledContainerException(ContainerId.Empty(), exception);
+            return new UnhandledContainerException(0, exception);
         }
     }
 }

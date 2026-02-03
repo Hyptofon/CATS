@@ -5,11 +5,11 @@ namespace Domain.Containers;
 
 public class Container
 {
-    public ContainerId Id { get; }
+    public int Id { get; private set; }
     public string Code { get; private set; }
     public string Name { get; private set; }
     public decimal Volume { get; private set; }
-    public ContainerTypeId ContainerTypeId { get; private set; }
+    public int ContainerTypeId { get; private set; }
     public ContainerStatus Status { get; private set; }
     
     // Current fill pointer
@@ -40,16 +40,14 @@ public class Container
     public ContainerType? ContainerType { get; private set; }
 
     private Container(
-        ContainerId id, 
         string code, 
         string name, 
         decimal volume, 
-        ContainerTypeId containerTypeId,
+        int containerTypeId,
         string? meta,
         Guid? createdById,
         DateTime createdAt)
     {
-        Id = id;
         Code = code;
         Name = name;
         Volume = volume;
@@ -65,7 +63,7 @@ public class Container
         string code,
         string name,
         decimal volume,
-        ContainerTypeId containerTypeId,
+        int containerTypeId,
         string? meta,
         Guid? createdById)
     {
@@ -79,7 +77,6 @@ public class Container
             throw new ArgumentException("Volume must be greater than zero", nameof(volume));
 
         return new Container(
-            ContainerId.New(),
             code,
             name,
             volume,
@@ -92,7 +89,7 @@ public class Container
     public void UpdateDetails(
         string name,
         decimal volume,
-        ContainerTypeId containerTypeId,
+        int containerTypeId,
         string? meta,
         Guid? modifiedById)
     {

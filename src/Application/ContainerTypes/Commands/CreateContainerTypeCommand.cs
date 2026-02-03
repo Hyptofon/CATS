@@ -51,7 +51,7 @@ public class CreateContainerTypeCommandHandler(
         }
         catch (Exception exception)
         {
-            return new UnhandledContainerTypeException(ContainerTypeId.Empty(), exception);
+            return new UnhandledContainerTypeException(0, exception);
         }
     }
 }

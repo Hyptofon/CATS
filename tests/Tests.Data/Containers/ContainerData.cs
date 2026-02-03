@@ -1,12 +1,11 @@
 ﻿using Api.Dtos;
 using Domain.Containers;
-using Domain.ContainerTypes;
 
 namespace Tests.Data.Containers;
 
 public static class ContainerData
 {
-    public static Container FirstTestContainer(ContainerTypeId containerTypeId)
+    public static Container FirstTestContainer(int containerTypeId)
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
         return Container.New(
@@ -19,7 +18,7 @@ public static class ContainerData
         );
     }
 
-    public static Container SecondTestContainer(ContainerTypeId containerTypeId)
+    public static Container SecondTestContainer(int containerTypeId)
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
         return Container.New(
@@ -32,7 +31,7 @@ public static class ContainerData
         );
     }
 
-    public static CreateContainerDto CreateTestContainerDto(Guid containerTypeId)
+    public static CreateContainerDto CreateTestContainerDto(int containerTypeId)
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
         return new CreateContainerDto(

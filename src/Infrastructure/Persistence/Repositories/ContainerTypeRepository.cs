@@ -38,7 +38,7 @@ public class ContainerTypeRepository(ApplicationDbContext context)
     }
 
     public async Task<Option<ContainerType>> GetByIdAsync(
-        ContainerTypeId id, 
+        int id, 
         CancellationToken cancellationToken)
     {
         var entity = await context.ContainerTypes
@@ -59,7 +59,7 @@ public class ContainerTypeRepository(ApplicationDbContext context)
     }
     
     public async Task<bool> HasContainersAsync(
-        ContainerTypeId id, 
+        int id, 
         CancellationToken cancellationToken)
     {
         return await context.Containers

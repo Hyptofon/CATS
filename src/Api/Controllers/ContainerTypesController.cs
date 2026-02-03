@@ -2,7 +2,6 @@
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.ContainerTypes.Commands;
-using Domain.ContainerTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,13 +21,13 @@ public class ContainerTypesController(
         return containerTypes.Select(ContainerTypeDto.FromDomainModel).ToList();
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ContainerTypeDto>> GetById(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         CancellationToken cancellationToken)
     {
         var containerType = await containerTypeQueries.GetByIdAsync(
-            new ContainerTypeId(id), 
+            id, 
             cancellationToken);
 
         return containerType.Match<ActionResult<ContainerTypeDto>>(
@@ -54,9 +53,9 @@ public class ContainerTypesController(
             e => e.ToObjectResult());
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult<ContainerTypeDto>> Update(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         [FromBody] UpdateContainerTypeDto request,
         CancellationToken cancellationToken)
     {
@@ -74,9 +73,9 @@ public class ContainerTypesController(
             e => e.ToObjectResult());
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult<ContainerTypeDto>> Delete(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         CancellationToken cancellationToken)
     {
         var command = new DeleteContainerTypeCommand(id);

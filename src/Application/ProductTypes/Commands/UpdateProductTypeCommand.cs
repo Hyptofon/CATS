@@ -9,7 +9,7 @@ namespace Application.ProductTypes.Commands;
 
 public record UpdateProductTypeCommand : IRequest<Either<ProductTypeException, ProductType>>
 {
-    public required Guid ProductTypeId { get; init; }
+    public required int ProductTypeId { get; init; }
     public required string Name { get; init; }
     public int? ShelfLifeDays { get; init; }
     public string? Meta { get; init; }
@@ -25,7 +25,7 @@ public class UpdateProductTypeCommandHandler(
         UpdateProductTypeCommand request,
         CancellationToken cancellationToken)
     {
-        var productTypeId = new ProductTypeId(request.ProductTypeId);
+        var productTypeId = request.ProductTypeId;
         var existingProductType = await productTypeRepository.GetByIdAsync(
             productTypeId, 
             cancellationToken);

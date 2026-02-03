@@ -1,29 +1,26 @@
-﻿using Domain.Containers;
-using Domain.ContainerTypes;
-
-namespace Application.Containers.Exceptions;
+﻿namespace Application.Containers.Exceptions;
 
 public abstract class ContainerException(
-    ContainerId containerId, 
+    int containerId, 
     string message, 
     Exception? innerException = null)
     : Exception(message, innerException)
 {
-    public ContainerId ContainerId { get; } = containerId;
+    public int ContainerId { get; } = containerId;
 }
 
-public class ContainerAlreadyExistException(ContainerId containerId) 
+public class ContainerAlreadyExistException(int containerId) 
     : ContainerException(containerId, $"Container already exists under id {containerId}");
 
-public class ContainerNotFoundException(ContainerId containerId) 
+public class ContainerNotFoundException(int containerId) 
     : ContainerException(containerId, $"Container not found under id {containerId}");
 
-public class ContainerTypeNotFoundForContainerException(ContainerTypeId containerTypeId)
+public class ContainerTypeNotFoundForContainerException(int containerTypeId)
     : ContainerException(
-        ContainerId.Empty(), 
+        0, 
         $"Container type with id {containerTypeId} not found for container operation");
 
 public class UnhandledContainerException(
-    ContainerId containerId, 
+    int containerId, 
     Exception? innerException = null)
     : ContainerException(containerId, "Unexpected error occurred", innerException);

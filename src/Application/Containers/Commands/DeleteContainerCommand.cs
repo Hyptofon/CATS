@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Containers.Commands;
 
-public record DeleteContainerCommand(Guid ContainerId) 
+public record DeleteContainerCommand(int ContainerId) 
     : IRequest<Either<ContainerException, Container>>;
 
 public class DeleteContainerCommandHandler(
@@ -19,7 +19,7 @@ public class DeleteContainerCommandHandler(
         DeleteContainerCommand request,
         CancellationToken cancellationToken)
     {
-        var containerId = new ContainerId(request.ContainerId);
+        var containerId = request.ContainerId;
         
         var existingContainer = await containerRepository.GetByIdAsync(
             containerId, 

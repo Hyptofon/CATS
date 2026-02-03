@@ -3,7 +3,6 @@ using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Containers.Commands;
 using Application.Containers.Queries.SearchContainers;
-using Domain.Containers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +25,7 @@ public class ContainersController(
     [HttpGet("search")]
     public async Task<ActionResult<IReadOnlyList<ContainerDto>>> Search(
         [FromQuery] string? searchTerm,
-        [FromQuery] Guid? containerTypeId,
+        [FromQuery] int? containerTypeId,
         [FromQuery] string? status,
         CancellationToken cancellationToken)
     {
@@ -39,14 +38,12 @@ public class ContainersController(
         return containers.Select(ContainerDto.FromDomainModel).ToList();
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ContainerDto>> GetById(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         CancellationToken cancellationToken)
     {
-        var container = await containerQueries.GetByIdAsync(
-            new ContainerId(id), 
-            cancellationToken);
+        var container = await containerQueries.GetByIdAsync(id, cancellationToken);
 
         return container.Match<ActionResult<ContainerDto>>(
             c => ContainerDto.FromDomainModel(c),
@@ -86,9 +83,9 @@ public class ContainersController(
             e => e.ToObjectResult());
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult<ContainerDto>> Update(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         [FromBody] UpdateContainerDto request,
         CancellationToken cancellationToken)
     {
@@ -108,9 +105,9 @@ public class ContainersController(
             e => e.ToObjectResult());
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult<ContainerDto>> Delete(
-        [FromRoute] Guid id,
+        [FromRoute] int id,
         CancellationToken cancellationToken)
     {
         var command = new DeleteContainerCommand(id);

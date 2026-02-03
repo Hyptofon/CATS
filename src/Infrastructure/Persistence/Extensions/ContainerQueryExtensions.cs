@@ -1,5 +1,4 @@
 ﻿using Domain.Containers;
-using Domain.ContainerTypes;
 
 namespace Infrastructure.Persistence.Extensions;
 
@@ -29,13 +28,12 @@ public static class ContainerQueryExtensions
     
     public static IQueryable<Container> WithContainerType(
         this IQueryable<Container> query, 
-        Guid? containerTypeId)
+        int? containerTypeId)
     {
         if (!containerTypeId.HasValue)
             return query;
 
-        var containerTypeIdObj = new ContainerTypeId(containerTypeId.Value);
-        return query.Where(c => c.ContainerTypeId == containerTypeIdObj);
+        return query.Where(c => c.ContainerTypeId == containerTypeId.Value);
     }
 
     public static IQueryable<Container> WithStatus(

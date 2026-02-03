@@ -9,5 +9,5 @@ public interface IContainerRepository
     void Update(Container container);
     void Delete(Container container);
     Task<Option<Container>> GetByCodeAsync(string code, CancellationToken cancellationToken);
-    Task<Option<Container>> GetByIdAsync(ContainerId id, CancellationToken cancellationToken);
+    Task<Option<Container>> GetByIdAsync(int id, CancellationToken cancellationToken);
 }

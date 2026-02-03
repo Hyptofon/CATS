@@ -1,23 +1,21 @@
-﻿using Domain.Products;
-
-namespace Application.ProductTypes.Exceptions;
+﻿namespace Application.ProductTypes.Exceptions;
 
 public abstract class ProductTypeException(
-    ProductTypeId productTypeId, 
+    int productTypeId, 
     string message, 
     Exception? innerException = null)
     : Exception(message, innerException)
 {
-    public ProductTypeId ProductTypeId { get; } = productTypeId;
+    public int ProductTypeId { get; } = productTypeId;
 }
 
-public class ProductTypeAlreadyExistException(ProductTypeId productTypeId) 
+public class ProductTypeAlreadyExistException(int productTypeId) 
     : ProductTypeException(productTypeId, $"Product type already exists under id {productTypeId}");
 
-public class ProductTypeNotFoundException(ProductTypeId productTypeId) 
+public class ProductTypeNotFoundException(int productTypeId) 
     : ProductTypeException(productTypeId, $"Product type not found under id {productTypeId}");
 
 public class UnhandledProductTypeException(
-    ProductTypeId productTypeId, 
+    int productTypeId, 
     Exception? innerException = null)
     : ProductTypeException(productTypeId, "Unexpected error occurred", innerException);

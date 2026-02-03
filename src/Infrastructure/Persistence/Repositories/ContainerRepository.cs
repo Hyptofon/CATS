@@ -39,7 +39,7 @@ public class ContainerRepository(ApplicationDbContext context)
     }
 
     public async Task<Option<Container>> GetByIdAsync(
-        ContainerId id, 
+        int id, 
         CancellationToken cancellationToken)
     {
         var entity = await context.Containers
@@ -62,7 +62,7 @@ public class ContainerRepository(ApplicationDbContext context)
 
     public async Task<IReadOnlyList<Container>> SearchAsync(
         string? searchTerm,
-        Guid? containerTypeId,
+        int? containerTypeId,
         string? status,
         CancellationToken cancellationToken)
     {

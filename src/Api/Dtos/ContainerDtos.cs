@@ -5,11 +5,11 @@ using Domain.Containers;
 namespace Api.Dtos;
 
 public record ContainerDto(
-    Guid Id,
+    int Id,
     string Code,
     string Name,
     decimal Volume,
-    Guid ContainerTypeId,
+    int ContainerTypeId,
     string ContainerTypeName,
     string Status,
     
@@ -20,11 +20,11 @@ public record ContainerDto(
 {
     public static ContainerDto FromDomainModel(Container container)
         => new(
-            container.Id.Value,
+            container.Id,
             container.Code,
             container.Name,
             container.Volume,
-            container.ContainerTypeId.Value,
+            container.ContainerTypeId,
             container.ContainerType?.Name ?? "Unknown",
             container.Status.ToString(),
             container.Meta,
@@ -35,7 +35,7 @@ public record CreateContainerDto(
     string Code,
     string Name,
     decimal Volume,
-    Guid ContainerTypeId,
+    int ContainerTypeId,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta
@@ -44,7 +44,7 @@ public record CreateContainerDto(
 public record UpdateContainerDto(
     string Name,
     decimal Volume,
-    Guid ContainerTypeId,
+    int ContainerTypeId,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta

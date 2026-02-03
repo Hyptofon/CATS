@@ -6,6 +6,6 @@ public class DeleteProductTypeCommandValidator : AbstractValidator<DeleteProduct
 {
     public DeleteProductTypeCommandValidator()
     {
-        RuleFor(x => x.ProductTypeId).NotEmpty();
+        RuleFor(x => x.ProductTypeId).GreaterThan(0);
     }
 }

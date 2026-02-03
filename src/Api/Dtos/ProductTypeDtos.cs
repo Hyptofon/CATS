@@ -5,7 +5,7 @@ using Domain.Products;
 namespace Api.Dtos;
 
 public record ProductTypeDto(
-    Guid Id, 
+    int Id, 
     string Name, 
     int? ShelfLifeDays, 
     
@@ -16,7 +16,7 @@ public record ProductTypeDto(
 {
     public static ProductTypeDto FromDomainModel(ProductType productType)
         => new(
-            productType.Id.Value, 
+            productType.Id, 
             productType.Name, 
             productType.ShelfLifeDays,
             productType.Meta, 

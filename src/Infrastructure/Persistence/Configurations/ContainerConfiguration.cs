@@ -11,7 +11,8 @@ public class ContainerConfiguration : IEntityTypeConfiguration<Container>
     public void Configure(EntityTypeBuilder<Container> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasConversion(x => x.Value, x => new ContainerId(x));
+        builder.Property(x => x.Id)
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Code)
             .HasColumnType("varchar(50)")
@@ -26,7 +27,7 @@ public class ContainerConfiguration : IEntityTypeConfiguration<Container>
             .IsRequired();
 
         builder.Property(x => x.ContainerTypeId)
-            .HasConversion(x => x.Value, x => new ContainerTypeId(x));
+            .IsRequired();
 
         builder.Property(x => x.Status)
             .HasConversion<string>()

@@ -32,8 +32,8 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var productTypes = await response.ToResponseModel<List<ProductTypeDto>>();
         productTypes.Should().HaveCount(2);
-        productTypes.Should().Contain(pt => pt.Id == _firstTestProductType.Id.Value);
-        productTypes.Should().Contain(pt => pt.Id == _secondTestProductType.Id.Value);
+        productTypes.Should().Contain(pt => pt.Id == _firstTestProductType.Id);
+        productTypes.Should().Contain(pt => pt.Id == _secondTestProductType.Id);
     }
 
     [Fact]
@@ -52,12 +52,12 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldGetProductTypeById()
     {
         // Act
-        var response = await Client.GetAsync($"{BaseRoute}/{_firstTestProductType.Id.Value}");
+        var response = await Client.GetAsync($"{BaseRoute}/{_firstTestProductType.Id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var productType = await response.ToResponseModel<ProductTypeDto>();
-        productType.Id.Should().Be(_firstTestProductType.Id.Value);
+        productType.Id.Should().Be(_firstTestProductType.Id);
         productType.Name.Should().Be(_firstTestProductType.Name);
         productType.ShelfLifeDays.Should().Be(_firstTestProductType.ShelfLifeDays);
         productType.Meta.Should().Be(_firstTestProductType.Meta);
@@ -67,7 +67,7 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotGetProductTypeByIdBecauseNotFound()
     {
         // Arrange
-        var nonExistentId = Guid.NewGuid();
+        var nonExistentId = 999999;
 
         // Act
         var response = await Client.GetAsync($"{BaseRoute}/{nonExistentId}");
@@ -96,11 +96,10 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
         productTypeDto.Name.Should().Be(request.Name);
         productTypeDto.ShelfLifeDays.Should().Be(request.ShelfLifeDays);
         productTypeDto.Meta.Should().Be(request.Meta);
-        productTypeDto.Id.Should().NotBeEmpty();
+        productTypeDto.Id.Should().BeGreaterThan(0);
 
-        var productTypeId = new ProductTypeId(productTypeDto.Id);
         var dbProductType = await Context.ProductTypes
-            .FirstOrDefaultAsync(pt => pt.Id == productTypeId);
+            .FirstOrDefaultAsync(pt => pt.Id == productTypeDto.Id);
             
         dbProductType.Should().NotBeNull();
         dbProductType!.Name.Should().Be(request.Name);
@@ -174,7 +173,7 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"{BaseRoute}/{_firstTestProductType.Id.Value}", 
+            $"{BaseRoute}/{_firstTestProductType.Id}", 
             request);
 
         // Assert
@@ -191,7 +190,7 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var request = ProductTypeData.UpdateTestProductTypeDto();
-        var nonExistentId = Guid.NewGuid();
+        var nonExistentId = 999999;
 
         // Act
         var response = await Client.PutAsJsonAsync($"{BaseRoute}/{nonExistentId}", request);
@@ -208,7 +207,7 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"{BaseRoute}/{_firstTestProductType.Id.Value}", 
+            $"{BaseRoute}/{_firstTestProductType.Id}", 
             request);
 
         // Assert
@@ -223,12 +222,12 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldDeleteProductType()
     {
         // Act
-        var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestProductType.Id.Value}");
+        var response = await Client.DeleteAsync($"{BaseRoute}/{_secondTestProductType.Id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var productType = await response.ToResponseModel<ProductTypeDto>();
-        productType.Id.Should().Be(_secondTestProductType.Id.Value);
+        productType.Id.Should().Be(_secondTestProductType.Id);
 
         var dbProductType = await Context.ProductTypes
             .FirstOrDefaultAsync(pt => pt.Id == _secondTestProductType.Id);
@@ -239,7 +238,7 @@ public class ProductTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotDeleteProductTypeBecauseNotFound()
     {
         // Arrange
-        var nonExistentId = Guid.NewGuid();
+        var nonExistentId = 999999;
 
         // Act
         var response = await Client.DeleteAsync($"{BaseRoute}/{nonExistentId}");
