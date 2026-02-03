@@ -10,7 +10,7 @@ namespace Application.Containers.Commands;
 
 public record CreateContainerCommand : IRequest<Either<ContainerException, Container>>
 {
-    public required string Code { get; init; }
+    public string? Code { get; init; }
     public required string Name { get; init; }
     public required decimal Volume { get; init; }
     public required int ContainerTypeId { get; init; }
@@ -28,13 +28,16 @@ public class CreateContainerCommandHandler(
         CreateContainerCommand request,
         CancellationToken cancellationToken)
     {
-        var existingContainer = await containerRepository.GetByCodeAsync(
-            request.Code, 
-            cancellationToken);
-
-        if (existingContainer.IsSome)
+        if (!string.IsNullOrWhiteSpace(request.Code))
         {
-            return new ContainerAlreadyExistException(0);
+            var existingContainer = await containerRepository.GetByCodeAsync(
+                request.Code, 
+                cancellationToken);
+
+            if (existingContainer.IsSome)
+            {
+                return new ContainerAlreadyExistException(0);
+            }
         }
 
         var containerTypeId = request.ContainerTypeId;

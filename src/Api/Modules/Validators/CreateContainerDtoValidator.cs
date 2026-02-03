@@ -8,8 +8,6 @@ public class CreateContainerDtoValidator : AbstractValidator<CreateContainerDto>
     public CreateContainerDtoValidator()
     {
         RuleFor(x => x.Code)
-            .NotEmpty()
-            .WithMessage("Container code is required")
             .MaximumLength(50)
             .WithMessage("Container code must not exceed 50 characters");
 

@@ -7,7 +7,6 @@ public class CreateContainerCommandValidator : AbstractValidator<CreateContainer
     public CreateContainerCommandValidator()
     {
         RuleFor(x => x.Code)
-            .NotEmpty()
             .MaximumLength(50);
 
         RuleFor(x => x.Name)

@@ -42,4 +42,16 @@ public static class ContainerData
             "{\"location\":\"Warehouse C\"}"
         );
     }
+    
+    public static CreateContainerDto CreateTestContainerDtoWithAutoCode(int containerTypeId)
+    {
+        var uniqueId = Guid.NewGuid().ToString()[..8];
+        return new CreateContainerDto(
+            null,
+            $"Test-AutoCode-Container-{uniqueId}",
+            100.0m,
+            containerTypeId,
+            "{\"location\":\"Warehouse D\"}"
+        );
+    }
 }

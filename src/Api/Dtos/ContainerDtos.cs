@@ -32,7 +32,7 @@ public record ContainerDto(
 }
 
 public record CreateContainerDto(
-    string Code,
+    string? Code,
     string Name,
     decimal Volume,
     int ContainerTypeId,
