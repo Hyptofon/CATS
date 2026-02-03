@@ -8,23 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Persistence.Repositories;
 
 public class ContainerRepository(ApplicationDbContext context) 
-    : IContainerRepository, IContainerQueries
+    : BaseRepository<Container>(context), IContainerRepository, IContainerQueries
 {
-    public void Add(Container container)
-    {
-        context.Containers.Add(container);
-    }
-
-    public void Update(Container container)
-    {
-        context.Containers.Update(container);
-    }
-
-    public void Delete(Container container)
-    {
-        context.Containers.Remove(container);
-    }
-
     public async Task<Option<Container>> GetByCodeAsync(
         string code, 
         CancellationToken cancellationToken)

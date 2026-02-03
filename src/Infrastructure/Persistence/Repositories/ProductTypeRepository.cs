@@ -7,23 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Persistence.Repositories;
 
 public class ProductTypeRepository(ApplicationDbContext context) 
-    : IProductTypeRepository, IProductTypeQueries
+    : BaseRepository<ProductType>(context), IProductTypeRepository, IProductTypeQueries
 {
-    public void Add(ProductType productType)
-    {
-        context.ProductTypes.Add(productType);
-    }
-
-    public void Update(ProductType productType)
-    {
-        context.ProductTypes.Update(productType);
-    }
-
-    public void Delete(ProductType productType)
-    {
-        context.ProductTypes.Remove(productType);
-    }
-
     public async Task<Option<ProductType>> GetByNameAsync(
         string name, 
         CancellationToken cancellationToken)

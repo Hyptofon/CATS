@@ -7,23 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Persistence.Repositories;
 
 public class ContainerTypeRepository(ApplicationDbContext context) 
-    : IContainerTypeRepository, IContainerTypeQueries
+    : BaseRepository<ContainerType>(context), IContainerTypeRepository, IContainerTypeQueries
 {
-    public void Add(ContainerType containerType)
-    {
-        context.ContainerTypes.Add(containerType);
-    }
-
-    public void Update(ContainerType containerType)
-    {
-        context.ContainerTypes.Update(containerType);
-    }
-
-    public void Delete(ContainerType containerType)
-    {
-        context.ContainerTypes.Remove(containerType);
-    }
-
     public async Task<Option<ContainerType>> GetByNameAsync(
         string name, 
         CancellationToken cancellationToken)

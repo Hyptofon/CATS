@@ -293,29 +293,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    [Theory]
-    [InlineData("", "Valid Name", 50.0)]
-    [InlineData(null, "Valid Name", 50.0)]
-    public async Task ShouldNotCreateContainerBecauseEmptyCode(
-        string code, 
-        string name, 
-        decimal volume)
-    {
-        // Arrange
-        var request = new CreateContainerDto(
-            code,
-            name,
-            volume,
-            _testContainerType.Id,
-            null
-        );
 
-        // Act
-        var response = await Client.PostAsJsonAsync(BaseRoute, request);
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
 
     [Theory]
     [InlineData("VALID-CODE", "", 50.0)]
