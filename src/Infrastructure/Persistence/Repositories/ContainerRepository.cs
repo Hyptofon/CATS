@@ -61,4 +61,12 @@ public class ContainerRepository(ApplicationDbContext context)
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<int> GetTotalCountByTypeIdAsync(
+        int containerTypeId,
+        CancellationToken cancellationToken)
+    {
+        return await context.Containers
+            .CountAsync(x => x.ContainerTypeId == containerTypeId, cancellationToken);
+    }
 }

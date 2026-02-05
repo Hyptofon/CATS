@@ -46,23 +46,45 @@ public class CreateContainerCommandHandler(
             cancellationToken);
 
         return await containerType.MatchAsync(
-            ct => CreateEntity(request, containerTypeId, cancellationToken),
+            ct => CreateEntity(request, ct, cancellationToken),
             () => Task.FromResult<Either<ContainerException, Container>>(
                 new ContainerTypeNotFoundForContainerException(containerTypeId)));
     }
 
     private async Task<Either<ContainerException, Container>> CreateEntity(
         CreateContainerCommand request,
-        int containerTypeId,
+        Domain.ContainerTypes.ContainerType containerType,
         CancellationToken cancellationToken)
     {
         try
         {
+            string finalCode;
+            if (!string.IsNullOrWhiteSpace(request.Code))
+            {
+                finalCode = request.Code;
+            }
+            else
+            {
+                var prefix = containerType.Name
+                    .Replace(" ", "")
+                    .ToUpperInvariant();
+                
+                var existingCount = await containerRepository.GetTotalCountByTypeIdAsync(
+                    containerType.Id,
+                    cancellationToken);
+                
+                var nextNumber = existingCount + 1;
+                
+                var formattedNumber = nextNumber.ToString("D5");
+                
+                finalCode = $"{prefix}-{formattedNumber}";
+            }
+
             var container = Container.New(
-                request.Code,
+                finalCode,
                 request.Name,
                 request.Volume,
-                containerTypeId,
+                containerType.Id,
                 request.Meta,
                 currentUserService.UserId);
 

@@ -60,24 +60,15 @@ public class Container
     }
 
     public static Container New(
-        string? code,
+        string code,
         string name,
         decimal volume,
         int containerTypeId,
         string? meta,
         Guid? createdById)
     {
-        string finalCode;
         if (string.IsNullOrWhiteSpace(code))
-        {
-            var timestamp = DateTime.UtcNow.ToString("yyyyMMdd");
-            var randomPart = Guid.NewGuid().ToString()[..4].ToUpper();
-            finalCode = $"CNT-{timestamp}-{randomPart}";
-        }
-        else
-        {
-            finalCode = code;
-        }
+            throw new ArgumentException("Container code cannot be empty", nameof(code));
             
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Container name cannot be empty", nameof(name));
@@ -86,7 +77,7 @@ public class Container
             throw new ArgumentException("Volume must be greater than zero", nameof(volume));
 
         return new Container(
-            finalCode,
+            code,
             name,
             volume,
             containerTypeId,
