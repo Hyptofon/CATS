@@ -24,3 +24,18 @@ public class UnhandledContainerException(
     int containerId, 
     Exception? innerException = null)
     : ContainerException(containerId, "Unexpected error occurred", innerException);
+
+public sealed class ContainerNotEmptyException(int containerId) 
+    : ContainerException(containerId, "Container is not empty");
+
+public sealed class ContainerNotFullException(int containerId) 
+    : ContainerException(containerId, "Container is not full");
+
+public sealed class ContainerOverfillException(int containerId, decimal quantity, decimal volume) 
+    : ContainerException(containerId, $"Quantity ({quantity}) exceeds container volume ({volume})");
+
+public sealed class ContainerFillNotFoundException(int fillId) :
+    ContainerException(0, $"Container fill with id {fillId} not found", null)
+{
+    public int FillId { get; } = fillId;
+}

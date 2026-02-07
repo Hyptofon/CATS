@@ -1,6 +1,7 @@
 using Api.Modules;
 using Application;
 using Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,17 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "CATS API v1");
         c.RoutePrefix = string.Empty;
     });
+
+    // Автозаповнення бази даних
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<Infrastructure.Persistence.ApplicationDbContext>();
+        
+        // Автоматично застосовуємо міграції
+        await context.Database.MigrateAsync();
+        
+        await Infrastructure.Persistence.DbInitializer.SeedAsync(context);
+    }
 }
 
 app.UseCors();

@@ -13,19 +13,20 @@ public class Container
     public ContainerStatus Status { get; private set; }
     
     // Current fill pointer
-    public Guid? CurrentFillId { get; private set; }
+    public int? CurrentFillId { get; private set; }
     
     // Denormalized current state
-    public Guid? CurrentProductId { get; private set; }
-    public Guid? CurrentProductTypeId { get; private set; }
+    public int? CurrentProductId { get; private set; }
+    public int? CurrentProductTypeId { get; private set; }
     public DateTime? CurrentProductionDate { get; private set; }
+    public DateTime? CurrentExpirationDate { get; private set; }
     public decimal? CurrentQuantity { get; private set; }
     public string? CurrentUnit { get; private set; }
     public DateTime? CurrentFilledAt { get; private set; }
     
     // Denormalized last content
-    public Guid? LastProductId { get; private set; }
-    public Guid? LastProductTypeId { get; private set; }
+    public int? LastProductId { get; private set; }
+    public int? LastProductTypeId { get; private set; }
     public DateTime? LastEmptiedAt { get; private set; }
     
     public string? Meta { get; private set; }
@@ -104,6 +105,75 @@ public class Container
         ContainerTypeId = containerTypeId;
         Meta = meta;
         LastModifiedById = modifiedById;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Fill(
+        int productId,
+        int productTypeId,
+        decimal quantity,
+        string unit,
+        DateTime productionDate,
+        DateTime expirationDate,
+        int fillId,
+        Guid userId)
+    {
+        if (Status != ContainerStatus.Empty)
+            throw new InvalidOperationException("Container is not empty");
+
+        if (quantity > Volume)
+            throw new InvalidOperationException($"Quantity ({quantity}) exceeds container volume ({Volume})");
+
+        Status = ContainerStatus.Full;
+        CurrentFillId = fillId;
+        CurrentProductId = productId;
+        CurrentProductTypeId = productTypeId;
+        CurrentQuantity = quantity;
+        CurrentUnit = unit;
+        CurrentProductionDate = productionDate;
+        CurrentExpirationDate = expirationDate;
+        CurrentFilledAt = DateTime.UtcNow;
+        LastModifiedById = userId;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Empty(Guid userId)
+    {
+        if (Status != ContainerStatus.Full)
+            throw new InvalidOperationException("Container is not full");
+        LastProductId = CurrentProductId;
+        LastProductTypeId = CurrentProductTypeId;
+        LastEmptiedAt = DateTime.UtcNow;
+        Status = ContainerStatus.Empty;
+        CurrentFillId = null;
+        CurrentProductId = null;
+        CurrentProductTypeId = null;
+        CurrentQuantity = null;
+        CurrentUnit = null;
+        CurrentProductionDate = null;
+        CurrentExpirationDate = null;
+        CurrentFilledAt = null;
+        
+        LastModifiedById = userId;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateCurrentFill(
+        decimal quantity,
+        DateTime productionDate,
+        DateTime expirationDate,
+        Guid userId)
+    {
+        if (Status != ContainerStatus.Full)
+            throw new InvalidOperationException("Container is not full");
+
+        if (quantity > Volume)
+            throw new InvalidOperationException($"Quantity ({quantity}) exceeds container volume ({Volume})");
+
+        CurrentQuantity = quantity;
+        CurrentProductionDate = productionDate;
+        CurrentExpirationDate = expirationDate;
+        LastModifiedById = userId;
         UpdatedAt = DateTime.UtcNow;
     }
 }

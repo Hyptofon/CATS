@@ -60,6 +60,10 @@ public class ContainerConfiguration : IEntityTypeConfiguration<Container>
             .HasConversion(new DateTimeUtcConverter())
             .IsRequired(false);
 
+        builder.Property(x => x.CurrentExpirationDate)
+            .HasConversion(new DateTimeUtcConverter())
+            .IsRequired(false);
+
         builder.Property(x => x.LastProductId)
             .IsRequired(false);
 

@@ -49,6 +49,11 @@ public class ContainerRepository(ApplicationDbContext context)
         string? searchTerm,
         int? containerTypeId,
         string? status,
+        DateTime? productionDate,
+        int? currentProductId,
+        int? currentProductTypeId,
+        int? lastProductId,
+        bool? showExpired,
         CancellationToken cancellationToken)
     {
         return await context.Containers
@@ -58,6 +63,11 @@ public class ContainerRepository(ApplicationDbContext context)
             .WithSearchTerm(searchTerm)
             .WithContainerType(containerTypeId)
             .WithStatus(status)
+            .WithProductionDate(productionDate)
+            .WithCurrentProduct(currentProductId)
+            .WithCurrentProductType(currentProductTypeId)
+            .WithLastProduct(lastProductId)
+            .WithExpiration(showExpired)
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
     }

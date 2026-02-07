@@ -10,6 +10,11 @@ public interface IContainerQueries
         string? searchTerm,
         int? containerTypeId,
         string? status,
+        DateTime? productionDate,
+        int? currentProductId,
+        int? currentProductTypeId,
+        int? lastProductId,
+        bool? showExpired,
         CancellationToken cancellationToken);
     Task<Option<Container>> GetByIdAsync(int id, CancellationToken cancellationToken);
     Task<Option<Container>> GetByCodeAsync(string code, CancellationToken cancellationToken);

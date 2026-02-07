@@ -15,6 +15,11 @@ public class SearchContainersQueryHandler(IContainerQueries containerQueries)
             request.SearchTerm,
             request.ContainerTypeId,
             request.Status,
+            request.ProductionDate,
+            request.CurrentProductId,
+            request.CurrentProductTypeId,
+            request.LastProductId,
+            request.ShowExpired,
             cancellationToken);
     }
 }

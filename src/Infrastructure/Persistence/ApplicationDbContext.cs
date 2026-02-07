@@ -11,9 +11,11 @@ namespace Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options), IApplicationDbContext
 {
-    public DbSet<Container> Containers { get; init; }
-    public DbSet<ContainerType> ContainerTypes { get; init; }
-    public DbSet<ProductType> ProductTypes { get; init; }
+    public DbSet<ProductType> ProductTypes { get; set; }
+    public DbSet<ContainerType> ContainerTypes { get; set; }
+    public DbSet<Container> Containers { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ContainerFill> ContainerFills { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
