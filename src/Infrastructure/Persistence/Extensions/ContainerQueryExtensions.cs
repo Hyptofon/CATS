@@ -60,15 +60,17 @@ public static class ContainerQueryExtensions
             && c.CurrentProductionDate.Value.Date == productionDate.Value.Date);
     }
 
-    public static IQueryable<Container> WithCurrentProduct(
+    public static IQueryable<Container> WithProduct(
         this IQueryable<Container> query, 
-        int? currentProductId)
+        int? productId)
     {
-        if (!currentProductId.HasValue)
+        if (!productId.HasValue)
             return query;
         
-        return query.Where(c => c.Status == ContainerStatus.Full 
-            && c.CurrentProductId == currentProductId.Value);
+        return query.Where(c => 
+            (c.Status == ContainerStatus.Full && c.CurrentProductId == productId.Value) ||
+            (c.Status == ContainerStatus.Empty && c.LastProductId == productId.Value)
+        );
     }
 
     public static IQueryable<Container> WithLastProduct(
