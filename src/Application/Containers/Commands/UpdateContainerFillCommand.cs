@@ -10,7 +10,9 @@ namespace Application.Containers.Commands;
 public record UpdateContainerFillCommand : IRequest<Either<ContainerException, Container>>
 {
     public required int ContainerId { get; init; }
+    public int? ProductId { get; init; }
     public required decimal Quantity { get; init; }
+    public required string Unit { get; init; }
     public required DateTime ProductionDate { get; init; }
     public required DateTime ExpirationDate { get; init; }
 }
@@ -18,6 +20,7 @@ public record UpdateContainerFillCommand : IRequest<Either<ContainerException, C
 public class UpdateContainerFillCommandHandler(
     IContainerRepository containerRepository,
     IContainerFillRepository containerFillRepository,
+    IProductRepository productRepository,
     ICurrentUserService currentUserService,
     IApplicationDbContext dbContext)
     : IRequestHandler<UpdateContainerFillCommand, Either<ContainerException, Container>>
@@ -45,6 +48,11 @@ public class UpdateContainerFillCommandHandler(
             {
                 return new ContainerOverfillException(request.ContainerId, request.Quantity, container.Volume);
             }
+
+            if (request.Unit != container.Unit)
+            {
+                return new ContainerUnitMismatchException(request.ContainerId, container.Unit, request.Unit);
+            }
             
             if (!container.CurrentFillId.HasValue)
             {
@@ -63,14 +71,32 @@ public class UpdateContainerFillCommandHandler(
 
             var fill = currentFill.Match(f => f, () => throw new InvalidOperationException());
 
+            int? productTypeId = null;
+            if (request.ProductId.HasValue)
+            {
+                var product = await productRepository.GetByIdAsync(request.ProductId.Value, cancellationToken);
+                if (product.IsNone)
+                {
+                    return new UnhandledContainerException(request.ContainerId,
+                        new Exception($"Product with ID {request.ProductId.Value} not found"));
+                }
+
+                productTypeId = product.Match(p => p.ProductTypeId, () => (int?)null);
+            }
+
             fill.UpdateDetails(
+                request.ProductId,
                 request.Quantity,
+                request.Unit,
                 request.ProductionDate,
                 request.ExpirationDate);
             containerFillRepository.Update(fill);
 
             container.UpdateCurrentFill(
+                request.ProductId,
+                productTypeId,
                 request.Quantity,
+                request.Unit,
                 request.ProductionDate,
                 request.ExpirationDate,
                 currentUserService.UserId ?? Guid.Empty);
@@ -87,6 +113,10 @@ public class UpdateContainerFillCommandHandler(
         catch (InvalidOperationException ex) when (ex.Message.Contains("exceeds"))
         {
             return new ContainerOverfillException(request.ContainerId, request.Quantity, container.Volume);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("Unit mismatch"))
+        {
+            return new ContainerUnitMismatchException(request.ContainerId, container.Unit, request.Unit);
         }
         catch (Exception exception)
         {

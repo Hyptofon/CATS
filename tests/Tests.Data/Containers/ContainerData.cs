@@ -1,4 +1,4 @@
-﻿using Api.Dtos;
+using Api.Dtos;
 using Domain.Containers;
 
 namespace Tests.Data.Containers;
@@ -12,6 +12,7 @@ public static class ContainerData
             $"QR-{uniqueId}-001",
             $"Test-Container-{uniqueId}-A",
             50.0m,
+            "л",
             containerTypeId,
             "{\"location\":\"Warehouse A\",\"notes\":\"Test container\"}",
             new Guid("00000000-0000-0000-0000-000000000001")
@@ -25,6 +26,7 @@ public static class ContainerData
             $"QR-{uniqueId}-002",
             $"Test-Container-{uniqueId}-B",
             75.5m,
+            "л",
             containerTypeId,
             "{\"location\":\"Warehouse B\"}",
             new Guid("00000000-0000-0000-0000-000000000001")
@@ -38,6 +40,7 @@ public static class ContainerData
             $"QR-{uniqueId}-NEW",
             $"Test-New-Container-{uniqueId}",
             100.0m,
+            "л",
             containerTypeId,
             "{\"location\":\"Warehouse C\"}"
         );
@@ -50,6 +53,7 @@ public static class ContainerData
             null,
             $"Test-AutoCode-Container-{uniqueId}",
             100.0m,
+            "л",
             containerTypeId,
             "{\"location\":\"Warehouse D\"}"
         );

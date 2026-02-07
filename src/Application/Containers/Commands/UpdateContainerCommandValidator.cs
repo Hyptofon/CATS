@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Application.Containers.Commands;
 
@@ -14,6 +14,10 @@ public class UpdateContainerCommandValidator : AbstractValidator<UpdateContainer
 
         RuleFor(x => x.Volume)
             .GreaterThan(0);
+
+        RuleFor(x => x.Unit)
+            .NotEmpty()
+            .MaximumLength(20);
 
         RuleFor(x => x.ContainerTypeId)
             .NotEmpty();

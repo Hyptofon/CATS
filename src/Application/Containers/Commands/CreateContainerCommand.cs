@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore; 
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.Containers.Exceptions;
@@ -13,6 +13,7 @@ public record CreateContainerCommand : IRequest<Either<ContainerException, Conta
     public string? Code { get; init; }
     public required string Name { get; init; }
     public required decimal Volume { get; init; }
+    public required string Unit { get; init; }
     public required int ContainerTypeId { get; init; }
     public string? Meta { get; init; }
 }
@@ -84,6 +85,7 @@ public class CreateContainerCommandHandler(
                 finalCode,
                 request.Name,
                 request.Volume,
+                request.Unit,
                 containerType.Id,
                 request.Meta,
                 currentUserService.UserId);

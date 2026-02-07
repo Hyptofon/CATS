@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Api.Converters;                   
 using Domain.Containers;
 
@@ -9,6 +9,7 @@ public record ContainerDto(
     string Code,
     string Name,
     decimal Volume,
+    string Unit,
     int ContainerTypeId,
     string ContainerTypeName,
     string Status,
@@ -24,6 +25,7 @@ public record ContainerDto(
             container.Code,
             container.Name,
             container.Volume,
+            container.Unit,
             container.ContainerTypeId,
             container.ContainerType?.Name ?? "Unknown",
             container.Status.ToString(),
@@ -35,6 +37,7 @@ public record CreateContainerDto(
     string? Code,
     string Name,
     decimal Volume,
+    string Unit,
     int ContainerTypeId,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
@@ -44,6 +47,7 @@ public record CreateContainerDto(
 public record UpdateContainerDto(
     string Name,
     decimal Volume,
+    string Unit,
     int ContainerTypeId,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 

@@ -1,4 +1,4 @@
-﻿using Domain.ContainerTypes;
+using Domain.ContainerTypes;
 using Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,6 +14,10 @@ public class ContainerTypeConfiguration : IEntityTypeConfiguration<ContainerType
 
         builder.Property(x => x.Name)
             .HasColumnType("varchar(100)")
+            .IsRequired();
+
+        builder.Property(x => x.DefaultUnit)
+            .HasColumnType("varchar(20)")
             .IsRequired();
 
         builder.Property(x => x.Meta)
@@ -33,7 +37,10 @@ public class ContainerTypeConfiguration : IEntityTypeConfiguration<ContainerType
             .HasDefaultValue(false)
             .IsRequired();
 
-        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasIndex(x => x.Name)
+            .IsUnique()
+            .HasFilter("is_deleted = false");
+            
         builder.HasIndex(x => x.IsDeleted);
     }
 }

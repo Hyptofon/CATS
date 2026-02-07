@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.ContainerTypes.Exceptions;
 using Domain.ContainerTypes;
@@ -10,6 +10,7 @@ namespace Application.ContainerTypes.Commands;
 public record CreateContainerTypeCommand : IRequest<Either<ContainerTypeException, ContainerType>>
 {
     public required string Name { get; init; }
+    public required string DefaultUnit { get; init; }
     public string? Meta { get; init; }
 }
 
@@ -40,6 +41,7 @@ public class CreateContainerTypeCommandHandler(
         {
             var containerType = ContainerType.New(
                 request.Name,
+                request.DefaultUnit,
                 request.Meta,
                 currentUserService.UserId);
 

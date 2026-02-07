@@ -1,4 +1,4 @@
-﻿using Domain.Products;
+using Domain.Products;
 using Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -36,7 +36,10 @@ public class ProductTypeConfiguration : IEntityTypeConfiguration<ProductType>
             .HasDefaultValue(false)
             .IsRequired();
 
-        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasIndex(x => x.Name)
+            .IsUnique()
+            .HasFilter("is_deleted = false");
+            
         builder.HasIndex(x => x.IsDeleted);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Api.Dtos;
+using Api.Dtos;
 using FluentValidation;
 
 namespace Api.Modules.Validators;
@@ -16,6 +16,12 @@ public class UpdateContainerDtoValidator : AbstractValidator<UpdateContainerDto>
         RuleFor(x => x.Volume)
             .GreaterThan(0)
             .WithMessage("Volume must be greater than 0");
+
+        RuleFor(x => x.Unit)
+            .NotEmpty()
+            .WithMessage("Unit is required")
+            .MaximumLength(20)
+            .WithMessage("Unit must not exceed 20 characters");
 
         RuleFor(x => x.ContainerTypeId)
             .NotEmpty()

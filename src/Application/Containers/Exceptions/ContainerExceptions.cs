@@ -1,4 +1,4 @@
-﻿namespace Application.Containers.Exceptions;
+namespace Application.Containers.Exceptions;
 
 public abstract class ContainerException(
     int containerId, 
@@ -33,6 +33,9 @@ public sealed class ContainerNotFullException(int containerId)
 
 public sealed class ContainerOverfillException(int containerId, decimal quantity, decimal volume) 
     : ContainerException(containerId, $"Quantity ({quantity}) exceeds container volume ({volume})");
+
+public sealed class ContainerUnitMismatchException(int containerId, string expectedUnit, string actualUnit) 
+    : ContainerException(containerId, $"Unit mismatch: expected '{expectedUnit}', got '{actualUnit}'");
 
 public sealed class ContainerFillNotFoundException(int fillId) :
     ContainerException(0, $"Container fill with id {fillId} not found", null)

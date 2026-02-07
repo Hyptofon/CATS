@@ -23,7 +23,6 @@ public class FillContainerCommandValidator : AbstractValidator<FillContainerComm
             .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Production date cannot be in the future");
 
         RuleFor(x => x.ExpirationDate)
-            .GreaterThan(x => x.ProductionDate).WithMessage("Expiration date must be after production date")
-            .When(x => x.ExpirationDate.HasValue);
+            .GreaterThan(x => x.ProductionDate).WithMessage("Expiration date must be after production date");
     }
 }

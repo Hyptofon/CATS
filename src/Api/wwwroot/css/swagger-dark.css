@@ -1,0 +1,139 @@
+﻿body, .swagger-ui {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+}
+.swagger-ui .topbar {
+    background-color: #000000 !important;
+    border-bottom: 1px solid #333;
+}
+.swagger-ui .topbar .link { color: #fff !important; }
+.swagger-ui .info .title,
+.swagger-ui .info p,
+.swagger-ui .info li,
+.swagger-ui .info a {
+    color: #ffffff !important;
+}
+.swagger-ui .opblock-tag {
+    color: #ffffff !important; 
+    border-bottom: 1px solid #333 !important;
+}
+.swagger-ui .opblock-tag small {
+    color: #b0b0b0 !important;
+}
+.swagger-ui .opblock {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+}
+.swagger-ui .opblock .opblock-summary-operation-id,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-path__deprecated {
+    color: #e0e0e0 !important;
+}
+.swagger-ui .opblock .opblock-summary-description {
+    color: #b0b0b0 !important;
+}
+.swagger-ui .opblock-section-header {
+    background-color: #252525 !important; 
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+.swagger-ui .opblock-section-header h4 {
+    color: #ffffff !important;
+}
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-external-docs-wrapper p,
+.swagger-ui .opblock-title_normal p {
+    color: #ffffff !important;
+}
+.swagger-ui .tab li {
+    color: #b0b0b0 !important;
+}
+.swagger-ui .tab li.active {
+    color: #ffffff !important; 
+    border-bottom: 2px solid #4990e2 !important;
+}
+.swagger-ui .tab li:first-of-type:after {
+    color: #555 !important; 
+}
+.swagger-ui table thead tr th,
+.swagger-ui table thead tr td,
+.swagger-ui table tbody tr td, 
+.swagger-ui .parameters-col_description {
+    color: #e0e0e0 !important;
+}
+.swagger-ui .response-col_status {
+    color: #ffffff !important;
+}
+.swagger-ui .response-col_links {
+    color: #b0b0b0 !important;
+}
+.swagger-ui .responses-inner h4,
+.swagger-ui .responses-inner h5 {
+    color: #ffffff !important;
+}
+.swagger-ui .parameter__name {
+    color: #ffffff !important;
+}
+.swagger-ui .parameter__type {
+    color: #aebfcc !important;
+}
+.swagger-ui .parameter__in {
+    color: #888 !important;
+}
+.swagger-ui .model-box {
+    background-color: #1e1e1e !important;
+}
+.swagger-ui section.models {
+    border-top: 1px solid #333;
+}
+.swagger-ui section.models h4 {
+    color: #ffffff !important;
+}
+.swagger-ui .model {
+    color: #e0e0e0 !important;
+}
+.swagger-ui .model-title {
+    color: #fff !important;
+}
+.swagger-ui .prop-type {
+    color: #fca130 !important;
+}
+.swagger-ui .prop-format {
+    color: #888 !important;
+}
+.swagger-ui input,
+.swagger-ui textarea,
+.swagger-ui select {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 1px solid #555 !important;
+}
+.swagger-ui input::placeholder {
+    color: #777 !important;
+}
+.swagger-ui .btn {
+    color: #fff !important;
+    background: #333 !important;
+    border-color: #555 !important;
+    box-shadow: none !important;
+}
+.swagger-ui .btn.execute {
+    background-color: #4990e2 !important;
+    border-color: #4990e2 !important;
+}
+.swagger-ui .btn.authorize {
+    color: #4990e2 !important;
+    border-color: #4990e2 !important;
+    background: transparent !important;
+}
+.swagger-ui .btn.authorize svg {
+    fill: #4990e2 !important;
+}
+::-webkit-scrollbar {
+    width: 10px;
+    background: #121212;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 5px;
+}

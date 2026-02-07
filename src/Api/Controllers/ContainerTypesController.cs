@@ -1,4 +1,4 @@
-﻿using Api.Dtos;
+using Api.Dtos;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.ContainerTypes.Commands;
@@ -43,6 +43,7 @@ public class ContainerTypesController(
         var command = new CreateContainerTypeCommand
         {
             Name = request.Name,
+            DefaultUnit = request.DefaultUnit,
             Meta = request.Meta
         };
 
@@ -63,6 +64,7 @@ public class ContainerTypesController(
         {
             ContainerTypeId = id,
             Name = request.Name,
+            DefaultUnit = request.DefaultUnit,
             Meta = request.Meta
         };
 

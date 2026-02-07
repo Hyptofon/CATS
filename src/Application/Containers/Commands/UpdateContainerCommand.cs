@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.Containers.Exceptions;
 using Domain.Containers;
@@ -12,6 +12,7 @@ public record UpdateContainerCommand : IRequest<Either<ContainerException, Conta
     public required int ContainerId { get; init; }
     public required string Name { get; init; }
     public required decimal Volume { get; init; }
+    public required string Unit { get; init; }
     public required int ContainerTypeId { get; init; }
     public string? Meta { get; init; }
 }
@@ -56,6 +57,7 @@ public class UpdateContainerCommandHandler(
             container.UpdateDetails(
                 request.Name,
                 request.Volume,
+                request.Unit,
                 containerTypeId,
                 request.Meta,
                 currentUserService.UserId);

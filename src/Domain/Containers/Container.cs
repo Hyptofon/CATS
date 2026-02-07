@@ -1,4 +1,4 @@
-﻿using Domain.ContainerTypes;
+using Domain.ContainerTypes;
 using Domain.Products;
 
 namespace Domain.Containers;
@@ -9,6 +9,7 @@ public class Container
     public string Code { get; private set; }
     public string Name { get; private set; }
     public decimal Volume { get; private set; }
+    public string Unit { get; private set; }
     public int ContainerTypeId { get; private set; }
     public ContainerStatus Status { get; private set; }
     
@@ -43,7 +44,8 @@ public class Container
     private Container(
         string code, 
         string name, 
-        decimal volume, 
+        decimal volume,
+        string unit,
         int containerTypeId,
         string? meta,
         Guid? createdById,
@@ -52,6 +54,7 @@ public class Container
         Code = code;
         Name = name;
         Volume = volume;
+        Unit = unit;
         ContainerTypeId = containerTypeId;
         Status = ContainerStatus.Empty;
         Meta = meta;
@@ -64,6 +67,7 @@ public class Container
         string code,
         string name,
         decimal volume,
+        string unit,
         int containerTypeId,
         string? meta,
         Guid? createdById)
@@ -77,10 +81,14 @@ public class Container
         if (volume <= 0)
             throw new ArgumentException("Volume must be greater than zero", nameof(volume));
 
+        if (string.IsNullOrWhiteSpace(unit))
+            throw new ArgumentException("Unit cannot be empty", nameof(unit));
+
         return new Container(
             code,
             name,
             volume,
+            unit,
             containerTypeId,
             meta,
             createdById,
@@ -90,6 +98,7 @@ public class Container
     public void UpdateDetails(
         string name,
         decimal volume,
+        string unit,
         int containerTypeId,
         string? meta,
         Guid? modifiedById)
@@ -100,8 +109,12 @@ public class Container
         if (volume <= 0)
             throw new ArgumentException("Volume must be greater than zero", nameof(volume));
 
+        if (string.IsNullOrWhiteSpace(unit))
+            throw new ArgumentException("Unit cannot be empty", nameof(unit));
+
         Name = name;
         Volume = volume;
+        Unit = unit;
         ContainerTypeId = containerTypeId;
         Meta = meta;
         LastModifiedById = modifiedById;
@@ -124,6 +137,9 @@ public class Container
         if (quantity > Volume)
             throw new InvalidOperationException($"Quantity ({quantity}) exceeds container volume ({Volume})");
 
+        if (unit != Unit)
+            throw new InvalidOperationException($"Unit mismatch: expected '{Unit}', got '{unit}'");
+
         Status = ContainerStatus.Full;
         CurrentFillId = fillId;
         CurrentProductId = productId;
@@ -141,6 +157,7 @@ public class Container
     {
         if (Status != ContainerStatus.Full)
             throw new InvalidOperationException("Container is not full");
+            
         LastProductId = CurrentProductId;
         LastProductTypeId = CurrentProductTypeId;
         LastEmptiedAt = DateTime.UtcNow;
@@ -159,7 +176,10 @@ public class Container
     }
 
     public void UpdateCurrentFill(
+        int? productId,
+        int? productTypeId,
         decimal quantity,
+        string unit,
         DateTime productionDate,
         DateTime expirationDate,
         Guid userId)
@@ -170,7 +190,17 @@ public class Container
         if (quantity > Volume)
             throw new InvalidOperationException($"Quantity ({quantity}) exceeds container volume ({Volume})");
 
+        if (unit != Unit)
+            throw new InvalidOperationException($"Unit mismatch: expected '{Unit}', got '{unit}'");
+
+        if (productId.HasValue)
+            CurrentProductId = productId.Value;
+
+        if (productTypeId.HasValue)
+            CurrentProductTypeId = productTypeId.Value;
+
         CurrentQuantity = quantity;
+        CurrentUnit = unit;
         CurrentProductionDate = productionDate;
         CurrentExpirationDate = expirationDate;
         LastModifiedById = userId;

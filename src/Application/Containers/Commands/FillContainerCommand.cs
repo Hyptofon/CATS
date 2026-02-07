@@ -14,7 +14,7 @@ public record FillContainerCommand : IRequest<Either<ContainerException, Contain
     public required decimal Quantity { get; init; }
     public required string Unit { get; init; }
     public required DateTime ProductionDate { get; init; }
-    public DateTime? ExpirationDate { get; init; }
+    public required DateTime ExpirationDate { get; init; }
 }
 
 public class FillContainerCommandHandler(
@@ -39,6 +39,11 @@ public class FillContainerCommandHandler(
                     return new ContainerOverfillException(request.ContainerId, request.Quantity, c.Volume);
                 }
 
+                if (request.Unit != c.Unit)
+                {
+                    return new ContainerUnitMismatchException(request.ContainerId, c.Unit, request.Unit);
+                }
+
                 var product = await productRepository.GetByIdAsync(request.ProductId, cancellationToken);
 
                 return await product.MatchAsync(
@@ -59,27 +64,13 @@ public class FillContainerCommandHandler(
     {
         try
         {
-            DateTime expirationDate;
-            if (request.ExpirationDate.HasValue)
-            {
-                expirationDate = request.ExpirationDate.Value;
-            }
-            else if (product.ProductType?.ShelfLifeDays.HasValue == true)
-            {
-                expirationDate = request.ProductionDate.AddDays(product.ProductType.ShelfLifeDays.Value);
-            }
-            else
-            {
-                expirationDate = request.ProductionDate.AddDays(365);
-            }
-            
             var containerFill = ContainerFill.New(
                 container.Id,
                 product.Id,
                 request.Quantity,
                 request.Unit,
                 request.ProductionDate,
-                expirationDate,
+                request.ExpirationDate,
                 currentUserService.UserId ?? Guid.Empty);
 
             containerFillRepository.Add(containerFill);
@@ -90,7 +81,7 @@ public class FillContainerCommandHandler(
                 request.Quantity,
                 request.Unit,
                 request.ProductionDate,
-                expirationDate,
+                request.ExpirationDate,
                 containerFill.Id,
                 currentUserService.UserId ?? Guid.Empty);
 
@@ -106,6 +97,10 @@ public class FillContainerCommandHandler(
         catch (InvalidOperationException ex) when (ex.Message.Contains("exceeds"))
         {
             return new ContainerOverfillException(request.ContainerId, request.Quantity, container.Volume);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("Unit mismatch"))
+        {
+            return new ContainerUnitMismatchException(request.ContainerId, container.Unit, request.Unit);
         }
         catch (Exception exception)
         {

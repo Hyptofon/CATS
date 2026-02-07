@@ -6,12 +6,14 @@ public record FillContainerDto
     public required decimal Quantity { get; init; }
     public required string Unit { get; init; }
     public required DateTime ProductionDate { get; init; }
-    public DateTime? ExpirationDate { get; init; }
+    public required DateTime ExpirationDate { get; init; }
 }
 
 public record UpdateContainerFillDto
 {
+    public int? ProductId { get; init; }
     public required decimal Quantity { get; init; }
+    public required string Unit { get; init; }
     public required DateTime ProductionDate { get; init; }
     public required DateTime ExpirationDate { get; init; }
 }

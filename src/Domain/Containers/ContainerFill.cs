@@ -78,17 +78,26 @@ public class ContainerFill
     }
 
     public void UpdateDetails(
+        int? productId,
         decimal quantity,
+        string unit,
         DateTime productionDate,
         DateTime expirationDate)
     {
         if (quantity <= 0)
             throw new ArgumentException("Quantity must be greater than zero", nameof(quantity));
 
+        if (string.IsNullOrWhiteSpace(unit))
+            throw new ArgumentException("Unit is required", nameof(unit));
+
         if (EmptiedDate.HasValue)
             throw new InvalidOperationException("Cannot update a closed container fill");
 
+        if (productId.HasValue)
+            ProductId = productId.Value;
+
         Quantity = quantity;
+        Unit = unit;
         ProductionDate = productionDate;
         ExpirationDate = expirationDate;
     }

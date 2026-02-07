@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using Api.Dtos;
 using Domain.ContainerTypes;
@@ -75,6 +75,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
         var containerType = await response.ToResponseModel<ContainerTypeDto>();
         containerType.Id.Should().Be(_firstTestContainerType.Id);
         containerType.Name.Should().Be(_firstTestContainerType.Name);
+        containerType.DefaultUnit.Should().Be(_firstTestContainerType.DefaultUnit);
         containerType.Meta.Should().Be(_firstTestContainerType.Meta);
         containerType.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
     }
@@ -84,7 +85,8 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var containerTypeWithoutMeta = ContainerType.New(
-            "Test-NoMeta-Type", 
+            "Test-NoMeta-Type",
+            "л",
             null,
             new Guid("00000000-0000-0000-0000-000000000001")
         );
@@ -131,6 +133,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
         var containerTypeDto = await response.ToResponseModel<ContainerTypeDto>();
         
         containerTypeDto.Name.Should().Be(request.Name);
+        containerTypeDto.DefaultUnit.Should().Be(request.DefaultUnit);
         containerTypeDto.Meta.Should().Be(request.Meta);
         containerTypeDto.Id.Should().BeGreaterThan(0);
         containerTypeDto.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
@@ -140,14 +143,14 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
             
         dbContainerType.Should().NotBeNull();
         dbContainerType!.Name.Should().Be(request.Name);
-        // Meta вже перевірено через API відповідь (containerTypeDto.Meta)
+        dbContainerType.DefaultUnit.Should().Be(request.DefaultUnit);
     }
 
     [Fact]
     public async Task ShouldCreateContainerTypeWithNullMeta()
     {
         // Arrange
-        var request = new CreateContainerTypeDto("Test-NullMeta-Type", null);
+        var request = new CreateContainerTypeDto("Test-NullMeta-Type", "кг", null);
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -163,7 +166,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var longName = new string('A', 100);
-        var request = new CreateContainerTypeDto(longName, "{\"test\":\"meta\"}");
+        var request = new CreateContainerTypeDto(longName, "л", "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -178,7 +181,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new CreateContainerTypeDto(_firstTestContainerType.Name, "{\"test\":\"meta\"}");
+        var request = new CreateContainerTypeDto(_firstTestContainerType.Name, "л", "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -192,7 +195,8 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var request = new CreateContainerTypeDto(
-            _firstTestContainerType.Name.ToUpper(), 
+            _firstTestContainerType.Name.ToUpper(),
+            "л",
             "{\"test\":\"meta\"}"
         );
 
@@ -204,12 +208,27 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     }
 
     [Theory]
-    [InlineData("", "{\"test\":\"meta\"}")]
-    [InlineData(null, "{\"test\":\"meta\"}")]
-    public async Task ShouldNotCreateContainerTypeBecauseEmptyName(string name, string meta)
+    [InlineData("", "л", "{\"test\":\"meta\"}")]
+    [InlineData(null, "л", "{\"test\":\"meta\"}")]
+    public async Task ShouldNotCreateContainerTypeBecauseEmptyName(string name, string unit, string meta)
     {
         // Arrange
-        var request = new CreateContainerTypeDto(name, meta);
+        var request = new CreateContainerTypeDto(name, unit, meta);
+
+        // Act
+        var response = await Client.PostAsJsonAsync(BaseRoute, request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Theory]
+    [InlineData("Valid-Name", "", "{\"test\":\"meta\"}")]
+    [InlineData("Valid-Name", null, "{\"test\":\"meta\"}")]
+    public async Task ShouldNotCreateContainerTypeBecauseEmptyDefaultUnit(string name, string unit, string meta)
+    {
+        // Arrange
+        var request = new CreateContainerTypeDto(name, unit, meta);
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -223,7 +242,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('A', 101);
-        var request = new CreateContainerTypeDto(tooLongName, "{\"test\":\"meta\"}");
+        var request = new CreateContainerTypeDto(tooLongName, "л", "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -236,7 +255,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseWhitespaceName()
     {
         // Arrange
-        var request = new CreateContainerTypeDto("   ", "{\"test\":\"meta\"}");
+        var request = new CreateContainerTypeDto("   ", "л", "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -265,6 +284,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
         var containerType = await response.ToResponseModel<ContainerTypeDto>();
         
         containerType.Name.Should().Be(request.Name);
+        containerType.DefaultUnit.Should().Be(request.DefaultUnit);
         containerType.Meta.Should().Be(request.Meta);
         containerType.Id.Should().Be(_firstTestContainerType.Id);
 
@@ -272,6 +292,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
             .AsNoTracking()
             .FirstAsync(ct => ct.Id == _firstTestContainerType.Id);
         dbContainerType.Name.Should().Be(request.Name);
+        dbContainerType.DefaultUnit.Should().Be(request.DefaultUnit);
     }
 
     [Fact]
@@ -279,7 +300,8 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var request = new UpdateContainerTypeDto(
-            _firstTestContainerType.Name, 
+            _firstTestContainerType.Name,
+            "кг",
             "{\"updated\":\"meta\"}"
         );
 
@@ -296,7 +318,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldUpdateContainerTypeToNullMeta()
     {
         // Arrange
-        var request = new UpdateContainerTypeDto("Updated-Name", null);
+        var request = new UpdateContainerTypeDto("Updated-Name", "л", null);
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -314,7 +336,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var longName = new string('U', 100);
-        var request = new UpdateContainerTypeDto(longName, "{\"test\":\"meta\"}");
+        var request = new UpdateContainerTypeDto(longName, "л", "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -343,7 +365,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseDuplicateName()
     {
         // Arrange 
-        var request = new UpdateContainerTypeDto(_secondTestContainerType.Name, "{\"updated\":\"meta\"}");
+        var request = new UpdateContainerTypeDto(_secondTestContainerType.Name, "л", "{\"updated\":\"meta\"}");
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -359,7 +381,8 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var request = new UpdateContainerTypeDto(
-            _secondTestContainerType.Name.ToLower(), 
+            _secondTestContainerType.Name.ToLower(),
+            "л",
             "{\"updated\":\"meta\"}"
         );
 
@@ -373,12 +396,29 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     }
 
     [Theory]
-    [InlineData("", "{\"test\":\"meta\"}")]
-    [InlineData(null, "{\"test\":\"meta\"}")]
-    public async Task ShouldNotUpdateContainerTypeBecauseEmptyName(string name, string meta)
+    [InlineData("", "л", "{\"test\":\"meta\"}")]
+    [InlineData(null, "л", "{\"test\":\"meta\"}")]
+    public async Task ShouldNotUpdateContainerTypeBecauseEmptyName(string name, string unit, string meta)
     {
         // Arrange
-        var request = new UpdateContainerTypeDto(name, meta);
+        var request = new UpdateContainerTypeDto(name, unit, meta);
+
+        // Act
+        var response = await Client.PutAsJsonAsync(
+            $"{BaseRoute}/{_firstTestContainerType.Id}", 
+            request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Theory]
+    [InlineData("Valid-Name", "", "{\"test\":\"meta\"}")]
+    [InlineData("Valid-Name", null, "{\"test\":\"meta\"}")]
+    public async Task ShouldNotUpdateContainerTypeBecauseEmptyDefaultUnit(string name, string unit, string meta)
+    {
+        // Arrange
+        var request = new UpdateContainerTypeDto(name, unit, meta);
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -394,7 +434,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('U', 101);
-        var request = new UpdateContainerTypeDto(tooLongName, "{\"test\":\"meta\"}");
+        var request = new UpdateContainerTypeDto(tooLongName, "л", "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -461,6 +501,7 @@ public class ContainerTypesControllerTests : BaseIntegrationTest, IAsyncLifetime
             "QR-TEST-001",
             "Test Container",
             50.0m,
+            "л",
             _firstTestContainerType.Id,
             null,
             new Guid("00000000-0000-0000-0000-000000000001")

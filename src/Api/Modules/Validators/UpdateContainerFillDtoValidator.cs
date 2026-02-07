@@ -7,8 +7,16 @@ public class UpdateContainerFillDtoValidator : AbstractValidator<UpdateContainer
 {
     public UpdateContainerFillDtoValidator()
     {
+        RuleFor(x => x.ProductId)
+            .GreaterThan(0).WithMessage("Product ID must be greater than 0")
+            .When(x => x.ProductId.HasValue);
+
         RuleFor(x => x.Quantity)
             .GreaterThan(0).WithMessage("Quantity must be greater than 0");
+
+        RuleFor(x => x.Unit)
+            .NotEmpty().WithMessage("Unit is required")
+            .MaximumLength(50).WithMessage("Unit must not exceed 50 characters");
 
         RuleFor(x => x.ProductionDate)
             .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Production date cannot be in the future");

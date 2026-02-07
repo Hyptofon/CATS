@@ -1,4 +1,4 @@
-﻿using Domain.Containers;
+using Domain.Containers;
 using Domain.ContainerTypes;
 using Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +24,10 @@ public class ContainerConfiguration : IEntityTypeConfiguration<Container>
 
         builder.Property(x => x.Volume)
             .HasColumnType("decimal(18,2)")
+            .IsRequired();
+
+        builder.Property(x => x.Unit)
+            .HasColumnType("varchar(20)")
             .IsRequired();
 
         builder.Property(x => x.ContainerTypeId)
@@ -97,7 +101,10 @@ public class ContainerConfiguration : IEntityTypeConfiguration<Container>
             .HasConstraintName("fk_containers_container_types_id")
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(x => x.Code).IsUnique();
+        builder.HasIndex(x => x.Code)
+            .IsUnique()
+            .HasFilter("is_deleted = false");
+            
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.ContainerTypeId);
         builder.HasIndex(x => x.CurrentFillId).IsUnique();

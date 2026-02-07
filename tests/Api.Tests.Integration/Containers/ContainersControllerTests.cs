@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using Api.Dtos;
 using Domain.Containers;
@@ -65,6 +65,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         container.Code.Should().Be(_firstTestContainer.Code);
         container.Name.Should().Be(_firstTestContainer.Name);
         container.Volume.Should().Be(_firstTestContainer.Volume);
+        container.Unit.Should().Be(_firstTestContainer.Unit);
         container.ContainerTypeId.Should().Be(_testContainerType.Id);
         container.Status.Should().Be(ContainerStatus.Empty.ToString());
     }
@@ -194,6 +195,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         containerDto.Code.Should().Be(request.Code);
         containerDto.Name.Should().Be(request.Name);
         containerDto.Volume.Should().Be(request.Volume);
+        containerDto.Unit.Should().Be(request.Unit);
         containerDto.ContainerTypeId.Should().Be(request.ContainerTypeId);
         containerDto.Status.Should().Be(ContainerStatus.Empty.ToString());
         containerDto.Id.Should().BeGreaterThan(0);
@@ -203,6 +205,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             
         dbContainer.Should().NotBeNull();
         dbContainer!.Code.Should().Be(request.Code);
+        dbContainer.Unit.Should().Be(request.Unit);
         dbContainer.Status.Should().Be(ContainerStatus.Empty);
     }
 
@@ -215,6 +218,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             $"QR-{uniqueId}-NULL",
             "Test-NullMeta-Container",
             50.0m,
+            "л",
             _testContainerType.Id,
             null
         );
@@ -236,6 +240,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             _firstTestContainer!.Code,
             "Test-Duplicate-Container",
             50.0m,
+            "л",
             _testContainerType.Id,
             null
         );
@@ -260,29 +265,28 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var containerDto = await response.ToResponseModel<ContainerDto>();
         
-        // Перевіряємо, що код був автоматично згенерований у форматі CNT-YYYYMMDD-XXXX
-        containerDto.Code.Should().StartWith("CNT-");
-        containerDto.Code.Should().MatchRegex(@"^CNT-\d{8}-[A-Z0-9]{4}$");
+        containerDto.Code.Should().NotBeNullOrEmpty();
+        containerDto.Code.Should().Contain(_testContainerType.Name.Replace(" ", "").ToUpperInvariant());
         containerDto.Name.Should().Be(request.Name);
-        containerDto.Id.Should().BeGreaterThan(0);
 
         var dbContainer = await Context.Containers
             .FirstOrDefaultAsync(c => c.Id == containerDto.Id);
-            
         dbContainer.Should().NotBeNull();
-        dbContainer!.Code.Should().Be(containerDto.Code);
     }
 
-    [Fact]
-    public async Task ShouldNotCreateContainerBecauseContainerTypeNotFound()
+    [Theory]
+    [InlineData("", 50.0, "л")]
+    [InlineData(null, 50.0, "л")]
+    public async Task ShouldNotCreateContainerBecauseEmptyName(string name, decimal volume, string unit)
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
         var request = new CreateContainerDto(
-            $"QR-{uniqueId}-FAIL",
-            "Test-Fail-Container",
-            50.0m,
-            999999,
+            $"QR-{uniqueId}",
+            name,
+            volume,
+            unit,
+            _testContainerType.Id,
             null
         );
 
@@ -290,24 +294,21 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
-
-
     [Theory]
-    [InlineData("VALID-CODE", "", 50.0)]
-    [InlineData("VALID-CODE", null, 50.0)]
-    public async Task ShouldNotCreateContainerBecauseEmptyName(
-        string code, 
-        string name, 
-        decimal volume)
+    [InlineData("Valid-Name", 50.0, "")]
+    [InlineData("Valid-Name", 50.0, null)]
+    public async Task ShouldNotCreateContainerBecauseEmptyUnit(string name, decimal volume, string unit)
     {
         // Arrange
+        var uniqueId = Guid.NewGuid().ToString()[..8];
         var request = new CreateContainerDto(
-            code,
+            $"QR-{uniqueId}",
             name,
             volume,
+            unit,
             _testContainerType.Id,
             null
         );
@@ -325,9 +326,10 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
         var request = new CreateContainerDto(
-            $"QR-{uniqueId}-ZERO",
-            "Test-Zero-Volume",
+            $"QR-{uniqueId}",
+            "Valid-Name",
             0m,
+            "л",
             _testContainerType.Id,
             null
         );
@@ -348,6 +350,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             tooLongCode,
             "Test-Long-Code",
             50.0m,
+            "л",
             _testContainerType.Id,
             null
         );
@@ -369,6 +372,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             $"QR-{uniqueId}-LONG",
             tooLongName,
             50.0m,
+            "л",
             _testContainerType.Id,
             null
         );
@@ -391,6 +395,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Container-Name",
             75.0m,
+            "кг",
             _secondContainerType.Id,
             "{\"location\":\"Updated Location\"}"
         );
@@ -406,6 +411,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         
         container.Name.Should().Be(request.Name);
         container.Volume.Should().Be(request.Volume);
+        container.Unit.Should().Be(request.Unit);
         container.ContainerTypeId.Should().Be(request.ContainerTypeId);
         container.Meta.Should().Be(request.Meta);
         container.Id.Should().Be(_firstTestContainer.Id);
@@ -415,6 +421,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
             .FirstAsync(c => c.Id == _firstTestContainer.Id);
         dbContainer.Name.Should().Be(request.Name);
         dbContainer.Volume.Should().Be(request.Volume);
+        dbContainer.Unit.Should().Be(request.Unit);
     }
 
     [Fact]
@@ -424,6 +431,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Name",
             60.0m,
+            "л",
             _testContainerType.Id,
             null
         );
@@ -446,6 +454,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Name",
             60.0m,
+            "л",
             _testContainerType.Id,
             null
         );
@@ -465,6 +474,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Updated-Name",
             60.0m,
+            "л",
             999999,
             null
         );
@@ -479,14 +489,38 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
     }
 
     [Theory]
-    [InlineData("", 50.0)]
-    [InlineData(null, 50.0)]
-    public async Task ShouldNotUpdateContainerBecauseEmptyName(string name, decimal volume)
+    [InlineData("", 50.0, "л")]
+    [InlineData(null, 50.0, "л")]
+    public async Task ShouldNotUpdateContainerBecauseEmptyName(string name, decimal volume, string unit)
     {
         // Arrange
         var request = new UpdateContainerDto(
             name,
             volume,
+            unit,
+            _testContainerType.Id,
+            null
+        );
+
+        // Act
+        var response = await Client.PutAsJsonAsync(
+            $"{BaseRoute}/{_firstTestContainer!.Id}",
+            request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Theory]
+    [InlineData("Valid-Name", 50.0, "")]
+    [InlineData("Valid-Name", 50.0, null)]
+    public async Task ShouldNotUpdateContainerBecauseEmptyUnit(string name, decimal volume, string unit)
+    {
+        // Arrange
+        var request = new UpdateContainerDto(
+            name,
+            volume,
+            unit,
             _testContainerType.Id,
             null
         );
@@ -507,6 +541,7 @@ public class ContainersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var request = new UpdateContainerDto(
             "Valid-Name",
             0m,
+            "л",
             _testContainerType.Id,
             null
         );

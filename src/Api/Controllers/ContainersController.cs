@@ -1,4 +1,4 @@
-﻿using Api.Dtos;
+using Api.Dtos;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Containers.Commands;
@@ -82,6 +82,7 @@ public class ContainersController(
             Code = request.Code,
             Name = request.Name,
             Volume = request.Volume,
+            Unit = request.Unit,
             ContainerTypeId = request.ContainerTypeId,
             Meta = request.Meta
         };
@@ -104,6 +105,7 @@ public class ContainersController(
             ContainerId = id,
             Name = request.Name,
             Volume = request.Volume,
+            Unit = request.Unit,
             ContainerTypeId = request.ContainerTypeId,
             Meta = request.Meta
         };
@@ -177,7 +179,9 @@ public class ContainersController(
         var command = new UpdateContainerFillCommand
         {
             ContainerId = id,
+            ProductId = request.ProductId,
             Quantity = request.Quantity,
+            Unit = request.Unit,
             ProductionDate = request.ProductionDate,
             ExpirationDate = request.ExpirationDate
         };
