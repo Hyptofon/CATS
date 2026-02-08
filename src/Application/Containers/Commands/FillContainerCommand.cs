@@ -39,7 +39,7 @@ public class FillContainerCommandHandler(
                     return new ContainerOverfillException(request.ContainerId, request.Quantity, c.Volume);
                 }
 
-                if (request.Unit != c.Unit)
+                if (!string.Equals(request.Unit, c.Unit, StringComparison.OrdinalIgnoreCase))
                 {
                     return new ContainerUnitMismatchException(request.ContainerId, c.Unit, request.Unit);
                 }
@@ -72,8 +72,9 @@ public class FillContainerCommandHandler(
                 request.ProductionDate,
                 request.ExpirationDate,
                 currentUserService.UserId ?? Guid.Empty);
-
+            
             containerFillRepository.Add(containerFill);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             container.Fill(
                 product.Id,

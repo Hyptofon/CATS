@@ -2,6 +2,7 @@ using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Domain.Containers;
 using Domain.Products;
+using Infrastructure.Persistence.Extensions;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,5 +36,20 @@ public class ProductRepository(ApplicationDbContext context)
                           c.Status == ContainerStatus.Full && 
                           !c.IsDeleted, 
                 cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Product>> SearchAsync(
+        string? searchTerm,
+        int? productTypeId,
+        CancellationToken cancellationToken)
+    {
+        return await context.Products
+            .AsNoTracking()
+            .Include(p => p.ProductType)
+            .Where(p => !p.IsDeleted)
+            .WithSearchTerm(searchTerm)
+            .WithProductType(productTypeId)
+            .OrderBy(p => p.Name)
+            .ToListAsync(cancellationToken);
     }
 }

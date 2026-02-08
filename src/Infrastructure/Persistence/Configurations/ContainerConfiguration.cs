@@ -101,6 +101,13 @@ public class ContainerConfiguration : IEntityTypeConfiguration<Container>
             .HasConstraintName("fk_containers_container_types_id")
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(x => x.CurrentProduct)
+            .WithMany()
+            .HasForeignKey(x => x.CurrentProductId)
+            .HasConstraintName("fk_containers_products_current_product_id")
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasIndex(x => x.Code)
             .IsUnique()
             .HasFilter("is_deleted = false");

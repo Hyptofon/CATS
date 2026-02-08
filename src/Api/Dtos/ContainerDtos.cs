@@ -13,6 +13,13 @@ public record ContainerDto(
     int ContainerTypeId,
     string ContainerTypeName,
     string Status,
+    int? CurrentProductId,
+    string? CurrentProductName,
+    decimal? CurrentQuantity,
+    string? CurrentUnit,
+    DateTime? CurrentProductionDate,
+    DateTime? CurrentExpirationDate,
+    DateTime? CurrentFilledAt,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta,
@@ -29,6 +36,13 @@ public record ContainerDto(
             container.ContainerTypeId,
             container.ContainerType?.Name ?? "Unknown",
             container.Status.ToString(),
+            container.CurrentProductId,
+            container.CurrentProduct?.Name,
+            container.CurrentQuantity,
+            container.CurrentUnit,
+            container.CurrentProductionDate,
+            container.CurrentExpirationDate,
+            container.CurrentFilledAt,
             container.Meta,
             container.CreatedAt);
 }

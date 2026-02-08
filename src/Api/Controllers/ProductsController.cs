@@ -21,6 +21,16 @@ public class ProductsController(
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
 
+    [HttpGet("search")]
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> Search(
+        [FromQuery] string? search,
+        [FromQuery] int? productTypeId,
+        CancellationToken cancellationToken)
+    {
+        var products = await productQueries.SearchAsync(search, productTypeId, cancellationToken);
+        return products.Select(ProductDto.FromDomainModel).ToList();
+    }
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetById(
         [FromRoute] int id,

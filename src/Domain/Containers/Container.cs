@@ -40,6 +40,7 @@ public class Container
     
     // Navigation properties
     public ContainerType? ContainerType { get; private set; }
+    public Product? CurrentProduct { get; private set; }
 
     private Container(
         string code, 
@@ -137,7 +138,7 @@ public class Container
         if (quantity > Volume)
             throw new InvalidOperationException($"Quantity ({quantity}) exceeds container volume ({Volume})");
 
-        if (unit != Unit)
+        if (!string.Equals(unit, Unit, StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException($"Unit mismatch: expected '{Unit}', got '{unit}'");
 
         Status = ContainerStatus.Full;
@@ -190,7 +191,7 @@ public class Container
         if (quantity > Volume)
             throw new InvalidOperationException($"Quantity ({quantity}) exceeds container volume ({Volume})");
 
-        if (unit != Unit)
+        if (!string.Equals(unit, Unit, StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException($"Unit mismatch: expected '{Unit}', got '{unit}'");
 
         if (productId.HasValue)

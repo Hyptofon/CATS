@@ -24,6 +24,7 @@ public class ContainerFillRepository(ApplicationDbContext context)
     {
         return await context.ContainerFills
             .Include(f => f.Product)
+            .Include(f => f.Container)
             .Where(f => f.ContainerId == containerId)
             .OrderByDescending(f => f.FilledDate)
             .ToListAsync(cancellationToken);

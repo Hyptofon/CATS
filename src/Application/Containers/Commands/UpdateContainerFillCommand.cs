@@ -49,7 +49,7 @@ public class UpdateContainerFillCommandHandler(
                 return new ContainerOverfillException(request.ContainerId, request.Quantity, container.Volume);
             }
 
-            if (request.Unit != container.Unit)
+            if (!string.Equals(request.Unit, container.Unit, StringComparison.OrdinalIgnoreCase))
             {
                 return new ContainerUnitMismatchException(request.ContainerId, container.Unit, request.Unit);
             }
