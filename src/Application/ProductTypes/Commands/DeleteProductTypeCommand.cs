@@ -4,6 +4,7 @@ using Application.ProductTypes.Exceptions;
 using Domain.Products;
 using LanguageExt;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.ProductTypes.Commands;
 
@@ -20,6 +21,14 @@ public class DeleteProductTypeCommandHandler(
         CancellationToken cancellationToken)
     {
         var productTypeId = request.ProductTypeId;
+        
+        var hasProducts = await dbContext.Products
+            .AnyAsync(p => p.ProductTypeId == productTypeId && !p.IsDeleted, cancellationToken);
+        
+        if (hasProducts)
+        {
+            return new ProductTypeInUseException(productTypeId);
+        }
         
         var existingProductType = await productTypeRepository.GetByIdAsync(
             productTypeId, 

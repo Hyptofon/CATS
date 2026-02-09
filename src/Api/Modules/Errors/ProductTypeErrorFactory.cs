@@ -12,6 +12,7 @@ public static class ProductTypeErrorFactory
             StatusCode = error switch
             {
                 ProductTypeAlreadyExistException => StatusCodes.Status409Conflict,
+                ProductTypeInUseException => StatusCodes.Status409Conflict,
                 ProductTypeNotFoundException => StatusCodes.Status404NotFound,
                 UnhandledProductTypeException => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException(

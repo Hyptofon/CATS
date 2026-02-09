@@ -31,11 +31,8 @@ public class ProductRepository(ApplicationDbContext context)
 
     public async Task<bool> IsProductInUseAsync(int productId, CancellationToken cancellationToken)
     {
-        return await context.Containers
-            .AnyAsync(c => c.CurrentProductId == productId && 
-                          c.Status == ContainerStatus.Full && 
-                          !c.IsDeleted, 
-                cancellationToken);
+        return await context.ContainerFills
+            .AnyAsync(cf => cf.ProductId == productId, cancellationToken);
     }
 
     public async Task<IReadOnlyList<Product>> SearchAsync(

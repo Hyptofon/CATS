@@ -19,3 +19,6 @@ public class UnhandledProductTypeException(
     int productTypeId, 
     Exception? innerException = null)
     : ProductTypeException(productTypeId, "Unexpected error occurred", innerException);
+
+public class ProductTypeInUseException(int productTypeId)
+    : ProductTypeException(productTypeId, $"Product type with id {productTypeId} cannot be deleted because it is used by existing products");
