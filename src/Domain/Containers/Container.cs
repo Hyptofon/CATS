@@ -22,7 +22,6 @@ public class Container
     public DateTime? CurrentProductionDate { get; private set; }
     public DateTime? CurrentExpirationDate { get; private set; }
     public decimal? CurrentQuantity { get; private set; }
-    public string? CurrentUnit { get; private set; }
     public DateTime? CurrentFilledAt { get; private set; }
     
     // Denormalized last content
@@ -146,7 +145,6 @@ public class Container
         CurrentProductId = productId;
         CurrentProductTypeId = productTypeId;
         CurrentQuantity = quantity;
-        CurrentUnit = unit;
         CurrentProductionDate = productionDate;
         CurrentExpirationDate = expirationDate;
         CurrentFilledAt = DateTime.UtcNow;
@@ -167,7 +165,6 @@ public class Container
         CurrentProductId = null;
         CurrentProductTypeId = null;
         CurrentQuantity = null;
-        CurrentUnit = null;
         CurrentProductionDate = null;
         CurrentExpirationDate = null;
         CurrentFilledAt = null;
@@ -201,7 +198,6 @@ public class Container
             CurrentProductTypeId = productTypeId.Value;
 
         CurrentQuantity = quantity;
-        CurrentUnit = unit;
         CurrentProductionDate = productionDate;
         CurrentExpirationDate = expirationDate;
         LastModifiedById = userId;

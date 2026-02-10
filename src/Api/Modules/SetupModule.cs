@@ -14,7 +14,12 @@ public static class SetupModule
         { 
             options.Filters.Add<ValidationFilter>();
             options.Filters.Add<ValidationExceptionFilter>(); 
+        })
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
         });
+        
         services.AddCors();
         services.AddRequestValidators();
         services.AddEndpointsApiExplorer();
@@ -46,6 +51,7 @@ public static class SetupModule
                 Version = "v1",
                 Description = "REST API для системи обліку тари"
             });
+            c.UseAllOfToExtendReferenceSchemas();
         });
     }
 }

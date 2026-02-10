@@ -6,10 +6,11 @@ namespace Application.Containers.Queries.SearchContainers;
 public record SearchContainersQuery(
     string? SearchTerm,
     int? ContainerTypeId,
-    string? Status,
+    ContainerStatus? Status,
     DateTime? ProductionDate,
     int? CurrentProductId,
     int? CurrentProductTypeId,
     int? LastProductId,
-    bool? ShowExpired
+    bool? ShowExpired,
+    DateTime? FilledToday
 ) : IRequest<IReadOnlyList<Container>>;

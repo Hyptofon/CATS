@@ -51,12 +51,13 @@ public class ContainerRepository(ApplicationDbContext context)
     public async Task<IReadOnlyList<Container>> SearchAsync(
         string? searchTerm,
         int? containerTypeId,
-        string? status,
+        ContainerStatus? status,
         DateTime? productionDate,
         int? currentProductId,
         int? currentProductTypeId,
         int? lastProductId,
         bool? showExpired,
+        DateTime? filledToday,
         CancellationToken cancellationToken)
     {
         return await context.Containers
@@ -72,6 +73,7 @@ public class ContainerRepository(ApplicationDbContext context)
             .WithCurrentProductType(currentProductTypeId)
             .WithLastProduct(lastProductId)
             .WithExpiration(showExpired)
+            .WithFilledToday(filledToday)
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
     }

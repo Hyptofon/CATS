@@ -16,7 +16,6 @@ public record ContainerDto(
     int? CurrentProductId,
     string? CurrentProductName,
     decimal? CurrentQuantity,
-    string? CurrentUnit,
     DateTime? CurrentProductionDate,
     DateTime? CurrentExpirationDate,
     DateTime? CurrentFilledAt,
@@ -39,7 +38,6 @@ public record ContainerDto(
             container.CurrentProductId,
             container.CurrentProduct?.Name,
             container.CurrentQuantity,
-            container.CurrentUnit,
             container.CurrentProductionDate,
             container.CurrentExpirationDate,
             container.CurrentFilledAt,
@@ -67,3 +65,16 @@ public record UpdateContainerDto(
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta
 );
+
+public record SearchContainersDto
+{
+    public string? SearchTerm { get; init; }
+    public int? ContainerTypeId { get; init; }
+    public Domain.Containers.ContainerStatus? Status { get; init; }
+    public DateTime? ProductionDate { get; init; }
+    public int? CurrentProductId { get; init; }
+    public int? CurrentProductTypeId { get; init; }
+    public int? LastProductId { get; init; }
+    public bool? ShowExpired { get; init; }
+    public DateTime? FilledToday { get; init; }
+}

@@ -38,15 +38,12 @@ public static class ContainerQueryExtensions
 
     public static IQueryable<Container> WithStatus(
         this IQueryable<Container> query, 
-        string? status)
+        ContainerStatus? status)
     {
-        if (string.IsNullOrWhiteSpace(status))
+        if (!status.HasValue)
             return query;
 
-        if (!Enum.TryParse<ContainerStatus>(status, true, out var statusEnum))
-            return query;
-
-        return query.Where(x => x.Status == statusEnum);
+        return query.Where(x => x.Status == status.Value);
     }
 
     public static IQueryable<Container> WithProductionDate(
@@ -108,5 +105,16 @@ public static class ContainerQueryExtensions
                 && c.CurrentExpirationDate.Value < DateTime.UtcNow);
         
         return query;
+    }
+
+    public static IQueryable<Container> WithFilledToday(
+        this IQueryable<Container> query, 
+        DateTime? filledToday)
+    {
+        if (!filledToday.HasValue)
+            return query;
+        
+        return query.Where(c => c.CurrentFilledAt.HasValue 
+            && c.CurrentFilledAt.Value.Date == filledToday.Value.Date);
     }
 }

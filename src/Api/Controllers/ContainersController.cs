@@ -24,25 +24,19 @@ public class ContainersController(
 
     [HttpGet("search")]
     public async Task<ActionResult<IReadOnlyList<ContainerDto>>> Search(
-        [FromQuery] string? searchTerm,
-        [FromQuery] int? containerTypeId,
-        [FromQuery] string? status,
-        [FromQuery] DateTime? productionDate,
-        [FromQuery] int? currentProductId,
-        [FromQuery] int? currentProductTypeId,
-        [FromQuery] int? lastProductId,
-        [FromQuery] bool? showExpired,
+        [FromQuery] SearchContainersDto searchDto,
         CancellationToken cancellationToken)
     {
         var query = new SearchContainersQuery(
-            searchTerm, 
-            containerTypeId, 
-            status,
-            productionDate,
-            currentProductId,
-            currentProductTypeId,
-            lastProductId,
-            showExpired
+            searchDto.SearchTerm, 
+            searchDto.ContainerTypeId, 
+            searchDto.Status,
+            searchDto.ProductionDate,
+            searchDto.CurrentProductId,
+            searchDto.CurrentProductTypeId,
+            searchDto.LastProductId,
+            searchDto.ShowExpired,
+            searchDto.FilledToday
         );
         var containers = await sender.Send(query, cancellationToken);
         return containers.Select(ContainerDto.FromDomainModel).ToList();

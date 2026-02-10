@@ -20,6 +20,7 @@ public class SearchContainersQueryHandler(IContainerQueries containerQueries)
             request.CurrentProductTypeId,
             request.LastProductId,
             request.ShowExpired,
+            request.FilledToday,
             cancellationToken);
     }
 }

@@ -56,10 +56,6 @@ public class ContainerConfiguration : IEntityTypeConfiguration<Container>
             .HasColumnType("decimal(18,3)")
             .IsRequired(false);
 
-        builder.Property(x => x.CurrentUnit)
-            .HasColumnType("varchar(10)")
-            .IsRequired(false);
-
         builder.Property(x => x.CurrentFilledAt)
             .HasConversion(new DateTimeUtcConverter())
             .IsRequired(false);
