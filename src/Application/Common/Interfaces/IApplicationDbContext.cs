@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Domain.Containers;
 using Domain.ContainerTypes;
+using Domain.Entities;
 using Domain.Products;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ public interface IApplicationDbContext
     DbSet<ProductType> ProductTypes { get; }
     DbSet<Product> Products { get; }
     DbSet<ContainerFill> ContainerFills { get; }
+    DbSet<User> Users { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

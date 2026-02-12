@@ -3,6 +3,7 @@ using System.Reflection;
 using Application.Common.Interfaces;
 using Domain.Containers;
 using Domain.ContainerTypes;
+using Domain.Entities;
 using Domain.Products;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Container> Containers { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<ContainerFill> ContainerFills { get; set; }
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

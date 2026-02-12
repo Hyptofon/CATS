@@ -3,5 +3,6 @@
 public interface ICurrentUserService
 {
     Guid? UserId { get; }
-    bool IsAuthenticated { get; }
+    string? Email { get; } 
+    bool IsAuthenticated { get; } 
 }

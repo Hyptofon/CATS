@@ -14,6 +14,6 @@ public static class ConfigureInfrastructureServices
     {
         services.AddPersistenceServices(configuration);
         
-        services.AddScoped<ICurrentUserService, StubUserService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
     }
 }
