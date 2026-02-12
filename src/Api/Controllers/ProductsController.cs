@@ -52,7 +52,8 @@ public class ProductsController(
         {
             Name = request.Name,
             Description = request.Description,
-            ProductTypeId = request.ProductTypeId
+            ProductTypeId = request.ProductTypeId,
+            ShelfLifeDays = request.ShelfLifeDays
         };
 
         var result = await sender.Send(command, cancellationToken);
@@ -73,7 +74,8 @@ public class ProductsController(
             Id = id,
             Name = request.Name,
             Description = request.Description,
-            ProductTypeId = request.ProductTypeId
+            ProductTypeId = request.ProductTypeId,
+            ShelfLifeDays = request.ShelfLifeDays
         };
 
         var result = await sender.Send(command, cancellationToken);

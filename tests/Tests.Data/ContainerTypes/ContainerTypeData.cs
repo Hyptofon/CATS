@@ -11,7 +11,7 @@ public static class ContainerTypeData
         return ContainerType.New(
             $"{prefix}-{uniqueId}-Keg-50L",
             "л",
-            "{\"material\":\"plastic\",\"description\":\"Пластиковий кег 50 літрів\"}",
+            "{\"material\":\"plastic\",\"description\":\"Пластиковий кег 50 літрів\",\"allowedProductTypes\":[]}",
             new Guid("00000000-0000-0000-0000-000000000001")
         );
     }
@@ -33,7 +33,8 @@ public static class ContainerTypeData
         return new CreateContainerTypeDto(
             $"{prefix}-{uniqueId}-Tank-100L",
             "л",
-            "{\"description\":\"Металевий резервуар 100 літрів\"}"
+            "{\"description\":\"Металевий резервуар 100 літрів\"}",
+            AllowedProductTypeIds: new List<int>()
         );
     }
     
@@ -43,7 +44,8 @@ public static class ContainerTypeData
         return new UpdateContainerTypeDto(
             $"{prefix}-{uniqueId}-Tank-200L",
             "л",
-            "{\"description\":\"Оновлений металевий резервуар 200 літрів\"}"
+            "{\"description\":\"Оновлений металевий резервуар 200 літрів\"}",
+            AllowedProductTypeIds: new List<int>()
         );
     }
 }

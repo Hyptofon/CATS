@@ -13,6 +13,7 @@ public record UpdateContainerTypeCommand : IRequest<Either<ContainerTypeExceptio
     public required string Name { get; init; }
     public required string DefaultUnit { get; init; }
     public string? Meta { get; init; }
+    public List<int> AllowedProductTypeIds { get; init; } = new();
 }
 
 public class UpdateContainerTypeCommandHandler(
@@ -57,6 +58,19 @@ public class UpdateContainerTypeCommandHandler(
                 request.DefaultUnit,
                 request.Meta, 
                 currentUserService.UserId);
+
+            if (request.AllowedProductTypeIds.Any())
+            {
+                 var allowedProductTypes = dbContext.ProductTypes
+                    .Where(pt => request.AllowedProductTypeIds.Contains(pt.Id))
+                    .ToList();
+                    
+                containerType.SetAllowedProductTypes(allowedProductTypes);
+            }
+            else 
+            {
+                containerType.SetAllowedProductTypes(new List<Domain.Products.ProductType>());
+            }
             
             containerTypeRepository.Update(containerType);
             

@@ -44,7 +44,8 @@ public class ContainerTypesController(
         {
             Name = request.Name,
             DefaultUnit = request.DefaultUnit,
-            Meta = request.Meta
+            Meta = request.Meta,
+            AllowedProductTypeIds = request.AllowedProductTypeIds
         };
 
         var result = await sender.Send(command, cancellationToken);
@@ -65,7 +66,8 @@ public class ContainerTypesController(
             ContainerTypeId = id,
             Name = request.Name,
             DefaultUnit = request.DefaultUnit,
-            Meta = request.Meta
+            Meta = request.Meta,
+            AllowedProductTypeIds = request.AllowedProductTypeIds
         };
 
         var result = await sender.Send(command, cancellationToken);

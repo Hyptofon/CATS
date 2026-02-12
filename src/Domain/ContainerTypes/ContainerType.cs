@@ -1,5 +1,7 @@
 namespace Domain.ContainerTypes;
 
+using Products;
+
 public class ContainerType
 {
     public int Id { get; private set; }
@@ -12,6 +14,8 @@ public class ContainerType
     public DateTime? UpdatedAt { get; private set; }
     public Guid? LastModifiedById { get; private set; }
     public bool IsDeleted { get; private set; }
+
+    public virtual ICollection<ProductType> AllowedProductTypes { get; private set; } = new List<ProductType>();
 
     private ContainerType(
         string name,
@@ -65,5 +69,14 @@ public class ContainerType
         Meta = meta;
         LastModifiedById = modifiedById;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SetAllowedProductTypes(IEnumerable<ProductType> productTypes)
+    {
+        AllowedProductTypes.Clear();
+        foreach (var type in productTypes)
+        {
+            AllowedProductTypes.Add(type);
+        }
     }
 }

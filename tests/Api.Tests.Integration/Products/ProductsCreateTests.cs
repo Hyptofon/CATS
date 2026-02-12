@@ -74,7 +74,8 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = name!,
             Description = "Test description",
-            ProductTypeId = _testProductType.Id
+            ProductTypeId = _testProductType.Id,
+            ShelfLifeDays = null
         };
 
         // Act
@@ -94,7 +95,8 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = tooLongName,
             Description = "Test description",
-            ProductTypeId = _testProductType.Id
+            ProductTypeId = _testProductType.Id,
+            ShelfLifeDays = null
         };
 
         // Act
@@ -113,7 +115,8 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = "Test Product",
             Description = "Test description",
-            ProductTypeId = 999999
+            ProductTypeId = 999999,
+            ShelfLifeDays = null
         };
 
         // Act
@@ -132,7 +135,8 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = "Test Product",
             Description = "Test description",
-            ProductTypeId = 0
+            ProductTypeId = 0,
+            ShelfLifeDays = null
         };
 
         // Act

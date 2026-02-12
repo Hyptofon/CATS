@@ -42,3 +42,12 @@ public sealed class ContainerFillNotFoundException(int fillId) :
 {
     public int FillId { get; } = fillId;
 }
+
+public sealed class ContainerCompatibilityException(int containerId, string containerTypeName, string productTypeName)
+    : ContainerException(containerId, $"Product type '{productTypeName}' is not allowed in container type '{containerTypeName}'.");
+
+public sealed class ContainerExpirationDateRequiredException(int containerId)
+    : ContainerException(containerId, "Expiration date is required because no shelf life is defined for the product or its type.");
+
+public sealed class ProductNotFoundForContainerException(int containerId, int productId)
+    : ContainerException(containerId, $"Product with ID {productId} not found during container operation.");

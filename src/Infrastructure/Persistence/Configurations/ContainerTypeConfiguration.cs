@@ -42,5 +42,9 @@ public class ContainerTypeConfiguration : IEntityTypeConfiguration<ContainerType
             .HasFilter("is_deleted = false");
             
         builder.HasIndex(x => x.IsDeleted);
+
+        builder.HasMany(ct => ct.AllowedProductTypes)
+            .WithMany(pt => pt.CompatibleContainerTypes)
+            .UsingEntity(j => j.ToTable("ContainerTypeAllowedProducts"));
     }
 }

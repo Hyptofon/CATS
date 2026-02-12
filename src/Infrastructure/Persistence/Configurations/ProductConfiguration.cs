@@ -21,6 +21,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasColumnType("text")
             .IsRequired(false);
 
+        builder.Property(p => p.ShelfLifeDays)
+            .IsRequired(false);
+
         builder.Property(x => x.ProductTypeId)
             .IsRequired();
 

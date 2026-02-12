@@ -12,7 +12,8 @@ public record ContainerTypeDto(
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta, 
     
-    DateTime CreatedAt)
+    DateTime CreatedAt,
+    List<string> AllowedProductTypeNames)
 {
     public static ContainerTypeDto FromDomainModel(ContainerType containerType)
         => new(
@@ -20,7 +21,8 @@ public record ContainerTypeDto(
             containerType.Name,
             containerType.DefaultUnit,
             containerType.Meta, 
-            containerType.CreatedAt);
+            containerType.CreatedAt,
+            containerType.AllowedProductTypes.Select(pt => pt.Name).ToList());
 }
 
 public record CreateContainerTypeDto(
@@ -28,7 +30,8 @@ public record CreateContainerTypeDto(
     string DefaultUnit,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
-    string? Meta
+    string? Meta,
+    List<int> AllowedProductTypeIds
 );
 
 public record UpdateContainerTypeDto(
@@ -36,5 +39,6 @@ public record UpdateContainerTypeDto(
     string DefaultUnit,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
-    string? Meta
+    string? Meta,
+    List<int> AllowedProductTypeIds
 );

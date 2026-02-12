@@ -28,16 +28,17 @@ public static class DbInitializer
         await context.SaveChangesAsync();
 
         // --- 3. ПРОДУКТИ ---
-        var milk = Product.New("Молоко 2.5%", "Фермерське молоко", dairy.Id, null);
-        var yogurt = Product.New("Йогурт Грецький", "Без цукру", dairy.Id, null);
-        var bleach = Product.New("Відбілювач", "Хлорний", chemistry.Id, null);
-        var water = Product.New("Вода мінеральна", "Газована", beverages.Id, null);
-        var wheat = Product.New("Пшениця", "Вищий гатунок", grains.Id, null);
+        var userId = Guid.Empty; // Define userId earlier for Product.New calls
+        var milk = Product.New("Молоко 2.5%", "Фермерське молоко", dairy.Id, 7, userId);
+        var yogurt = Product.New("Йогурт Грецький", "Без цукру", dairy.Id, 30, userId);
+        var bleach = Product.New("Відбілювач", "Хлорний", chemistry.Id, 365, userId);
+        var water = Product.New("Вода мінеральна", "Газована", beverages.Id, null, userId);
+        var wheat = Product.New("Пшениця", "Вищий гатунок", grains.Id, 60, userId);
         context.Products.AddRange(milk, yogurt, bleach, water, wheat);
         await context.SaveChangesAsync();
 
         // --- 4. ТАРА ТА ОПЕРАЦІЇ (СЦЕНАРІЇ) ---
-        var userId = Guid.Empty;
+        // var userId = Guid.Empty; // Already defined above
 
         // Сценарій 1: Порожня тара (щойно створена)
         var cEmpty = Container.New("EMPTY-01", "Нова бочка", 200m, "л", metal.Id, null, userId);

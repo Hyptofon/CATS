@@ -12,6 +12,7 @@ public static class ProductData
             $"Test-Product-{uniqueId}-A",
             "Test product description A",
             productTypeId,
+            null,
             new Guid("00000000-0000-0000-0000-000000000001")
         );
     }
@@ -23,6 +24,7 @@ public static class ProductData
             $"Test-Product-{uniqueId}-B",
             "Test product description B",
             productTypeId,
+            null,
             new Guid("00000000-0000-0000-0000-000000000001")
         );
     }
@@ -45,7 +47,8 @@ public static class ProductData
         {
             Name = $"Test-Product-NoDesc-{uniqueId}",
             Description = null,
-            ProductTypeId = productTypeId
+            ProductTypeId = productTypeId,
+            ShelfLifeDays = null
         };
     }
 
@@ -56,7 +59,8 @@ public static class ProductData
         {
             Name = $"Updated-Product-{uniqueId}",
             Description = "Updated product description",
-            ProductTypeId = productTypeId
+            ProductTypeId = productTypeId,
+            ShelfLifeDays = null
         };
     }
 }

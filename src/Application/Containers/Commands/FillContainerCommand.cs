@@ -14,7 +14,7 @@ public record FillContainerCommand : IRequest<Either<ContainerException, Contain
     public required decimal Quantity { get; init; }
     public required string Unit { get; init; }
     public required DateTime ProductionDate { get; init; }
-    public required DateTime ExpirationDate { get; init; }
+    public DateTime? ExpirationDate { get; init; }
 }
 
 public class FillContainerCommandHandler(
@@ -47,10 +47,40 @@ public class FillContainerCommandHandler(
                 var product = await productRepository.GetByIdAsync(request.ProductId, cancellationToken);
 
                 return await product.MatchAsync(
-                    p => FillContainer(c, p, request, cancellationToken),
+                    p => 
+                    {
+                        if (c.ContainerType.AllowedProductTypes.Any() && 
+                            !c.ContainerType.AllowedProductTypes.Any(pt => pt.Id == p.ProductTypeId))
+                        {
+                            return Task.FromResult<Either<ContainerException, Container>>(
+                                new ContainerCompatibilityException(
+                                    request.ContainerId, 
+                                    c.ContainerType.Name, 
+                                    p.ProductType?.Name ?? "Unknown"));
+                        }
+                        DateTime expirationDate;
+                        if (request.ExpirationDate.HasValue)
+                        {
+                            expirationDate = request.ExpirationDate.Value;
+                        }
+                        else
+                        {
+                            var shelfLife = p.ShelfLifeDays ?? p.ProductType?.ShelfLifeDays;
+                            if (shelfLife.HasValue)
+                            {
+                                expirationDate = request.ProductionDate.AddDays(shelfLife.Value);
+                            }
+                            else
+                            {
+                                return Task.FromResult<Either<ContainerException, Container>>(
+                                    new ContainerExpirationDateRequiredException(request.ContainerId));
+                            }
+                        }
+
+                        return FillContainer(c, p, request, expirationDate, cancellationToken);
+                    },
                     () => Task.FromResult<Either<ContainerException, Container>>(
-                        new UnhandledContainerException(request.ContainerId, 
-                            new Exception($"Product with ID {request.ProductId} not found"))));
+                        new ProductNotFoundForContainerException(request.ContainerId, request.ProductId)));
             },
             () => Task.FromResult<Either<ContainerException, Container>>(
                 new ContainerNotFoundException(request.ContainerId)));
@@ -60,6 +90,7 @@ public class FillContainerCommandHandler(
         Container container,
         Domain.Products.Product product,
         FillContainerCommand request,
+        DateTime expirationDate,
         CancellationToken cancellationToken)
     {
         try
@@ -70,7 +101,7 @@ public class FillContainerCommandHandler(
                 request.Quantity,
                 request.Unit,
                 request.ProductionDate,
-                request.ExpirationDate,
+                expirationDate,
                 currentUserService.UserId ?? Guid.Empty);
 
             containerFillRepository.Add(containerFill);
@@ -81,7 +112,7 @@ public class FillContainerCommandHandler(
                 request.Quantity,
                 request.Unit,
                 request.ProductionDate,
-                request.ExpirationDate,
+                expirationDate,
                 containerFill.Id,
                 currentUserService.UserId ?? Guid.Empty);
 

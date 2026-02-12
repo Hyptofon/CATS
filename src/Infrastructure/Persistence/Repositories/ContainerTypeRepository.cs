@@ -28,6 +28,7 @@ public class ContainerTypeRepository(ApplicationDbContext context)
     {
         var entity = await context.ContainerTypes
             .AsNoTracking()
+            .Include(x => x.AllowedProductTypes) 
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
 
         return entity ?? Option<ContainerType>.None;
@@ -38,6 +39,7 @@ public class ContainerTypeRepository(ApplicationDbContext context)
     {
         return await context.ContainerTypes
             .AsNoTracking()
+            .Include(x => x.AllowedProductTypes) 
             .Where(x => !x.IsDeleted)
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);

@@ -13,6 +13,7 @@ public record UpdateProductCommand : IRequest<Either<ProductException, Product>>
     public required string Name { get; init; }
     public string? Description { get; init; }
     public required int ProductTypeId { get; init; }
+    public int? ShelfLifeDays { get; init; }
 }
 
 public class UpdateProductCommandHandler(
@@ -56,6 +57,7 @@ public class UpdateProductCommandHandler(
                 request.Name,
                 request.Description,
                 request.ProductTypeId,
+                request.ShelfLifeDays,
                 currentUserService.UserId);
 
             productRepository.Update(product);

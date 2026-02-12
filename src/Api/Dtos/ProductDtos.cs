@@ -7,6 +7,7 @@ public record CreateProductDto
     public required string Name { get; init; }
     public string? Description { get; init; }
     public required int ProductTypeId { get; init; }
+    public int? ShelfLifeDays { get; init; }
 }
 
 public record UpdateProductDto
@@ -14,6 +15,7 @@ public record UpdateProductDto
     public required string Name { get; init; }
     public string? Description { get; init; }
     public required int ProductTypeId { get; init; }
+    public int? ShelfLifeDays { get; init; }
 }
 
 public record ProductDto
@@ -23,6 +25,7 @@ public record ProductDto
     public string? Description { get; init; }
     public required int ProductTypeId { get; init; }
     public required string ProductTypeName { get; init; }
+    public int? ShelfLifeDays { get; init; }
     public required DateTime CreatedAt { get; init; }
 
     public static ProductDto FromDomainModel(Product product)
@@ -34,6 +37,7 @@ public record ProductDto
             Description = product.Description,
             ProductTypeId = product.ProductTypeId,
             ProductTypeName = product.ProductType?.Name ?? string.Empty,
+            ShelfLifeDays = product.ShelfLifeDays,
             CreatedAt = product.CreatedAt
         };
     }

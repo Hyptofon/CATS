@@ -30,6 +30,7 @@ public class ContainerRepository(ApplicationDbContext context)
     {
         var entity = await context.Containers
             .Include(x => x.ContainerType)
+                .ThenInclude(ct => ct.AllowedProductTypes)
             .Include(x => x.CurrentProduct)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
 

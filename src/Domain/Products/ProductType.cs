@@ -1,11 +1,16 @@
 ﻿namespace Domain.Products;
 
+
+using Domain.ContainerTypes;
+
 public class ProductType
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
     public int? ShelfLifeDays { get; private set; }
     public string? Meta { get; private set; }
+
+    public virtual ICollection<ContainerType> CompatibleContainerTypes { get; private set; } = new List<ContainerType>();
     
     public DateTime CreatedAt { get; private set; }
     public Guid? CreatedById { get; private set; }

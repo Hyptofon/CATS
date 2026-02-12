@@ -6,6 +6,7 @@ public class Product
     public string Name { get; private set; }
     public string? Description { get; private set; }
     public int ProductTypeId { get; private set; }
+    public int? ShelfLifeDays { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
     public Guid? CreatedById { get; private set; }
@@ -20,12 +21,14 @@ public class Product
         string name,
         string? description,
         int productTypeId,
+        int? shelfLifeDays,
         Guid? createdById,
         DateTime createdAt)
     {
         Name = name;
         Description = description;
         ProductTypeId = productTypeId;
+        ShelfLifeDays = shelfLifeDays;
         CreatedById = createdById;
         CreatedAt = createdAt;
         IsDeleted = false;
@@ -35,6 +38,7 @@ public class Product
         string name,
         string? description,
         int productTypeId,
+        int? shelfLifeDays,
         Guid? createdById)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -43,21 +47,29 @@ public class Product
         if (name.Length > 200)
             throw new ArgumentException("Product name must not exceed 200 characters", nameof(name));
 
-        return new Product(name, description, productTypeId, createdById, DateTime.UtcNow);
+        if (shelfLifeDays.HasValue && shelfLifeDays.Value < 0)
+            throw new ArgumentException("Shelf life days cannot be negative", nameof(shelfLifeDays));
+
+        return new Product(name, description, productTypeId, shelfLifeDays, createdById, DateTime.UtcNow);
     }
 
     public void UpdateDetails(
         string name,
         string? description,
         int productTypeId,
+        int? shelfLifeDays,
         Guid? modifiedById)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Product name cannot be empty", nameof(name));
 
+        if (shelfLifeDays.HasValue && shelfLifeDays.Value < 0)
+            throw new ArgumentException("Shelf life days cannot be negative", nameof(shelfLifeDays));
+
         Name = name;
         Description = description;
         ProductTypeId = productTypeId;
+        ShelfLifeDays = shelfLifeDays;
         LastModifiedById = modifiedById;
         UpdatedAt = DateTime.UtcNow;
     }

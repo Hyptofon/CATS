@@ -156,7 +156,7 @@ public class ContainersFillTests : BaseIntegrationTest, IAsyncLifetime
             request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     // Не повинен заповнити неіснуючий контейнер

@@ -20,6 +20,9 @@ public static class ContainerErrorFactory
                 ContainerNotEmptyException => StatusCodes.Status400BadRequest,
                 ContainerNotFullException => StatusCodes.Status400BadRequest,
                 UnhandledContainerException => StatusCodes.Status500InternalServerError,
+                ContainerCompatibilityException => StatusCodes.Status400BadRequest,
+                ContainerExpirationDateRequiredException => StatusCodes.Status400BadRequest,
+                ProductNotFoundForContainerException => StatusCodes.Status404NotFound,
                 _ => throw new NotImplementedException(
                     "Container error handler not implemented")
             }

@@ -72,7 +72,8 @@ public class ProductsUpdateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = "Updated Product",
             Description = null,
-            ProductTypeId = _firstProductType.Id
+            ProductTypeId = _firstProductType.Id,
+            ShelfLifeDays = null
         };
 
         // Act
@@ -108,7 +109,8 @@ public class ProductsUpdateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = "Updated Product",
             Description = "Test",
-            ProductTypeId = 999999
+            ProductTypeId = 999999,
+            ShelfLifeDays = null
         };
 
         // Act
@@ -129,7 +131,8 @@ public class ProductsUpdateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = name!,
             Description = "Test",
-            ProductTypeId = _firstProductType.Id
+            ProductTypeId = _firstProductType.Id,
+            ShelfLifeDays = null
         };
 
         // Act
@@ -149,7 +152,8 @@ public class ProductsUpdateTests : BaseIntegrationTest, IAsyncLifetime
         {
             Name = tooLongName,
             Description = "Test",
-            ProductTypeId = _firstProductType.Id
+            ProductTypeId = _firstProductType.Id,
+            ShelfLifeDays = null
         };
 
         // Act
