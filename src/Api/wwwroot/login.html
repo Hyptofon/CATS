@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>CATS Login Test</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        body { background: #1a1a1a; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
+        .btn { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px; margin: 10px; }
+        #output { background: #333; padding: 20px; width: 80%; min-height: 100px; white-space: pre-wrap; margin-top: 20px; border-radius: 5px; }
+        textarea { width: 80%; height: 100px; background: #222; color: #0f0; border: 1px solid #555; padding: 10px; margin-top: 20px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<h1>Тест Авторизації CATS</h1>
+
+<div id="g_id_onload"
+     data-client_id="288101212166-e68actio7v4m2olbripk5s3ak1571utl.apps.googleusercontent.com"
+     data-callback="handleCredentialResponse"
+     data-auto_prompt="false">
+</div>
+<div class="g_id_signin" data-type="standard"></div>
+
+<h3>Твій JWT Токен (Скопіюй його для Swagger):</h3>
+<textarea id="jwtArea" readonly placeholder="Тут з'явиться токен після входу..."></textarea>
+<button class="btn" onclick="copyToken()">Скопіювати Токен</button>
+
+<hr style="width: 80%; border-color: #444;">
+
+<h3>Перевірка API:</h3>
+<button class="btn" onclick="checkWhoAmI()">Хто я? (API Test)</button>
+<button class="btn" onclick="checkAdmin()">Секрет Адміна</button>
+
+<div id="output">Тут буде результат запиту до API...</div>
+
+<script>
+    let jwtToken = "";
+
+    function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+        jwtToken = response.credential;
+
+        // Вставляємо токен у текстове поле, щоб його було видно
+        document.getElementById("jwtArea").value = jwtToken;
+        document.getElementById("output").innerText = "✅ Успішний вхід! Токен отримано. Скопіюй його вище.";
+    }
+
+    function copyToken() {
+        const copyText = document.getElementById("jwtArea");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        alert("Токен скопійовано в буфер обміну!");
+    }
+
+    async function checkWhoAmI() {
+        if (!jwtToken) { alert("Спочатку увійди!"); return; }
+
+        const res = await fetch('/api/TestAuth/who-am-i', {
+            headers: { 'Authorization': 'Bearer ' + jwtToken }
+        });
+
+        const data = await res.json();
+        document.getElementById("output").innerText = "Статус: " + res.status + "\n\n" + JSON.stringify(data, null, 2);
+    }
+
+    async function checkAdmin() {
+        if (!jwtToken) { alert("Спочатку увійди!"); return; }
+
+        const res = await fetch('/api/TestAuth/admin-secret', {
+            headers: { 'Authorization': 'Bearer ' + jwtToken }
+        });
+
+        const text = await res.text();
+        document.getElementById("output").innerText = "Статус: " + res.status + "\n\n" + text;
+    }
+</script>
+</body>
+</html>

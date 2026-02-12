@@ -6,9 +6,7 @@ namespace Api.Modules;
 
 public static class SetupModule
 {
-    public static void SetupServices(
-        this IServiceCollection services, 
-        IConfiguration configuration)
+    public static void SetupServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers(options => 
         { 
@@ -52,25 +50,17 @@ public static class SetupModule
                 Description = "REST API для системи обліку тари"
             });
             
-            // === ДОДАНО: Налаштування OAuth2 для Swagger ===
-            c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            // === ЗМІНА: Простий ввід JWT токена вручну ===
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows
-                {
-                    Implicit = new OpenApiOAuthFlow
-                    {
-                        AuthorizationUrl = new Uri("https://accounts.google.com/o/oauth2/v2/auth"),
-                        TokenUrl = new Uri("https://oauth2.googleapis.com/token"),
-                        Scopes = new Dictionary<string, string>
-                        {
-                            { "openid", "OpenID Connect" },
-                            { "email", "Email Access" },
-                            { "profile", "Profile Access" }
-                        }
-                    }
-                }
+                Description = "Встав свій JWT токен сюди (починається з ey...). Наприклад: Bearer eyJhbGciOiJIUz...",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
             });
+            // ==============================================
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
@@ -80,13 +70,12 @@ public static class SetupModule
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "oauth2"
+                            Id = "Bearer"
                         }
                     },
-                    new[] { "openid", "email", "profile" }
+                    new string[] {}
                 }
             });
-            // ===============================================
 
             c.UseAllOfToExtendReferenceSchemas();
         });

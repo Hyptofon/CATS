@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// === ВАЖЛИВО: Доступ до HttpContext ===
+// === 1. Вмикаємо доступ до HttpContext (для CurrentUserService) ===
 builder.Services.AddHttpContextAccessor(); 
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -16,9 +16,10 @@ builder.Services.SetupServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
 
-// === БЛОК АВТОРИЗАЦІЇ ===
+// === 2. Реєструємо ClaimsTransformation (Створення юзера в БД) ===
 builder.Services.AddTransient<IClaimsTransformation, GoogleClaimsTransformation>();
 
+// === 3. Налаштування валідації токена (Бекенд) ===
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -34,13 +35,16 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidIssuer = "https://accounts.google.com",
+        // Дозволяємо обидва варіанти issuer (з https і без)
+        ValidIssuers = new[] { "https://accounts.google.com", "accounts.google.com" },
+        
         ValidateAudience = true,
         ValidAudience = googleClientId,
-        ValidateLifetime = true
+        
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true 
     };
 });
-// =========================
 
 var app = builder.Build();
 
@@ -49,6 +53,7 @@ app.UseStaticFiles();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+    // === 4. Налаштування Swagger UI (Фронтенд авторизації) ===
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "CATS API v1");
@@ -56,14 +61,9 @@ if (app.Environment.IsDevelopment())
         c.InjectStylesheet("/css/swagger-dark.css");
         c.InjectJavascript("/js/swagger-custom.js");
         c.DocumentTitle = "CATS API Documentation";
-        c.OAuthClientId("288101212166-e68actio7v4m2olbripk5s3ak1571utl.apps.googleusercontent.com");
-        // === ДОДАНО: Щоб кнопка Authorize працювала ===
-        //c.OAuthClientId(builder.Configuration["Authentication:Google:ClientId"]);
-        c.OAuthAppName("CATS API");
-        c.OAuthUsePkce();
-        // ==============================================
     });
 
+    // Автозаповнення бази даних
     using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<Infrastructure.Persistence.ApplicationDbContext>();
@@ -76,10 +76,10 @@ app.UseCors();
 
 app.UseRouting();
 
-// === ПОРЯДОК MIDDLEWARE ===
+// === 5. Підключаємо Middleware (Порядок важливий!) ===
 app.UseAuthentication();
 app.UseAuthorization();
-// ==========================
+// ====================================================
 
 app.MapControllers();
 
