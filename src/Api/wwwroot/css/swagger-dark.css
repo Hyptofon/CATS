@@ -1,20 +1,42 @@
-﻿body, .swagger-ui {
+﻿/* =====================================================
+   GLOBAL DARK THEME
+===================================================== */
+body, .swagger-ui {
     background-color: #121212 !important;
     color: #e0e0e0 !important;
 }
+::-webkit-scrollbar {
+    width: 10px;
+    background: #121212;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 5px;
+}
+/* =====================================================
+   TOPBAR
+===================================================== */
 .swagger-ui .topbar {
     background-color: #000000 !important;
     border-bottom: 1px solid #333;
 }
-.swagger-ui .topbar .link { color: #fff !important; }
+.swagger-ui .topbar .link {
+    color: #ffffff !important;
+}
+/* =====================================================
+   INFO BLOCK
+===================================================== */
 .swagger-ui .info .title,
 .swagger-ui .info p,
 .swagger-ui .info li,
 .swagger-ui .info a {
     color: #ffffff !important;
 }
+/* =====================================================
+   TAGS & OPBLOCKS (ENDPOINTS)
+===================================================== */
 .swagger-ui .opblock-tag {
-    color: #ffffff !important; 
+    color: #ffffff !important;
     border-bottom: 1px solid #333 !important;
 }
 .swagger-ui .opblock-tag small {
@@ -33,7 +55,7 @@
     color: #b0b0b0 !important;
 }
 .swagger-ui .opblock-section-header {
-    background-color: #252525 !important; 
+    background-color: #252525 !important;
     color: #ffffff !important;
     box-shadow: none !important;
 }
@@ -45,19 +67,25 @@
 .swagger-ui .opblock-title_normal p {
     color: #ffffff !important;
 }
+/* =====================================================
+   TABS
+===================================================== */
 .swagger-ui .tab li {
     color: #b0b0b0 !important;
 }
 .swagger-ui .tab li.active {
-    color: #ffffff !important; 
+    color: #ffffff !important;
     border-bottom: 2px solid #4990e2 !important;
 }
 .swagger-ui .tab li:first-of-type:after {
-    color: #555 !important; 
+    color: #555 !important;
 }
+/* =====================================================
+   TABLES & PARAMETERS
+===================================================== */
 .swagger-ui table thead tr th,
 .swagger-ui table thead tr td,
-.swagger-ui table tbody tr td, 
+.swagger-ui table tbody tr td,
 .swagger-ui .parameters-col_description {
     color: #e0e0e0 !important;
 }
@@ -80,20 +108,23 @@
 .swagger-ui .parameter__in {
     color: #888 !important;
 }
-.swagger-ui .model-box {
-    background-color: #1e1e1e !important;
-}
+/* =====================================================
+   MODELS
+===================================================== */
 .swagger-ui section.models {
     border-top: 1px solid #333;
 }
 .swagger-ui section.models h4 {
     color: #ffffff !important;
 }
+.swagger-ui .model-box {
+    background-color: #1e1e1e !important;
+}
 .swagger-ui .model {
     color: #e0e0e0 !important;
 }
 .swagger-ui .model-title {
-    color: #fff !important;
+    color: #ffffff !important;
 }
 .swagger-ui .prop-type {
     color: #fca130 !important;
@@ -101,6 +132,9 @@
 .swagger-ui .prop-format {
     color: #888 !important;
 }
+/* =====================================================
+   INPUTS
+===================================================== */
 .swagger-ui input,
 .swagger-ui textarea,
 .swagger-ui select {
@@ -111,8 +145,11 @@
 .swagger-ui input::placeholder {
     color: #777 !important;
 }
+/* =====================================================
+   BUTTONS
+===================================================== */
 .swagger-ui .btn {
-    color: #fff !important;
+    color: #ffffff !important;
     background: #333 !important;
     border-color: #555 !important;
     box-shadow: none !important;
@@ -122,18 +159,63 @@
     border-color: #4990e2 !important;
 }
 .swagger-ui .btn.authorize {
-    color: #4990e2 !important;
-    border-color: #4990e2 !important;
+    color: #49cc90 !important;
+    border-color: #49cc90 !important;
     background: transparent !important;
 }
 .swagger-ui .btn.authorize svg {
-    fill: #4990e2 !important;
+    fill: #49cc90 !important;
 }
-::-webkit-scrollbar {
-    width: 10px;
-    background: #121212;
+/* =====================================================
+   SCHEME CONTAINER
+===================================================== */
+.swagger-ui .scheme-container {
+    background-color: #121212 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+    border-bottom: 1px solid #333 !important;
+    padding: 20px 0 !important;
 }
-::-webkit-scrollbar-thumb {
-    background: #444;
-    border-radius: 5px;
+/* =====================================================
+   MODAL (AUTHORIZE WINDOW)
+===================================================== */
+.swagger-ui .dialog-ux .modal-ux {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+}
+.swagger-ui .dialog-ux .modal-ux-header {
+    background-color: #121212 !important;
+    border-bottom: 1px solid #333 !important;
+}
+.swagger-ui .dialog-ux .modal-ux-header h3 {
+    color: #ffffff !important;
+}
+.swagger-ui .dialog-ux .modal-ux-header .close-modal {
+    fill: #ffffff !important;
+}
+.swagger-ui .dialog-ux .modal-ux-content {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+}
+.swagger-ui .auth-btn-wrapper {
+    margin-top: 20px !important;
+    display: flex !important;
+    gap: 10px !important;
+}
+.swagger-ui .dialog-ux .auth-btn-wrapper .btn.authorize {
+    background-color: #49cc90 !important;
+    color: #ffffff !important;
+}
+.swagger-ui .dialog-ux .auth-btn-wrapper .btn.authorize:hover {
+    background-color: #3eb882 !important;
+}
+.swagger-ui .dialog-ux .auth-btn-wrapper .btn.auth {
+    background-color: #ed4b4b !important;
+    color: #ffffff !important;
+}
+.swagger-ui .dialog-ux .auth-btn-wrapper .btn-done {
+    background-color: #555555 !important;
+    color: #ffffff !important;
+}
+.swagger-ui .dialog-ux .auth-btn-wrapper .btn-done:hover {
+    background-color: #777777 !important;
 }

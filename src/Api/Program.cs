@@ -8,18 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// === 1. Вмикаємо доступ до HttpContext (для CurrentUserService) ===
-builder.Services.AddHttpContextAccessor(); 
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.SetupServices(builder.Configuration);
-builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.SetupServices(builder.Configuration); 
 
-// === 2. Реєструємо ClaimsTransformation (Створення юзера в БД) ===
 builder.Services.AddTransient<IClaimsTransformation, GoogleClaimsTransformation>();
 
-// === 3. Налаштування валідації токена (Бекенд) ===
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -27,43 +24,41 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.Authority = "https://accounts.google.com";
+    var googleConfig = builder.Configuration.GetSection("Authentication:Google");
     
-    var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
-    options.Audience = googleClientId;
+    options.Authority = "https://accounts.google.com";
+    options.Audience = googleConfig["ClientId"];
 
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = true,
-        // Дозволяємо обидва варіанти issuer (з https і без)
         ValidIssuers = new[] { "https://accounts.google.com", "accounts.google.com" },
         
         ValidateAudience = true,
-        ValidAudience = googleClientId,
+        ValidAudience = googleConfig["ClientId"],
         
         ValidateLifetime = true,
-        ValidateIssuerSigningKey = true 
+        ValidateIssuerSigningKey = true
     };
 });
 
 var app = builder.Build();
 
-app.UseStaticFiles();
+app.UseStaticFiles(); 
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    // === 4. Налаштування Swagger UI (Фронтенд авторизації) ===
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "CATS API v1");
         c.RoutePrefix = string.Empty;
         c.InjectStylesheet("/css/swagger-dark.css");
         c.InjectJavascript("/js/swagger-custom.js");
-        c.DocumentTitle = "CATS API Documentation";
+        c.DocumentTitle = "CATS API Docs";
     });
 
-    // Автозаповнення бази даних
+    // Database Seeding
     using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<Infrastructure.Persistence.ApplicationDbContext>();
@@ -73,13 +68,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-
 app.UseRouting();
 
-// === 5. Підключаємо Middleware (Порядок важливий!) ===
 app.UseAuthentication();
 app.UseAuthorization();
-// ====================================================
 
 app.MapControllers();
 

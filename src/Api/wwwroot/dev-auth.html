@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CATS Developer Auth</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        :root { --bg: #121212; --surface: #1e1e1e; --primary: #bb86fc; --text: #e0e0e0; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .container { background-color: var(--surface); padding: 2rem; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); width: 500px; text-align: center; border: 1px solid #333; }
+        h2 { color: var(--primary); margin-bottom: 0.5rem; margin-top: 0; }
+        p { color: #888; font-size: 0.9rem; margin-bottom: 2rem; }
+
+        .token-box { margin-top: 1.5rem; position: relative; }
+        textarea { width: 100%; height: 120px; background: #2d2d2d; border: 1px solid #444; color: #0f0; border-radius: 6px; padding: 10px; font-size: 0.8rem; resize: none; box-sizing: border-box; }
+        textarea:focus { outline: none; border-color: var(--primary); }
+
+        .btn { background: var(--primary); color: #000; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn:disabled { background: #555; cursor: not-allowed; }
+
+        .status { margin-top: 1rem; font-size: 0.85rem; min-height: 1.2em; }
+        .success { color: #4caf50; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <button onclick="window.location.href='/'" style="background:none; border:none; color:#888; cursor:pointer; font-size:12px; margin-bottom:10px; display:block;">← Back to Swagger</button>
+    <h2>🐱 CATS Dev Auth</h2>
+    <p>Generate JWT Token for Swagger/Postman testing</p>
+    <div id="g_id_onload"
+         data-client_id="288101212166-e68actio7v4m2olbripk5s3ak1571utl.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_black" data-width="400"></div>
+
+    <div id="result-area" class="hidden token-box">
+        <textarea id="jwtToken" readonly onclick="this.select()"></textarea>
+        <button class="btn" onclick="copyToken()">Copy Token to Clipboard</button>
+        <div id="statusMsg" class="status"></div>
+    </div>
+</div>
+
+<script>
+    function handleCredentialResponse(response) {
+        const token = response.credential;
+        const area = document.getElementById("result-area");
+        const textarea = document.getElementById("jwtToken");
+        const status = document.getElementById("statusMsg");
+        area.classList.remove("hidden");
+        textarea.value = token;
+        status.innerHTML = "<span class='success'>✅ Authenticated as Google User. User created/updated in DB.</span>";
+        copyToken();
+    }
+
+    function copyToken() {
+        const copyText = document.getElementById("jwtToken");
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value).then(() => {
+            document.getElementById("statusMsg").innerText = "Token copied! Paste it into Swagger 'Authorize' box.";
+        });
+    }
+</script>
+</body>
+</html>

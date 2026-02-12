@@ -28,7 +28,7 @@ public static class SetupModule
     {
         services.AddCors(options =>
             options.AddDefaultPolicy(policy =>
-                policy.SetIsOriginAllowed(_ => true)
+                policy.SetIsOriginAllowed(_ => true) // У продакшені тут варто вказати конкретні домени
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()));
@@ -47,20 +47,20 @@ public static class SetupModule
             {
                 Title = "CATS API",
                 Version = "v1",
-                Description = "REST API для системи обліку тари"
+                Description = "Backend API for Container Accounting & Tracking System. <br/>" +
+                              "Use <b>/dev-auth.html</b> to generate a JWT token for testing."
             });
             
-            // === ЗМІНА: Простий ввід JWT токена вручну ===
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "Встав свій JWT токен сюди (починається з ey...). Наприклад: Bearer eyJhbGciOiJIUz...",
+                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n" +
+                              "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
+                              "Example: 'Bearer eyJhbGciOiJIUzI1NiIx...'",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT"
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
             });
-            // ==============================================
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
@@ -71,9 +71,12 @@ public static class SetupModule
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = "Bearer"
-                        }
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header
                     },
-                    new string[] {}
+                    new List<string>()
                 }
             });
 

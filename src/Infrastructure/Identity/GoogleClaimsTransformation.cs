@@ -9,70 +9,60 @@ namespace Infrastructure.Identity;
 
 public class GoogleClaimsTransformation : IClaimsTransformation
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public GoogleClaimsTransformation(IServiceProvider serviceProvider)
+    public GoogleClaimsTransformation(IServiceScopeFactory scopeFactory)
     {
-        _serviceProvider = serviceProvider;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
-        // 1. Перевірка: чи користувач взагалі авторизований
-        var identity = principal.Identity as ClaimsIdentity;
-        if (identity == null || !identity.IsAuthenticated) return principal;
+        var clone = principal.Clone();
+        var newIdentity = (ClaimsIdentity)clone.Identity!;
 
-        // 2. Отримуємо Email з токена Google
-        var email = identity.FindFirst(ClaimTypes.Email)?.Value;
-        if (string.IsNullOrEmpty(email)) return principal;
+        var email = newIdentity.FindFirst(ClaimTypes.Email)?.Value;
+        if (string.IsNullOrEmpty(email)) return clone;
 
-        // 3. Створюємо Scope для доступу до бази даних (бо ClaimsTransformation - Singleton/Transient)
-        using (var scope = _serviceProvider.CreateScope())
+        using (var scope = _scopeFactory.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            // 4. Шукаємо користувача в БД
+            
             var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-            // 5. ЛОГІКА РЕЄСТРАЦІЇ
             if (user == null)
             {
-                // Перевіряємо, чи є хоч хтось у базі
-                var isFirstUser = !await context.Users.AnyAsync();
-
+                bool isFirstUser = !await context.Users.AnyAsync();
                 user = new User
                 {
                     Email = email,
-                    FirstName = identity.FindFirst(ClaimTypes.GivenName)?.Value ?? "Unknown",
-                    LastName = identity.FindFirst(ClaimTypes.Surname)?.Value ?? "Unknown",
-                    
-                    // Якщо перший - Адмін, інакше - Оператор
-                    Role = isFirstUser ? UserRole.Admin : UserRole.Operator,
-                    
-                    // Якщо перший - Активний, інакше - Неактивний (чекає підтвердження)
-                    IsActive = isFirstUser,
-                    CreatedAt = DateTime.UtcNow
+                    IsActive = true,
+                    Role = isFirstUser ? UserRole.Admin : UserRole.Operator
                 };
+                
+                var name = newIdentity.FindFirst(ClaimTypes.Name)?.Value;
+                if (!string.IsNullOrEmpty(name)) 
+                {
+                     var parts = name.Split(' ');
+                     user.FirstName = parts[0];
+                     if(parts.Length > 1) user.LastName = parts[^1];
+                }
 
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
             }
+            
+            var existingClaim = newIdentity.FindFirst("UserId");
+            if (existingClaim != null) newIdentity.RemoveClaim(existingClaim);
 
-            // 6. Якщо користувач не активний - не даємо йому роль (доступ буде заборонено)
-            if (!user.IsActive)
-            {
-                return principal;
-            }
+            newIdentity.AddClaim(new Claim("UserId", user.Id.ToString()));
 
-            // 7. Додаємо роль і ID у "паспорт" запиту (Claims)
-            if (!principal.HasClaim(c => c.Type == ClaimTypes.Role))
+            if (!newIdentity.HasClaim(c => c.Type == ClaimTypes.Role))
             {
-                identity.AddClaim(new Claim(ClaimTypes.Role, user.Role.ToString()));
-                // Додаємо наш внутрішній ID, щоб використовувати його в аудиті
-                identity.AddClaim(new Claim("UserId", user.Id.ToString())); 
+                newIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Role.ToString()));
             }
         }
 
-        return principal;
+        return clone;
     }
 }

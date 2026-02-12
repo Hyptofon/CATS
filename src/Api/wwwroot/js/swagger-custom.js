@@ -6,8 +6,10 @@
             clearInterval(checkExist);
             setFavicon();
             initThemeToggler(topbar, darkThemeLink);
+            initAuthShortcut(topbar); 
         }
     }, 50);
+
     function setFavicon() {
         var links = document.querySelectorAll("link[rel*='icon']");
         links.forEach(l => l.remove());
@@ -15,8 +17,27 @@
         link.type = 'image/png';
         link.rel = 'icon';
         link.href = '/images/favicon.png?v=' + new Date().getTime();
-
         document.head.appendChild(link);
+    }
+
+    function initAuthShortcut(topbarContainer) {
+        if (document.getElementById("auth-tool-link")) return;
+        var btn = document.createElement("button");
+        btn.id = "auth-tool-link";
+        btn.className = "btn";
+        btn.innerText = "🔑 Auth Tool";
+        btn.style.marginLeft = "20px";
+        btn.style.background = "#bb86fc";
+        btn.style.color = "#000";
+        btn.style.border = "none";
+        btn.style.fontWeight = "bold";
+        btn.style.cursor = "pointer";
+        btn.style.padding = "4px 10px";
+
+        btn.onclick = function () {
+            window.open('/dev-auth.html', '_blank');
+        };
+        topbarContainer.appendChild(btn);
     }
 
     function initThemeToggler(topbarContainer, darkThemeLink) {
@@ -24,13 +45,13 @@
         var btn = document.createElement("button");
         btn.id = "theme-toggle";
         btn.className = "btn";
-        btn.style.marginLeft = "20px";
+        btn.style.marginLeft = "auto"; 
         btn.style.fontWeight = "bold";
         btn.style.background = "transparent";
         btn.style.border = "1px solid white";
         btn.style.color = "white";
         btn.style.cursor = "pointer";
-        btn.style.lineHeight = "1.2";
+
         var savedTheme = localStorage.getItem("swagger-theme") || "dark";
         function applyState(isDark) {
             if (isDark) {
@@ -40,8 +61,8 @@
                 darkThemeLink.disabled = false;
             } else {
                 btn.innerText = "☀️ Light";
-                btn.style.color = "#ffffff";
-                btn.style.borderColor = "#ffffff";
+                btn.style.color = "white";
+                btn.style.borderColor = "white";
                 darkThemeLink.disabled = true;
             }
         }
