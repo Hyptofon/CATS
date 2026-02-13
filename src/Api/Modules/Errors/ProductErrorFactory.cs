@@ -12,6 +12,7 @@ public static class ProductErrorFactory
             StatusCode = error switch
             {
                 ProductNotFoundException => StatusCodes.Status404NotFound,
+                ProductTypeNotFoundForProductException => StatusCodes.Status404NotFound,
                 ProductInUseException => StatusCodes.Status400BadRequest,
                 UnhandledProductException => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Product error handler not implemented")

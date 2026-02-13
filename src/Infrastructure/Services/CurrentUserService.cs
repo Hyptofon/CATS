@@ -12,8 +12,7 @@ public class CurrentUserService : ICurrentUserService
     {
         _httpContextAccessor = httpContextAccessor;
     }
-
-    // 1. Реалізація UserId (парсимо string у Guid)
+    
     public Guid? UserId
     {
         get
@@ -28,10 +27,7 @@ public class CurrentUserService : ICurrentUserService
             return Guid.TryParse(idClaim, out var userId) ? userId : null;
         }
     }
-
-    // 2. Реалізація Email (все по старому)
+    
     public string? Email => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
-
-    // 3. Реалізація IsAuthenticated (додали це, бо інтерфейс вимагає)
     public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 }

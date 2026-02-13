@@ -1,9 +1,10 @@
 using Domain.ContainerTypes;
 using Domain.Products;
+using Domain.Common;
 
 namespace Domain.Containers;
 
-public class Container
+public class Container : BaseAuditableEntity
 {
     public int Id { get; private set; }
     public string Code { get; private set; }
@@ -31,11 +32,6 @@ public class Container
     
     public string? Meta { get; private set; }
     
-    public DateTime CreatedAt { get; private set; }
-    public Guid? CreatedById { get; private set; }
-    public DateTime? UpdatedAt { get; private set; }
-    public Guid? LastModifiedById { get; private set; }
-    public bool IsDeleted { get; private set; }
     
     // Navigation properties
     public ContainerType? ContainerType { get; private set; }

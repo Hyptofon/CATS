@@ -13,11 +13,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(t => t.Email)
             .HasMaxLength(200)
             .IsRequired();
-            
-        // Робимо індекс по Email, щоб швидко шукати при логіні
-        builder.HasIndex(t => t.Email).IsUnique();
 
+        builder.HasIndex(t => t.Email).IsUnique();
         builder.Property(t => t.FirstName).HasMaxLength(100);
+        builder.Property(t => t.MiddleName).HasMaxLength(100);
         builder.Property(t => t.LastName).HasMaxLength(100);
     }
 }

@@ -1,18 +1,14 @@
 namespace Domain.Products;
 
-public class Product
+using Domain.Common;
+
+public class Product : BaseAuditableEntity
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
     public string? Description { get; private set; }
     public int ProductTypeId { get; private set; }
     public int? ShelfLifeDays { get; private set; }
-    
-    public DateTime CreatedAt { get; private set; }
-    public Guid? CreatedById { get; private set; }
-    public DateTime? UpdatedAt { get; private set; }
-    public Guid? LastModifiedById { get; private set; }
-    public bool IsDeleted { get; private set; }
     
     // Navigation properties
     public ProductType? ProductType { get; private set; }

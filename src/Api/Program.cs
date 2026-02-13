@@ -13,7 +13,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
-builder.Services.SetupServices(builder.Configuration); 
+builder.Services.SetupServices(builder.Configuration);
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MustBeActive", policy => 
+        policy.RequireClaim("Status", "active"));
+}); 
 
 builder.Services.AddTransient<IClaimsTransformation, GoogleClaimsTransformation>();
 

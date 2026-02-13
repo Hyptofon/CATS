@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Reflection;
 using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Containers;
 using Domain.ContainerTypes;
 using Domain.Entities;
@@ -9,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public class ApplicationDbContext(
+    DbContextOptions<ApplicationDbContext> options,
+    ICurrentUserService currentUserService)
     : DbContext(options), IApplicationDbContext
 {
     public DbSet<ProductType> ProductTypes { get; set; }
@@ -18,6 +21,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Product> Products { get; set; }
     public DbSet<ContainerFill> ContainerFills { get; set; }
     public DbSet<User> Users => Set<User>();
+    public DbSet<UserInvitation> UserInvitations => Set<UserInvitation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,6 +38,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        foreach (var entry in ChangeTracker.Entries<BaseAuditableEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedAt = DateTime.UtcNow;
+                    entry.Entity.CreatedById = currentUserService.UserId;
+                    break;
+
+                case EntityState.Modified:
+                    entry.Entity.UpdatedAt = DateTime.UtcNow;
+                    entry.Entity.LastModifiedById = currentUserService.UserId;
+                    break;
+            }
+        }
         return await base.SaveChangesAsync(cancellationToken);
     }
 }

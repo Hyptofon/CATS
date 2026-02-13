@@ -13,7 +13,7 @@ public static class ConfigureInfrastructureServices
         IConfiguration configuration)
     {
         services.AddPersistenceServices(configuration);
-        
+        services.AddTransient<IEmailSender, SmtpEmailSender>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
     }
 }

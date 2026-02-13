@@ -18,6 +18,16 @@ public record UpdateContainerFillDto
     public required DateTime ExpirationDate { get; init; }
 }
 
+public record SearchContainerFillsDto
+{
+    public int? ProductId { get; init; }
+    public int? ProductTypeId { get; init; }
+    public int? ContainerId { get; init; }
+    public DateTime? FromDate { get; init; }
+    public DateTime? ToDate { get; init; }
+    public bool? OnlyActive { get; init; }
+}
+
 public record ContainerFillDto
 {
     public required int Id { get; init; }
@@ -33,4 +43,24 @@ public record ContainerFillDto
     public DateTime? EmptiedDate { get; init; }
     public required Guid FilledByUserId { get; init; }
     public Guid? EmptiedByUserId { get; init; }
+
+    public static ContainerFillDto FromDomainModel(Domain.Containers.ContainerFill fill)
+    {
+        return new ContainerFillDto
+        {
+            Id = fill.Id,
+            ContainerId = fill.ContainerId,
+            ContainerCode = fill.Container?.Code,
+            ProductId = fill.ProductId,
+            ProductName = fill.Product?.Name ?? string.Empty,
+            Quantity = fill.Quantity,
+            Unit = fill.Unit,
+            ProductionDate = fill.ProductionDate,
+            FilledDate = fill.FilledDate,
+            ExpirationDate = fill.ExpirationDate,
+            EmptiedDate = fill.EmptiedDate,
+            FilledByUserId = fill.FilledByUserId,
+            EmptiedByUserId = fill.EmptiedByUserId
+        };
+    }
 }

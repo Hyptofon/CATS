@@ -15,6 +15,7 @@ public interface IApplicationDbContext
     DbSet<Product> Products { get; }
     DbSet<ContainerFill> ContainerFills { get; }
     DbSet<User> Users { get; }
+    DbSet<UserInvitation> UserInvitations { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

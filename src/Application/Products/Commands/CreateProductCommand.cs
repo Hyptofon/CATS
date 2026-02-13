@@ -33,8 +33,7 @@ public class CreateProductCommandHandler(
         return await productType.MatchAsync(
             pt => CreateEntity(request, cancellationToken),
             () => Task.FromResult<Either<ProductException, Product>>(
-                new UnhandledProductException(0, 
-                    new ProductTypeNotFoundForProductException(request.ProductTypeId))));
+                new ProductTypeNotFoundForProductException(request.ProductTypeId)));
     }
 
     private async Task<Either<ProductException, Product>> CreateEntity(

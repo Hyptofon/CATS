@@ -10,6 +10,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("containers")]
+[Microsoft.AspNetCore.Authorization.Authorize(Policy = "MustBeActive")]
 public class ContainersController(
     ISender sender, 
     IContainerQueries containerQueries) : ControllerBase
@@ -189,41 +190,21 @@ public class ContainersController(
 
     [HttpGet("fills/search")]
     public async Task<ActionResult<IReadOnlyList<ContainerFillDto>>> SearchFills(
-        [FromQuery] int? productId,
-        [FromQuery] int? productTypeId,
-        [FromQuery] int? containerId,
-        [FromQuery] DateTime? fromDate,
-        [FromQuery] DateTime? toDate,
-        [FromQuery] bool? onlyActive,
+        [FromQuery] SearchContainerFillsDto request,
         CancellationToken cancellationToken)
     {
         var query = new Application.Containers.Queries.SearchContainerFills.SearchContainerFillsQuery(
-            productId,
-            productTypeId,
-            containerId,
-            fromDate,
-            toDate,
-            onlyActive
+            request.ProductId,
+            request.ProductTypeId,
+            request.ContainerId,
+            request.FromDate,
+            request.ToDate,
+            request.OnlyActive
         );
 
         var fills = await sender.Send(query, cancellationToken);
 
-        return fills.Select(f => new ContainerFillDto
-        {
-            Id = f.Id,
-            ContainerId = f.ContainerId,
-            ContainerCode = f.Container?.Code,
-            ProductId = f.ProductId,
-            ProductName = f.Product?.Name ?? string.Empty,
-            Quantity = f.Quantity,
-            Unit = f.Unit,
-            ProductionDate = f.ProductionDate,
-            FilledDate = f.FilledDate,
-            ExpirationDate = f.ExpirationDate,
-            EmptiedDate = f.EmptiedDate,
-            FilledByUserId = f.FilledByUserId,
-            EmptiedByUserId = f.EmptiedByUserId
-        }).ToList();
+        return fills.Select(ContainerFillDto.FromDomainModel).ToList();
     }
 
     [HttpGet("{id:int}/history")]
@@ -238,23 +219,6 @@ public class ContainersController(
 
         var fills = await sender.Send(query, cancellationToken);
 
-        var dtos = fills.Select(f => new ContainerFillDto
-        {
-            Id = f.Id,
-            ContainerId = f.ContainerId,
-            ContainerCode = f.Container?.Code,
-            ProductId = f.ProductId,
-            ProductName = f.Product?.Name ?? string.Empty,
-            Quantity = f.Quantity,
-            Unit = f.Unit,
-            ProductionDate = f.ProductionDate,
-            FilledDate = f.FilledDate,
-            ExpirationDate = f.ExpirationDate,
-            EmptiedDate = f.EmptiedDate,
-            FilledByUserId = f.FilledByUserId,
-            EmptiedByUserId = f.EmptiedByUserId
-        }).ToList();
-
-        return dtos;
+        return fills.Select(ContainerFillDto.FromDomainModel).ToList();
     }
 }

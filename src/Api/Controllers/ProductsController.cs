@@ -9,6 +9,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("products")]
+[Microsoft.AspNetCore.Authorization.Authorize(Policy = "MustBeActive")]
 public class ProductsController(
     ISender sender,
     IProductQueries productQueries) : ControllerBase

@@ -13,7 +13,7 @@ public sealed class ProductNotFoundException(int productId)
     : ProductException(productId, $"Product not found under id {productId}");
 
 public sealed class ProductTypeNotFoundForProductException(int productTypeId)
-    : Exception($"Product type with id {productTypeId} not found for product operation");
+    : ProductException(0, $"Product type with id {productTypeId} not found for product operation");
 
 public sealed class ProductInUseException(int productId) 
     : ProductException(productId, $"Product with id {productId} is in use by active containers and cannot be deleted");

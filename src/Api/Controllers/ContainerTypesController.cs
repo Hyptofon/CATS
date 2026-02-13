@@ -9,6 +9,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("container-types")]
+[Microsoft.AspNetCore.Authorization.Authorize(Policy = "MustBeActive")]
 public class ContainerTypesController(
     ISender sender, 
     IContainerTypeQueries containerTypeQueries) : ControllerBase

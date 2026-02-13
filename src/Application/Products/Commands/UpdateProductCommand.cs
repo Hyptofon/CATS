@@ -39,8 +39,7 @@ public class UpdateProductCommandHandler(
                 return await productType.MatchAsync(
                     pt => UpdateEntity(p, request, cancellationToken),
                     () => Task.FromResult<Either<ProductException, Product>>(
-                        new UnhandledProductException(request.Id, 
-                            new ProductTypeNotFoundForProductException(request.ProductTypeId))));
+                        new ProductTypeNotFoundForProductException(request.ProductTypeId)));
             },
             () => Task.FromResult<Either<ProductException, Product>>(
                 new ProductNotFoundException(request.Id)));
