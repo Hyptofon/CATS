@@ -53,7 +53,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldCreateContainerTypeWithNullMeta()
     {
         // Arrange
-        var request = new CreateContainerTypeDto("Test-NullMeta-Type", "кг", null,
+        var request = new CreateContainerTypeDto("Test-NullMeta-Type", "TEST-NM", "кг", null,
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -72,7 +72,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var longName = new string('A', 100);
-        var request = new CreateContainerTypeDto(longName, "л", "{\"test\":\"meta\"}",
+        var request = new CreateContainerTypeDto(longName, "TEST-LN", "л", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -90,7 +90,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new CreateContainerTypeDto(_existingContainerType.Name, "л", "{\"test\":\"meta\"}",
+        var request = new CreateContainerTypeDto(_existingContainerType.Name, "TEST-DUP", "л", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -108,6 +108,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var request = new CreateContainerTypeDto(
             _existingContainerType.Name.ToUpper(),
+            "TEST-DUP-CI",
             "л",
             "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
@@ -127,7 +128,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new CreateContainerTypeDto(name!, "л", "{\"test\":\"meta\"}",
+        var request = new CreateContainerTypeDto(name!, "TEST-EN", "л", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -145,7 +146,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseEmptyDefaultUnit(string? unit)
     {
         // Arrange
-        var request = new CreateContainerTypeDto("Valid-Name", unit!, "{\"test\":\"meta\"}",
+        var request = new CreateContainerTypeDto("Valid-Name", "TEST-VU", unit!, "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -162,7 +163,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('A', 101);
-        var request = new CreateContainerTypeDto(tooLongName, "л", "{\"test\":\"meta\"}",
+        var request = new CreateContainerTypeDto(tooLongName, "TEST-LG", "л", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -178,7 +179,7 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseWhitespaceName()
     {
         // Arrange
-        var request = new CreateContainerTypeDto("            ", "kg", "{\"test\":\"meta\"}",
+        var request = new CreateContainerTypeDto("            ", "TEST-WS", "kg", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
         // Act

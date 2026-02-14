@@ -94,6 +94,7 @@ public class ContainerTypesGetTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var containerTypeWithoutMeta = ContainerType.New(
             "Test-NoMeta-Type",
+            "TEST-NM",
             "л",
             null,
             new Guid("00000000-0000-0000-0000-000000000001")

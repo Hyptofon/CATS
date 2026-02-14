@@ -56,6 +56,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var request = new UpdateContainerTypeDto(
             _firstTestContainerType.Name,
+            "TEST-UPD",
             "кг",
             "{\"updated\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
@@ -75,7 +76,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldUpdateContainerTypeToNullMeta()
     {
         // Arrange
-        var request = new UpdateContainerTypeDto("Updated-Name", "л", null,
+        var request = new UpdateContainerTypeDto("Updated-Name", "TEST-NM", "л", null,
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -96,7 +97,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var longName = new string('U', 100);
-        var request = new UpdateContainerTypeDto(longName, "л", "{\"test\":\"meta\"}",
+        var request = new UpdateContainerTypeDto(longName, "TEST-LN", "л", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -129,7 +130,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new UpdateContainerTypeDto(_secondTestContainerType.Name, "л", "{\"updated\":\"meta\"}",
+        var request = new UpdateContainerTypeDto(_secondTestContainerType.Name, "TEST-DUP", "л", "{\"updated\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -149,6 +150,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var request = new UpdateContainerTypeDto(
             _secondTestContainerType.Name.ToLower(),
+            "TEST-DUP-CI",
             "л",
             "{\"updated\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
@@ -170,7 +172,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new UpdateContainerTypeDto(name!, "л", "{\"test\":\"meta\"}",
+        var request = new UpdateContainerTypeDto(name!, "TEST-EN", "л", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -190,7 +192,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseEmptyDefaultUnit(string? unit)
     {
         // Arrange
-        var request = new UpdateContainerTypeDto("Valid-Name", unit!, "{\"test\":\"meta\"}",
+        var request = new UpdateContainerTypeDto("Valid-Name", "TEST-VU", unit!, "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 
@@ -209,7 +211,7 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('U', 101);
-        var request = new UpdateContainerTypeDto(tooLongName, "л", "{\"test\":\"meta\"}",
+        var request = new UpdateContainerTypeDto(tooLongName, "TEST-LG", "л", "{\"test\":\"meta\"}",
             AllowedProductTypeIds: new List<int>()
         );
 

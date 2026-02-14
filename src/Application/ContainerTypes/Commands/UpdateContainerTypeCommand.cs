@@ -11,6 +11,7 @@ public record UpdateContainerTypeCommand : IRequest<Either<ContainerTypeExceptio
 {
     public required int ContainerTypeId { get; init; }
     public required string Name { get; init; }
+    public required string CodePrefix { get; init; }
     public required string DefaultUnit { get; init; }
     public string? Meta { get; init; }
     public List<int> AllowedProductTypeIds { get; init; } = new();
@@ -55,6 +56,7 @@ public class UpdateContainerTypeCommandHandler(
         {
             containerType.UpdateDetails(
                 request.Name,
+                request.CodePrefix,
                 request.DefaultUnit,
                 request.Meta, 
                 currentUserService.UserId);

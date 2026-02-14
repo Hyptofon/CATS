@@ -10,6 +10,7 @@ namespace Application.ContainerTypes.Commands;
 public record CreateContainerTypeCommand : IRequest<Either<ContainerTypeException, ContainerType>>
 {
     public required string Name { get; init; }
+    public required string CodePrefix { get; init; }
     public required string DefaultUnit { get; init; }
     public string? Meta { get; init; }
     public List<int> AllowedProductTypeIds { get; init; } = new();
@@ -42,6 +43,7 @@ public class CreateContainerTypeCommandHandler(
         {
             var containerType = ContainerType.New(
                 request.Name,
+                request.CodePrefix,
                 request.DefaultUnit,
                 request.Meta,
                 currentUserService.UserId);

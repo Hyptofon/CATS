@@ -66,9 +66,30 @@ public class CreateContainerCommandHandler(
             }
             else
             {
-                var prefix = containerType.Name
-                    .Replace(" ", "")
-                    .ToUpperInvariant();
+                var prefix = containerType.CodePrefix;
+                
+                if (string.IsNullOrWhiteSpace(prefix))
+                {
+                    var words = containerType.Name
+                        .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    
+                    if (words.Length == 1)
+                    {
+                        var word = words[0];
+                        prefix = word.Length > 4 
+                            ? word[..4].ToUpperInvariant() 
+                            : word.ToUpperInvariant();
+                    }
+                    else if (words.Length > 0)
+                    {
+                        prefix = string.Join("", words.Take(2).Select(w => w[0]))
+                            .ToUpperInvariant();
+                    }
+                    else
+                    {
+                        prefix = "CONT";
+                    }
+                }
                 
                 var existingCount = await containerRepository.GetTotalCountByTypeIdAsync(
                     containerType.Id,
@@ -76,7 +97,7 @@ public class CreateContainerCommandHandler(
                 
                 var nextNumber = existingCount + 1;
                 
-                var formattedNumber = nextNumber.ToString("D5");
+                var formattedNumber = nextNumber.ToString("D4");
                 
                 finalCode = $"{prefix}-{formattedNumber}";
             }

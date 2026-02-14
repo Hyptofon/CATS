@@ -14,7 +14,7 @@ public class ContainerCompatibilityTests : BaseIntegrationTest, IAsyncLifetime
 {
     private const string BaseRoute = "containers";
 
-    private readonly ContainerType _restrictedContainerType = ContainerType.New("Restricted Box", "kg", null, null);
+    private readonly ContainerType _restrictedContainerType = ContainerType.New("Restricted Box", "RESTRICT", "kg", null, null);
     private readonly ProductType _allowedProductType = ProductType.New("Allowed Type", 10, null, null);
     private readonly ProductType _disallowedProductType = ProductType.New("Disallowed Type", 10, null, null);
     

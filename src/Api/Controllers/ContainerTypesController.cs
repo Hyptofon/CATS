@@ -44,6 +44,7 @@ public class ContainerTypesController(
         var command = new CreateContainerTypeCommand
         {
             Name = request.Name,
+            CodePrefix = request.CodePrefix,
             DefaultUnit = request.DefaultUnit,
             Meta = request.Meta,
             AllowedProductTypeIds = request.AllowedProductTypeIds
@@ -66,6 +67,7 @@ public class ContainerTypesController(
         {
             ContainerTypeId = id,
             Name = request.Name,
+            CodePrefix = request.CodePrefix,
             DefaultUnit = request.DefaultUnit,
             Meta = request.Meta,
             AllowedProductTypeIds = request.AllowedProductTypeIds

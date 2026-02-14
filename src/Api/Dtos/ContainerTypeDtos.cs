@@ -7,6 +7,7 @@ namespace Api.Dtos;
 public record ContainerTypeDto(
     int Id, 
     string Name,
+    string CodePrefix,
     string DefaultUnit,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
@@ -19,6 +20,7 @@ public record ContainerTypeDto(
         => new(
             containerType.Id, 
             containerType.Name,
+            containerType.CodePrefix,
             containerType.DefaultUnit,
             containerType.Meta, 
             containerType.CreatedAt,
@@ -27,6 +29,7 @@ public record ContainerTypeDto(
 
 public record CreateContainerTypeDto(
     string Name,
+    string CodePrefix,
     string DefaultUnit,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
@@ -36,6 +39,7 @@ public record CreateContainerTypeDto(
 
 public record UpdateContainerTypeDto(
     string Name,
+    string CodePrefix,
     string DefaultUnit,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 

@@ -93,7 +93,7 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
         var containerDto = await response.ToResponseModel<ContainerDto>();
 
         containerDto.Code.Should().NotBeNullOrEmpty();
-        containerDto.Code.Should().Contain(_testContainerType.Name.Replace(" ", "").Replace("-", "").ToUpperInvariant()[..Math.Min(4, _testContainerType.Name.Length)]);
+        containerDto.Code.Should().StartWith(_testContainerType.CodePrefix);
         containerDto.Name.Should().Be(request.Name);
 
         var dbContainer = await Context.Containers

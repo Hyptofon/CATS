@@ -16,6 +16,10 @@ public class ContainerTypeConfiguration : IEntityTypeConfiguration<ContainerType
             .HasColumnType("varchar(100)")
             .IsRequired();
 
+        builder.Property(x => x.CodePrefix)
+            .HasColumnType("varchar(20)")
+            .IsRequired();
+
         builder.Property(x => x.DefaultUnit)
             .HasColumnType("varchar(20)")
             .IsRequired();

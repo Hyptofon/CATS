@@ -7,6 +7,7 @@ public class ContainerType
     public int Id { get; private set; }
     public string Name { get; private set; }
     public string DefaultUnit { get; private set; }
+    public string CodePrefix { get; private set; }
     public string? Meta { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
@@ -19,12 +20,14 @@ public class ContainerType
 
     private ContainerType(
         string name,
+        string codePrefix,
         string defaultUnit,
         string? meta,
         Guid? createdById,
         DateTime createdAt)
     {
         Name = name;
+        CodePrefix = codePrefix;
         DefaultUnit = defaultUnit;
         Meta = meta;
         CreatedById = createdById;
@@ -34,6 +37,7 @@ public class ContainerType
 
     public static ContainerType New(
         string name,
+        string codePrefix,
         string defaultUnit,
         string? meta,
         Guid? createdById)
@@ -41,11 +45,15 @@ public class ContainerType
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Container type name cannot be empty", nameof(name));
 
+        if (string.IsNullOrWhiteSpace(codePrefix))
+            throw new ArgumentException("Code prefix cannot be empty", nameof(codePrefix));
+
         if (string.IsNullOrWhiteSpace(defaultUnit))
             throw new ArgumentException("Default unit cannot be empty", nameof(defaultUnit));
 
         return new ContainerType(
             name,
+            codePrefix,
             defaultUnit,
             meta,
             createdById,
@@ -54,6 +62,7 @@ public class ContainerType
 
     public void UpdateDetails(
         string name, 
+        string codePrefix,
         string defaultUnit,
         string? meta, 
         Guid? modifiedById)
@@ -61,10 +70,14 @@ public class ContainerType
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Container type name cannot be empty", nameof(name));
 
+        if (string.IsNullOrWhiteSpace(codePrefix))
+            throw new ArgumentException("Code prefix cannot be empty", nameof(codePrefix));
+
         if (string.IsNullOrWhiteSpace(defaultUnit))
             throw new ArgumentException("Default unit cannot be empty", nameof(defaultUnit));
 
         Name = name;
+        CodePrefix = codePrefix;
         DefaultUnit = defaultUnit;
         Meta = meta;
         LastModifiedById = modifiedById;

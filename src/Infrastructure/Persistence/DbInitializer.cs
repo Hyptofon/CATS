@@ -20,10 +20,10 @@ public static class DbInitializer
         await context.SaveChangesAsync();
 
         // --- 2. ТИПИ ТАРИ ---
-        var glass = ContainerType.New("Скляна пляшка", "л", null, null);
-        var plastic = ContainerType.New("Пластикова каністра", "л", null, null);
-        var metal = ContainerType.New("Металева бочка", "л", null, null);
-        var silo = ContainerType.New("Елеваторний силос", "кг", null, null);
+        var glass = ContainerType.New("Скляна пляшка", "GL", "л", null, null);
+        var plastic = ContainerType.New("Пластикова каністра", "PL", "л", null, null);
+        var metal = ContainerType.New("Металева бочка", "MB", "л", null, null);
+        var silo = ContainerType.New("Елеваторний силос", "SL", "кг", null, null);
         context.ContainerTypes.AddRange(glass, plastic, metal, silo);
         await context.SaveChangesAsync();
 
