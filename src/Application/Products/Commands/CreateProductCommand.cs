@@ -32,23 +32,45 @@ public class CreateProductCommandHandler(
             cancellationToken);
 
         return await productType.MatchAsync(
-            pt => CreateEntity(request, cancellationToken),
+            async pt => 
+            {
+                var shelfLifeDays = request.ShelfLifeDays;
+                var shelfLifeHours = request.ShelfLifeHours;
+
+                if (shelfLifeDays == null && shelfLifeHours == null)
+                {
+                     shelfLifeDays = pt.ShelfLifeDays;
+                     shelfLifeHours = pt.ShelfLifeHours;
+                }
+
+                return await CreateEntity(
+                    request.Name,
+                    request.Description,
+                    request.ProductTypeId,
+                    shelfLifeDays,
+                    shelfLifeHours,
+                    cancellationToken);
+            },
             () => Task.FromResult<Either<ProductException, Product>>(
                 new ProductTypeNotFoundForProductException(request.ProductTypeId)));
     }
 
     private async Task<Either<ProductException, Product>> CreateEntity(
-        CreateProductCommand request,
+        string name,
+        string? description,
+        int productTypeId,
+        int? shelfLifeDays,
+        int? shelfLifeHours,
         CancellationToken cancellationToken)
     {
         try
         {
             var product = Product.New(
-                request.Name,
-                request.Description,
-                request.ProductTypeId,
-                request.ShelfLifeDays,
-                request.ShelfLifeHours,
+                name,
+                description,
+                productTypeId,
+                shelfLifeDays,
+                shelfLifeHours,
                 currentUserService.UserId);
 
             productRepository.Add(product);

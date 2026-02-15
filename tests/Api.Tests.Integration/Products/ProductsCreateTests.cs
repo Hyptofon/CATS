@@ -63,6 +63,36 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         productDto.Description.Should().BeNull();
     }
 
+    // Повинен успадкувати термін придатності від типу продукту, якщо не вказано
+    [Fact]
+    public async Task ShouldInheritShelfLifeFromProductTypeWhenNotProvided()
+    {
+        // Arrange. Define a ProductType with specific shelf life in the db
+        var productType = ProductType.New("Inheritance Test Type", 10, 5, null, null);
+        await Context.ProductTypes.AddAsync(productType);
+        await SaveChangesAsync();
+
+        var request = new CreateProductDto
+        {
+            Name = "Product with inherited shelf life",
+            Description = "Should inherit from type",
+            ProductTypeId = productType.Id,
+            ShelfLifeDays = null,
+            ShelfLifeHours = null
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync(BaseRoute, request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var productDto = await response.ToResponseModel<ProductDto>();
+        
+        // Should inherit from productType
+        productDto.ShelfLifeDays.Should().Be(10);
+        productDto.ShelfLifeHours.Should().Be(5);
+    }
+
     // Повинен створити продукт лише з годинами (репродукція помилки)
     [Fact]
     public async Task ShouldCreateProductWithHoursOnly()
