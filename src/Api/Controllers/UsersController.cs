@@ -9,7 +9,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("users")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin", Policy = "MustBeActive")]
 public class UsersController(ISender sender) : ControllerBase
 {
     [HttpGet]

@@ -10,7 +10,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("profile")]
-[Authorize]
+[Authorize(Policy = "MustBeActive")]
 public class ProfileController(ISender sender) : ControllerBase
 {
     [HttpGet]

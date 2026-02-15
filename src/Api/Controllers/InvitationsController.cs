@@ -12,7 +12,7 @@ namespace Api.Controllers;
 [Route("invitations")]
 public class InvitationsController(ISender sender) : ControllerBase
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin", Policy = "MustBeActive")]
     [HttpPost]
     public async Task<IActionResult> Create(CreateInvitationDto request)
     {

@@ -70,9 +70,8 @@ public class GoogleClaimsTransformation : IClaimsTransformation
                     return clone;
                 }
             }
-            else if (!user.IsActive)
+            else
             {
-                user.IsActive = true;
                 UpdateUserName(user, newIdentity);
                 await context.SaveChangesAsync();
             }
