@@ -13,6 +13,7 @@ public record CreateProductCommand : IRequest<Either<ProductException, Product>>
     public string? Description { get; init; }
     public required int ProductTypeId { get; init; }
     public int? ShelfLifeDays { get; init; }
+    public int? ShelfLifeHours { get; init; }
 }
 
 public class CreateProductCommandHandler(
@@ -47,6 +48,7 @@ public class CreateProductCommandHandler(
                 request.Description,
                 request.ProductTypeId,
                 request.ShelfLifeDays,
+                request.ShelfLifeHours,
                 currentUserService.UserId);
 
             productRepository.Add(product);

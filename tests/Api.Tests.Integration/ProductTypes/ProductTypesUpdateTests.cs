@@ -53,7 +53,7 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new UpdateProductTypeDto($"Updated-{uniqueId}", null, null);
+        var request = new UpdateProductTypeDto($"Updated-{uniqueId}", null, null, null);
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -86,7 +86,7 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateProductTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new UpdateProductTypeDto(_secondTestProductType.Name, 60, "{\"updated\":\"meta\"}");
+        var request = new UpdateProductTypeDto(_secondTestProductType.Name, 60, null, "{\"updated\":\"meta\"}");
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -104,7 +104,7 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateProductTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new UpdateProductTypeDto(name!, 30, null);
+        var request = new UpdateProductTypeDto(name!, 30, null, null);
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -120,7 +120,7 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateProductTypeBecauseNegativeShelfLifeDays()
     {
         // Arrange
-        var request = new UpdateProductTypeDto("Valid-Name", -1, null);
+        var request = new UpdateProductTypeDto("Valid-Name", -1, null, null);
 
         // Act
         var response = await Client.PutAsJsonAsync(

@@ -9,6 +9,7 @@ public class Product : BaseAuditableEntity
     public string? Description { get; private set; }
     public int ProductTypeId { get; private set; }
     public int? ShelfLifeDays { get; private set; }
+    public int? ShelfLifeHours { get; private set; }
     
     // Navigation properties
     public ProductType? ProductType { get; private set; }
@@ -18,6 +19,7 @@ public class Product : BaseAuditableEntity
         string? description,
         int productTypeId,
         int? shelfLifeDays,
+        int? shelfLifeHours,
         Guid? createdById,
         DateTime createdAt)
     {
@@ -25,6 +27,7 @@ public class Product : BaseAuditableEntity
         Description = description;
         ProductTypeId = productTypeId;
         ShelfLifeDays = shelfLifeDays;
+        ShelfLifeHours = shelfLifeHours;
         CreatedById = createdById;
         CreatedAt = createdAt;
         IsDeleted = false;
@@ -35,6 +38,7 @@ public class Product : BaseAuditableEntity
         string? description,
         int productTypeId,
         int? shelfLifeDays,
+        int? shelfLifeHours,
         Guid? createdById)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -46,7 +50,10 @@ public class Product : BaseAuditableEntity
         if (shelfLifeDays.HasValue && shelfLifeDays.Value < 0)
             throw new ArgumentException("Shelf life days cannot be negative", nameof(shelfLifeDays));
 
-        return new Product(name, description, productTypeId, shelfLifeDays, createdById, DateTime.UtcNow);
+        if (shelfLifeHours.HasValue && shelfLifeHours.Value < 0)
+            throw new ArgumentException("Shelf life hours cannot be negative", nameof(shelfLifeHours));
+
+        return new Product(name, description, productTypeId, shelfLifeDays, shelfLifeHours, createdById, DateTime.UtcNow);
     }
 
     public void UpdateDetails(
@@ -54,6 +61,7 @@ public class Product : BaseAuditableEntity
         string? description,
         int productTypeId,
         int? shelfLifeDays,
+        int? shelfLifeHours,
         Guid? modifiedById)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -62,10 +70,14 @@ public class Product : BaseAuditableEntity
         if (shelfLifeDays.HasValue && shelfLifeDays.Value < 0)
             throw new ArgumentException("Shelf life days cannot be negative", nameof(shelfLifeDays));
 
+        if (shelfLifeHours.HasValue && shelfLifeHours.Value < 0)
+            throw new ArgumentException("Shelf life hours cannot be negative", nameof(shelfLifeHours));
+
         Name = name;
         Description = description;
         ProductTypeId = productTypeId;
         ShelfLifeDays = shelfLifeDays;
+        ShelfLifeHours = shelfLifeHours;
         LastModifiedById = modifiedById;
         UpdatedAt = DateTime.UtcNow;
     }

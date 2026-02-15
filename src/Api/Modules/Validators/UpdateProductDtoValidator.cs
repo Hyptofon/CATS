@@ -16,5 +16,15 @@ public class UpdateProductDtoValidator : AbstractValidator<UpdateProductDto>
 
         RuleFor(x => x.ProductTypeId)
             .GreaterThan(0).WithMessage("Product type ID must be greater than 0");
+
+        RuleFor(x => x.ShelfLifeDays)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Shelf life days cannot be negative")
+            .When(x => x.ShelfLifeDays.HasValue);
+
+        RuleFor(x => x.ShelfLifeHours)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Shelf life hours cannot be negative")
+            .When(x => x.ShelfLifeHours.HasValue);
     }
 }

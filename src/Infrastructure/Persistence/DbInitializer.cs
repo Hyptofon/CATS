@@ -12,10 +12,10 @@ public static class DbInitializer
         if (await context.ProductTypes.AnyAsync()) return;
 
         // --- 1. ТИПИ ПРОДУКТІВ ---
-        var dairy = ProductType.New("Молочна продукція", 7, null, null);
-        var chemistry = ProductType.New("Побутова хімія", 365, null, null);
-        var beverages = ProductType.New("Напої", 180, null, null);
-        var grains = ProductType.New("Зернові", 730, null, null);
+        var dairy = ProductType.New("Молочна продукція", 7, null, null, null);
+        var chemistry = ProductType.New("Побутова хімія", 365, null, null, null);
+        var beverages = ProductType.New("Напої", 180, null, null, null);
+        var grains = ProductType.New("Зернові", 730, null, null, null);
         context.ProductTypes.AddRange(dairy, chemistry, beverages, grains);
         await context.SaveChangesAsync();
 
@@ -29,11 +29,11 @@ public static class DbInitializer
 
         // --- 3. ПРОДУКТИ ---
         var userId = Guid.Empty; // Define userId earlier for Product.New calls
-        var milk = Product.New("Молоко 2.5%", "Фермерське молоко", dairy.Id, 7, userId);
-        var yogurt = Product.New("Йогурт Грецький", "Без цукру", dairy.Id, 30, userId);
-        var bleach = Product.New("Відбілювач", "Хлорний", chemistry.Id, 365, userId);
-        var water = Product.New("Вода мінеральна", "Газована", beverages.Id, null, userId);
-        var wheat = Product.New("Пшениця", "Вищий гатунок", grains.Id, 60, userId);
+        var milk = Product.New("Молоко 2.5%", "Фермерське молоко", dairy.Id, 7, null, userId);
+        var yogurt = Product.New("Йогурт Грецький", "Без цукру", dairy.Id, 30, null, userId);
+        var bleach = Product.New("Відбілювач", "Хлорний", chemistry.Id, 365, null, userId);
+        var water = Product.New("Вода мінеральна", "Газована", beverages.Id, null, null, userId);
+        var wheat = Product.New("Пшениця", "Вищий гатунок", grains.Id, 60, null, userId);
         context.Products.AddRange(milk, yogurt, bleach, water, wheat);
         await context.SaveChangesAsync();
 

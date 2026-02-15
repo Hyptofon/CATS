@@ -116,8 +116,8 @@ public class ProductsUpdateTests : BaseIntegrationTest, IAsyncLifetime
         // Act
         var response = await Client.PutAsJsonAsync($"{BaseRoute}/{_testProduct!.Id}", request);
 
-        // Assert - API returns 500 for invalid ProductTypeId (unhandled)
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     // Не повинен оновити продукт з порожньою назвою

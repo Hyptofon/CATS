@@ -11,6 +11,7 @@ public record CreateProductTypeCommand : IRequest<Either<ProductTypeException, P
 {
     public required string Name { get; init; }
     public int? ShelfLifeDays { get; init; }
+    public int? ShelfLifeHours { get; init; }
     public string? Meta { get; init; }
 }
 
@@ -42,6 +43,7 @@ public class CreateProductTypeCommandHandler(
             var productType = ProductType.New(
                 request.Name,
                 request.ShelfLifeDays,
+                request.ShelfLifeHours,
                 request.Meta,
                 currentUserService.UserId);
 

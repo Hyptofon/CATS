@@ -8,6 +8,7 @@ public class ProductType
     public int Id { get; private set; }
     public string Name { get; private set; }
     public int? ShelfLifeDays { get; private set; }
+    public int? ShelfLifeHours { get; private set; }
     public string? Meta { get; private set; }
 
     public virtual ICollection<ContainerType> CompatibleContainerTypes { get; private set; } = new List<ContainerType>();
@@ -21,12 +22,14 @@ public class ProductType
     private ProductType(
         string name,
         int? shelfLifeDays,
+        int? shelfLifeHours,
         string? meta,
         Guid? createdById,
         DateTime createdAt)
     {
         Name = name;
         ShelfLifeDays = shelfLifeDays;
+        ShelfLifeHours = shelfLifeHours;
         Meta = meta;
         CreatedById = createdById;
         CreatedAt = createdAt;
@@ -36,6 +39,7 @@ public class ProductType
     public static ProductType New(
         string name,
         int? shelfLifeDays,
+        int? shelfLifeHours,
         string? meta,
         Guid? createdById)
     {
@@ -44,10 +48,14 @@ public class ProductType
 
         if (shelfLifeDays.HasValue && shelfLifeDays.Value < 0)
             throw new ArgumentException("Shelf life days cannot be negative", nameof(shelfLifeDays));
+            
+        if (shelfLifeHours.HasValue && shelfLifeHours.Value < 0)
+            throw new ArgumentException("Shelf life hours cannot be negative", nameof(shelfLifeHours));
 
         return new ProductType(
             name,
             shelfLifeDays,
+            shelfLifeHours,
             meta,
             createdById,
             DateTime.UtcNow);
@@ -56,6 +64,7 @@ public class ProductType
     public void UpdateDetails(
         string name,
         int? shelfLifeDays,
+        int? shelfLifeHours,
         string? meta,
         Guid? modifiedById)
     {
@@ -65,8 +74,12 @@ public class ProductType
         if (shelfLifeDays.HasValue && shelfLifeDays.Value < 0)
             throw new ArgumentException("Shelf life days cannot be negative", nameof(shelfLifeDays));
 
+        if (shelfLifeHours.HasValue && shelfLifeHours.Value < 0)
+            throw new ArgumentException("Shelf life hours cannot be negative", nameof(shelfLifeHours));
+
         Name = name;
         ShelfLifeDays = shelfLifeDays;
+        ShelfLifeHours = shelfLifeHours;
         Meta = meta;
         LastModifiedById = modifiedById;
         UpdatedAt = DateTime.UtcNow;

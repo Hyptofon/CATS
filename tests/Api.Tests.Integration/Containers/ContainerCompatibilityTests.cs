@@ -15,8 +15,8 @@ public class ContainerCompatibilityTests : BaseIntegrationTest, IAsyncLifetime
     private const string BaseRoute = "containers";
 
     private readonly ContainerType _restrictedContainerType = ContainerType.New("Restricted Box", "RESTRICT", "kg", null, null);
-    private readonly ProductType _allowedProductType = ProductType.New("Allowed Type", 10, null, null);
-    private readonly ProductType _disallowedProductType = ProductType.New("Disallowed Type", 10, null, null);
+    private readonly ProductType _allowedProductType = ProductType.New("Allowed Type", 10, null, null, null);
+    private readonly ProductType _disallowedProductType = ProductType.New("Disallowed Type", 10, null, null, null);
     
     private Product? _allowedProduct;
     private Product? _disallowedProduct;
@@ -157,11 +157,11 @@ public class ContainerCompatibilityTests : BaseIntegrationTest, IAsyncLifetime
         await SaveChangesAsync();
 
         // Setup Products
-        _allowedProduct = Product.New("Allowed Product", null, _allowedProductType.Id, null, Guid.Empty);
-        _disallowedProduct = Product.New("Disallowed Product", null, _disallowedProductType.Id, null, Guid.Empty);
+        _allowedProduct = Product.New("Allowed Product", null, _allowedProductType!.Id, null, null, Guid.Empty);
+        _disallowedProduct = Product.New("Disallowed Product", null, _disallowedProductType.Id, null, null, Guid.Empty);
         
         // Product with specific shelf life (overriding type's shelf life which is 10)
-        _shelfLifeProduct = Product.New("Shelf Life Product", null, _allowedProductType.Id, 5, Guid.Empty); 
+        _shelfLifeProduct = Product.New("Shelf Life Product", null, _allowedProductType.Id, 5, null, Guid.Empty); 
 
         await Context.Products.AddRangeAsync(_allowedProduct, _disallowedProduct, _shelfLifeProduct);
         await SaveChangesAsync();

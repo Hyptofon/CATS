@@ -45,6 +45,7 @@ public class ProductTypesController(
         {
             Name = request.Name,
             ShelfLifeDays = request.ShelfLifeDays,
+            ShelfLifeHours = request.ShelfLifeHours,
             Meta = request.Meta
         };
 
@@ -66,6 +67,7 @@ public class ProductTypesController(
             ProductTypeId = id,
             Name = request.Name,
             ShelfLifeDays = request.ShelfLifeDays,
+            ShelfLifeHours = request.ShelfLifeHours,
             Meta = request.Meta
         };
 

@@ -12,6 +12,7 @@ public record UpdateProductTypeCommand : IRequest<Either<ProductTypeException, P
     public required int ProductTypeId { get; init; }
     public required string Name { get; init; }
     public int? ShelfLifeDays { get; init; }
+    public int? ShelfLifeHours { get; init; }
     public string? Meta { get; init; }
 }
 
@@ -55,6 +56,7 @@ public class UpdateProductTypeCommandHandler(
             productType.UpdateDetails(
                 request.Name,
                 request.ShelfLifeDays,
+                request.ShelfLifeHours,
                 request.Meta, 
                 currentUserService.UserId);
             

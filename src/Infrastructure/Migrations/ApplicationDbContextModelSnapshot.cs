@@ -498,6 +498,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("shelf_life_days");
 
+                    b.Property<int?>("ShelfLifeHours")
+                        .HasColumnType("integer")
+                        .HasColumnName("shelf_life_hours");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -558,6 +562,10 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("ShelfLifeDays")
                         .HasColumnType("integer")
                         .HasColumnName("shelf_life_days");
+
+                    b.Property<int?>("ShelfLifeHours")
+                        .HasColumnType("integer")
+                        .HasColumnName("shelf_life_hours");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")

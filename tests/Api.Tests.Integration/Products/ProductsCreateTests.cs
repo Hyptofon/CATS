@@ -63,6 +63,30 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         productDto.Description.Should().BeNull();
     }
 
+    // Повинен створити продукт лише з годинами (репродукція помилки)
+    [Fact]
+    public async Task ShouldCreateProductWithHoursOnly()
+    {
+        // Arrange
+        var request = new CreateProductDto
+        {
+            Name = "Test Product Hours Only",
+            Description = "Test description",
+            ProductTypeId = _testProductType.Id,
+            ShelfLifeDays = null,
+            ShelfLifeHours = 5
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync(BaseRoute, request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var productDto = await response.ToResponseModel<ProductDto>();
+        productDto.ShelfLifeDays.Should().BeNull();
+        productDto.ShelfLifeHours.Should().Be(5);
+    }
+
     // Не повинен створити продукт з порожньою назвою
     [Theory]
     [InlineData("")]
@@ -122,8 +146,8 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
 
-        // Assert - API returns 500 for invalid ProductTypeId (unhandled case)
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     // Не повинен створити продукт з ProductTypeId = 0

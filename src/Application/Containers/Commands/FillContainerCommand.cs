@@ -65,10 +65,14 @@ public class FillContainerCommandHandler(
                         }
                         else
                         {
-                            var shelfLife = p.ShelfLifeDays ?? p.ProductType?.ShelfLifeDays;
-                            if (shelfLife.HasValue)
+                            var shelfLifeDays = p.ShelfLifeDays ?? p.ProductType?.ShelfLifeDays;
+                            var shelfLifeHours = p.ShelfLifeHours ?? p.ProductType?.ShelfLifeHours;
+                            
+                            if (shelfLifeDays.HasValue || shelfLifeHours.HasValue)
                             {
-                                expirationDate = request.ProductionDate.AddDays(shelfLife.Value);
+                                expirationDate = request.ProductionDate
+                                    .AddDays(shelfLifeDays ?? 0)
+                                    .AddHours(shelfLifeHours ?? 0);
                             }
                             else
                             {

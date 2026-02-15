@@ -17,5 +17,10 @@ public class CreateProductTypeDtoValidator : AbstractValidator<CreateProductType
             .GreaterThanOrEqualTo(0)
             .WithMessage("Shelf life days cannot be negative")
             .When(x => x.ShelfLifeDays.HasValue);
+
+        RuleFor(x => x.ShelfLifeHours)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Shelf life hours cannot be negative")
+            .When(x => x.ShelfLifeHours.HasValue);
     }
 }

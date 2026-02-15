@@ -8,6 +8,7 @@ public record ProductTypeDto(
     int Id, 
     string Name, 
     int? ShelfLifeDays, 
+    int? ShelfLifeHours,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta, 
@@ -19,6 +20,7 @@ public record ProductTypeDto(
             productType.Id, 
             productType.Name, 
             productType.ShelfLifeDays,
+            productType.ShelfLifeHours,
             productType.Meta, 
             productType.CreatedAt);
 }
@@ -26,6 +28,7 @@ public record ProductTypeDto(
 public record CreateProductTypeDto(
     string Name, 
     int? ShelfLifeDays, 
+    int? ShelfLifeHours,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta
@@ -34,6 +37,7 @@ public record CreateProductTypeDto(
 public record UpdateProductTypeDto(
     string Name, 
     int? ShelfLifeDays, 
+    int? ShelfLifeHours,
     
     [property: JsonConverter(typeof(JsonStringConverter))] 
     string? Meta

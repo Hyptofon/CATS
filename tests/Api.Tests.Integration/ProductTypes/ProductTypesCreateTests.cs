@@ -51,7 +51,7 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldCreateProductTypeWithNullShelfLifeDays()
     {
         // Arrange
-        var request = new CreateProductTypeDto("Test-NoShelfLife", null, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto("Test-NoShelfLife", null, null, "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -62,13 +62,30 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
         productTypeDto.ShelfLifeDays.Should().BeNull();
     }
 
+    // Повинен створити тип продукту лише з годинами
+    [Fact]
+    public async Task ShouldCreateProductTypeWithHoursOnly()
+    {
+        // Arrange
+        var request = new CreateProductTypeDto("Test-HoursOnly", null, 5, null);
+
+        // Act
+        var response = await Client.PostAsJsonAsync(BaseRoute, request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var productTypeDto = await response.ToResponseModel<ProductTypeDto>();
+        productTypeDto.ShelfLifeDays.Should().BeNull();
+        productTypeDto.ShelfLifeHours.Should().Be(5);
+    }
+
     // Повинен створити тип продукту без мета-даних
     [Fact]
     public async Task ShouldCreateProductTypeWithNullMeta()
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateProductTypeDto($"Test-{uniqueId}-NoMeta", 30, null);
+        var request = new CreateProductTypeDto($"Test-{uniqueId}-NoMeta", 30, null, null);
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -84,7 +101,7 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateProductTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new CreateProductTypeDto(_existingProductType.Name, 30, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto(_existingProductType.Name, 30, null, "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -100,7 +117,7 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateProductTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new CreateProductTypeDto(name!, 30, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto(name!, 30, null, "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -114,7 +131,7 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateProductTypeBecauseNegativeShelfLifeDays()
     {
         // Arrange
-        var request = new CreateProductTypeDto("Test-Negative", -1, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto("Test-Negative", -1, null, "{\"test\":\"meta\"}");
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -129,7 +146,7 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('N', 101);
-        var request = new CreateProductTypeDto(tooLongName, 30, null);
+        var request = new CreateProductTypeDto(tooLongName, 30, null, null);
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
