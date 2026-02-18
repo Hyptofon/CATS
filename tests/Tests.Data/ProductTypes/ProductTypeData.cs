@@ -32,22 +32,24 @@ public static class ProductTypeData
     public static CreateProductTypeDto CreateTestProductTypeDto(string prefix = "Test")
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        return new CreateProductTypeDto(
-            $"{prefix}-{uniqueId}-Kvass", 
-            14,
-            null,
-            "{\"description\":\"Квас\"}" 
-        );
+        return new CreateProductTypeDto
+        {
+            Name = $"{prefix}-{uniqueId}-Kvass",
+            ShelfLifeDays = 14,
+            ShelfLifeHours = null,
+            Meta = "{\"description\":\"Квас\"}"
+        };
     }
 
     public static UpdateProductTypeDto UpdateTestProductTypeDto(string prefix = "Updated")
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        return new UpdateProductTypeDto(
-            $"{prefix}-{uniqueId}-ProductType", 
-            60,
-            null,
-            "{\"description\":\"Updated product type\"}"
-        );
+        return new UpdateProductTypeDto
+        {
+            Name = $"{prefix}-{uniqueId}-ProductType",
+            ShelfLifeDays = 60,
+            ShelfLifeHours = null,
+            Meta = "{\"description\":\"Updated product type\"}"
+        };
     }
 }

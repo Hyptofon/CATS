@@ -53,9 +53,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldCreateContainerTypeWithNullMeta()
     {
         // Arrange
-        var request = new CreateContainerTypeDto("Test-NullMeta-Type", "TEST-NM", "кг", null,
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = "Test-NullMeta-Type",
+            CodePrefix = "TEST-NM",
+            DefaultUnit = "кг",
+            Meta = null,
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -72,9 +77,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var longName = new string('A', 100);
-        var request = new CreateContainerTypeDto(longName, "TEST-LN", "л", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = longName,
+            CodePrefix = "TEST-LN",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -90,9 +100,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new CreateContainerTypeDto(_existingContainerType.Name, "TEST-DUP", "л", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = _existingContainerType.Name,
+            CodePrefix = "TEST-DUP",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -106,13 +121,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseDuplicateNameCaseInsensitive()
     {
         // Arrange
-        var request = new CreateContainerTypeDto(
-            _existingContainerType.Name.ToUpper(),
-            "TEST-DUP-CI",
-            "л",
-            "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = _existingContainerType.Name.ToUpper(),
+            CodePrefix = "TEST-DUP-CI",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -128,9 +144,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new CreateContainerTypeDto(name!, "TEST-EN", "л", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = name!,
+            CodePrefix = "TEST-EN",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -146,9 +167,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseEmptyDefaultUnit(string? unit)
     {
         // Arrange
-        var request = new CreateContainerTypeDto("Valid-Name", "TEST-VU", unit!, "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = "Valid-Name",
+            CodePrefix = "TEST-VU",
+            DefaultUnit = unit!,
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -163,9 +189,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('A', 101);
-        var request = new CreateContainerTypeDto(tooLongName, "TEST-LG", "л", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = tooLongName,
+            CodePrefix = "TEST-LG",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -179,9 +210,14 @@ public class ContainerTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerTypeBecauseWhitespaceName()
     {
         // Arrange
-        var request = new CreateContainerTypeDto("            ", "TEST-WS", "kg", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new CreateContainerTypeDto
+        {
+            Name = "            ",
+            CodePrefix = "TEST-WS",
+            DefaultUnit = "kg",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
 

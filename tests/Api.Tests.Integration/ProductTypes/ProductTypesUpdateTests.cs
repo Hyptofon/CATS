@@ -53,7 +53,13 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new UpdateProductTypeDto($"Updated-{uniqueId}", null, null, null);
+        var request = new UpdateProductTypeDto
+        {
+            Name = $"Updated-{uniqueId}",
+            ShelfLifeDays = null,
+            ShelfLifeHours = null,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -86,7 +92,13 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateProductTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new UpdateProductTypeDto(_secondTestProductType.Name, 60, null, "{\"updated\":\"meta\"}");
+        var request = new UpdateProductTypeDto
+        {
+            Name = _secondTestProductType.Name,
+            ShelfLifeDays = 60,
+            ShelfLifeHours = null,
+            Meta = "{\"updated\":\"meta\"}"
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -104,7 +116,13 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateProductTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new UpdateProductTypeDto(name!, 30, null, null);
+        var request = new UpdateProductTypeDto
+        {
+            Name = name!,
+            ShelfLifeDays = 30,
+            ShelfLifeHours = null,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -120,7 +138,13 @@ public class ProductTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateProductTypeBecauseNegativeShelfLifeDays()
     {
         // Arrange
-        var request = new UpdateProductTypeDto("Valid-Name", -1, null, null);
+        var request = new UpdateProductTypeDto
+        {
+            Name = "Valid-Name",
+            ShelfLifeDays = -1,
+            ShelfLifeHours = null,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(

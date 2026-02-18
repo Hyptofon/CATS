@@ -36,26 +36,28 @@ public static class ContainerData
     public static CreateContainerDto CreateTestContainerDto(int containerTypeId)
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        return new CreateContainerDto(
-            $"QR-{uniqueId}-NEW",
-            $"Test-New-Container-{uniqueId}",
-            100.0m,
-            "л",
-            containerTypeId,
-            "{\"location\":\"Warehouse C\"}"
-        );
+        return new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}-NEW",
+            Name = $"Test-New-Container-{uniqueId}",
+            Volume = 100.0m,
+            Unit = "л",
+            ContainerTypeId = containerTypeId,
+            Meta = "{\"location\":\"Warehouse C\"}"
+        };
     }
     
     public static CreateContainerDto CreateTestContainerDtoWithAutoCode(int containerTypeId)
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        return new CreateContainerDto(
-            null,
-            $"Test-AutoCode-Container-{uniqueId}",
-            100.0m,
-            "л",
-            containerTypeId,
-            "{\"location\":\"Warehouse D\"}"
-        );
+        return new CreateContainerDto
+        {
+            Code = null,
+            Name = $"Test-AutoCode-Container-{uniqueId}",
+            Volume = 100.0m,
+            Unit = "л",
+            ContainerTypeId = containerTypeId,
+            Meta = "{\"location\":\"Warehouse D\"}"
+        };
     }
 }

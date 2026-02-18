@@ -81,6 +81,10 @@ public static class SetupModule
             });
 
             c.UseAllOfToExtendReferenceSchemas();
+
+            var xmlFile = Path.Combine(AppContext.BaseDirectory, "Api.xml");
+            if (File.Exists(xmlFile))
+                c.IncludeXmlComments(xmlFile);
         });
     }
 }

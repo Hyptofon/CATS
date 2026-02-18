@@ -23,6 +23,7 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
     private readonly ProductType _testProductType = ProductTypeData.FirstTestProductType();
     private Container? _emptyContainer;
     private Container? _fullContainer;
+    private Container? _expiredContainer;
     private Product? _testProduct;
 
     public ContainersSearchTests(IntegrationTestWebFactory factory) : base(factory)
@@ -167,7 +168,80 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var containers = await response.ToResponseModel<List<ContainerDto>>();
-        containers.Should().HaveCount(2);
+        containers.Should().HaveCount(3); // empty + full + expired
+    }
+
+    // Повинен знайти тільки прострочені контейнери (showExpired=true)
+    [Fact]
+    public async Task ShouldSearchContainersByShowExpiredTrue()
+    {
+        // Arrange - none
+
+        // Act
+        var response = await Client.GetAsync($"{BaseRoute}/search?showExpired=true");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var containers = await response.ToResponseModel<List<ContainerDto>>();
+        containers.Should().NotBeEmpty();
+        containers.Should().AllSatisfy(c =>
+        {
+            c.CurrentExpirationDate.Should().NotBeNull();
+            c.CurrentExpirationDate!.Value.Should().BeBefore(DateTime.UtcNow);
+        });
+    }
+
+    // showExpired=false не фільтрує — повертає всі контейнери (за поточною реалізацією)
+    [Fact]
+    public async Task ShouldSearchContainersByShowExpiredFalse()
+    {
+        // Arrange - none
+
+        // Act
+        var response = await Client.GetAsync($"{BaseRoute}/search?showExpired=false");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var containers = await response.ToResponseModel<List<ContainerDto>>();
+        containers.Should().HaveCount(3);
+    }
+
+    // Повинен знайти контейнери за датою виробництва
+    [Fact]
+    public async Task ShouldSearchContainersByProductionDate()
+    {
+        // Arrange - use today's date since the full container was filled with ProductionDate = DateTime.UtcNow
+        var productionDate = DateTime.UtcNow.Date.ToString("O");
+
+        // Act
+        var response = await Client.GetAsync(
+            $"{BaseRoute}/search?productionDate={Uri.EscapeDataString(productionDate)}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var containers = await response.ToResponseModel<List<ContainerDto>>();
+        containers.Should().NotBeEmpty();
+        containers.Should().AllSatisfy(c =>
+            c.CurrentProductionDate.Should().NotBeNull());
+    }
+
+    // Повинен знайти контейнери, наповнені сьогодні (filledToday)
+    [Fact]
+    public async Task ShouldSearchContainersByFilledToday()
+    {
+        // Arrange - use today's date since the full container was filled today
+        var filledDate = DateTime.UtcNow.Date.ToString("O");
+
+        // Act
+        var response = await Client.GetAsync(
+            $"{BaseRoute}/search?filledToday={Uri.EscapeDataString(filledDate)}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var containers = await response.ToResponseModel<List<ContainerDto>>();
+        containers.Should().NotBeEmpty();
+        containers.Should().AllSatisfy(c =>
+            c.CurrentFilledAt.Should().NotBeNull());
     }
 
     public async Task InitializeAsync()
@@ -183,10 +257,21 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
         _emptyContainer = ContainerData.FirstTestContainer(_firstContainerType.Id);
         _fullContainer = ContainerData.SecondTestContainer(_firstContainerType.Id);
 
-        await Context.Containers.AddRangeAsync(_emptyContainer, _fullContainer);
+        // Third container for expired product fill
+        _expiredContainer = Container.New(
+            $"QR-EXPIRED-{Guid.NewGuid().ToString()[..8]}",
+            $"Test-Expired-Container-{Guid.NewGuid().ToString()[..8]}",
+            60.0m,
+            "л",
+            _firstContainerType.Id,
+            null,
+            new Guid("00000000-0000-0000-0000-000000000001")
+        );
+
+        await Context.Containers.AddRangeAsync(_emptyContainer, _fullContainer, _expiredContainer);
         await SaveChangesAsync();
 
-        // Fill the second container to have it in Full status
+        // Fill the second container (non-expired, filled today)
         var containerFill = ContainerFill.New(
             _fullContainer.Id,
             _testProduct.Id,
@@ -210,6 +295,32 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
             Guid.NewGuid()
         );
         Context.Containers.Update(_fullContainer);
+        await SaveChangesAsync();
+
+        // Fill the third container with expired product
+        var expiredFill = ContainerFill.New(
+            _expiredContainer.Id,
+            _testProduct.Id,
+            40m,
+            "л",
+            DateTime.UtcNow.AddDays(-60),
+            DateTime.UtcNow.AddDays(-10), // already expired
+            Guid.NewGuid()
+        );
+        await Context.ContainerFills.AddAsync(expiredFill);
+        await SaveChangesAsync();
+
+        _expiredContainer.Fill(
+            _testProduct.Id,
+            _testProductType.Id,
+            expiredFill.Quantity,
+            expiredFill.Unit,
+            expiredFill.ProductionDate,
+            expiredFill.ExpirationDate,
+            expiredFill.Id,
+            Guid.NewGuid()
+        );
+        Context.Containers.Update(_expiredContainer);
         await SaveChangesAsync();
     }
 

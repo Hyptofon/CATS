@@ -67,7 +67,7 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
     [Fact]
     public async Task ShouldInheritShelfLifeFromProductTypeWhenNotProvided()
     {
-        // Arrange. Define a ProductType with specific shelf life in the db
+        // Arrange
         var productType = ProductType.New("Inheritance Test Type", 10, 5, null, null);
         await Context.ProductTypes.AddAsync(productType);
         await SaveChangesAsync();
@@ -93,7 +93,7 @@ public class ProductsCreateTests : BaseIntegrationTest, IAsyncLifetime
         productDto.ShelfLifeHours.Should().Be(5);
     }
 
-    // Повинен створити продукт лише з годинами (репродукція помилки)
+    // Повинен створити продукт лише з годинами (без днів)
     [Fact]
     public async Task ShouldCreateProductWithHoursOnly()
     {

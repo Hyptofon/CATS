@@ -51,7 +51,13 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldCreateProductTypeWithNullShelfLifeDays()
     {
         // Arrange
-        var request = new CreateProductTypeDto("Test-NoShelfLife", null, null, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto
+        {
+            Name = "Test-NoShelfLife",
+            ShelfLifeDays = null,
+            ShelfLifeHours = null,
+            Meta = "{\"test\":\"meta\"}"
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -67,7 +73,13 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldCreateProductTypeWithHoursOnly()
     {
         // Arrange
-        var request = new CreateProductTypeDto("Test-HoursOnly", null, 5, null);
+        var request = new CreateProductTypeDto
+        {
+            Name = "Test-HoursOnly",
+            ShelfLifeDays = null,
+            ShelfLifeHours = 5,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -85,7 +97,13 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateProductTypeDto($"Test-{uniqueId}-NoMeta", 30, null, null);
+        var request = new CreateProductTypeDto
+        {
+            Name = $"Test-{uniqueId}-NoMeta",
+            ShelfLifeDays = 30,
+            ShelfLifeHours = null,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -101,7 +119,13 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateProductTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new CreateProductTypeDto(_existingProductType.Name, 30, null, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto
+        {
+            Name = _existingProductType.Name,
+            ShelfLifeDays = 30,
+            ShelfLifeHours = null,
+            Meta = "{\"test\":\"meta\"}"
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -117,7 +141,13 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateProductTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new CreateProductTypeDto(name!, 30, null, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto
+        {
+            Name = name!,
+            ShelfLifeDays = 30,
+            ShelfLifeHours = null,
+            Meta = "{\"test\":\"meta\"}"
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -131,7 +161,13 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateProductTypeBecauseNegativeShelfLifeDays()
     {
         // Arrange
-        var request = new CreateProductTypeDto("Test-Negative", -1, null, "{\"test\":\"meta\"}");
+        var request = new CreateProductTypeDto
+        {
+            Name = "Test-Negative",
+            ShelfLifeDays = -1,
+            ShelfLifeHours = null,
+            Meta = "{\"test\":\"meta\"}"
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -146,7 +182,13 @@ public class ProductTypesCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('N', 101);
-        var request = new CreateProductTypeDto(tooLongName, 30, null, null);
+        var request = new CreateProductTypeDto
+        {
+            Name = tooLongName,
+            ShelfLifeDays = 30,
+            ShelfLifeHours = null,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);

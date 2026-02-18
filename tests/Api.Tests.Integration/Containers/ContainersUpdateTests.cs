@@ -29,13 +29,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldUpdateContainer()
     {
         // Arrange
-        var request = new UpdateContainerDto(
-            "Updated-Container-Name",
-            75.0m,
-            "кг",
-            _secondContainerType.Id,
-            "{\"location\":\"Updated Location\"}"
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = "Updated-Container-Name",
+            Volume = 75.0m,
+            Unit = "кг",
+            ContainerTypeId = _secondContainerType.Id,
+            Meta = "{\"location\":\"Updated Location\"}"
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -66,13 +67,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldUpdateContainerToNullMeta()
     {
         // Arrange
-        var request = new UpdateContainerDto(
-            "Updated-Name",
-            60.0m,
-            "л",
-            _firstContainerType.Id,
-            null
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = "Updated-Name",
+            Volume = 60.0m,
+            Unit = "л",
+            ContainerTypeId = _firstContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -91,13 +93,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var originalCode = _testContainer!.Code;
-        var request = new UpdateContainerDto(
-            "Completely-New-Name",
-            100.0m,
-            "л",
-            _firstContainerType.Id,
-            null
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = "Completely-New-Name",
+            Volume = 100.0m,
+            Unit = "л",
+            ContainerTypeId = _firstContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -115,13 +118,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerBecauseNotFound()
     {
         // Arrange
-        var request = new UpdateContainerDto(
-            "Updated-Name",
-            60.0m,
-            "л",
-            _firstContainerType.Id,
-            null
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = "Updated-Name",
+            Volume = 60.0m,
+            Unit = "л",
+            ContainerTypeId = _firstContainerType.Id,
+            Meta = null
+        };
         var nonExistentId = 999999;
 
         // Act
@@ -136,13 +140,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerBecauseContainerTypeNotFound()
     {
         // Arrange
-        var request = new UpdateContainerDto(
-            "Updated-Name",
-            60.0m,
-            "л",
-            999999,
-            null
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = "Updated-Name",
+            Volume = 60.0m,
+            Unit = "л",
+            ContainerTypeId = 999999,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -160,13 +165,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new UpdateContainerDto(
-            name!,
-            50.0m,
-            "л",
-            _firstContainerType.Id,
-            null
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = name!,
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = _firstContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -184,13 +190,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerBecauseEmptyUnit(string? unit)
     {
         // Arrange
-        var request = new UpdateContainerDto(
-            "Valid-Name",
-            50.0m,
-            unit!,
-            _firstContainerType.Id,
-            null
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = "Valid-Name",
+            Volume = 50.0m,
+            Unit = unit!,
+            ContainerTypeId = _firstContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -208,13 +215,14 @@ public class ContainersUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerBecauseVolumeZeroOrNegative(decimal volume)
     {
         // Arrange
-        var request = new UpdateContainerDto(
-            "Valid-Name",
-            volume,
-            "л",
-            _firstContainerType.Id,
-            null
-        );
+        var request = new UpdateContainerDto
+        {
+            Name = "Valid-Name",
+            Volume = volume,
+            Unit = "л",
+            ContainerTypeId = _firstContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(

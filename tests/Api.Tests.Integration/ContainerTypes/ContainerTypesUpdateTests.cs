@@ -54,13 +54,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldUpdateContainerTypeWithSameName()
     {
         // Arrange
-        var request = new UpdateContainerTypeDto(
-            _firstTestContainerType.Name,
-            "TEST-UPD",
-            "кг",
-            "{\"updated\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = _firstTestContainerType.Name,
+            CodePrefix = "TEST-UPD",
+            DefaultUnit = "кг",
+            Meta = "{\"updated\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -76,9 +77,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldUpdateContainerTypeToNullMeta()
     {
         // Arrange
-        var request = new UpdateContainerTypeDto("Updated-Name", "TEST-NM", "л", null,
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = "Updated-Name",
+            CodePrefix = "TEST-NM",
+            DefaultUnit = "л",
+            Meta = null,
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -97,9 +103,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var longName = new string('U', 100);
-        var request = new UpdateContainerTypeDto(longName, "TEST-LN", "л", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = longName,
+            CodePrefix = "TEST-LN",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -130,9 +141,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseDuplicateName()
     {
         // Arrange
-        var request = new UpdateContainerTypeDto(_secondTestContainerType.Name, "TEST-DUP", "л", "{\"updated\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = _secondTestContainerType.Name,
+            CodePrefix = "TEST-DUP",
+            DefaultUnit = "л",
+            Meta = "{\"updated\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -148,13 +164,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseDuplicateNameCaseInsensitive()
     {
         // Arrange
-        var request = new UpdateContainerTypeDto(
-            _secondTestContainerType.Name.ToLower(),
-            "TEST-DUP-CI",
-            "л",
-            "{\"updated\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = _secondTestContainerType.Name.ToLower(),
+            CodePrefix = "TEST-DUP-CI",
+            DefaultUnit = "л",
+            Meta = "{\"updated\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -172,9 +189,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseEmptyName(string? name)
     {
         // Arrange
-        var request = new UpdateContainerTypeDto(name!, "TEST-EN", "л", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = name!,
+            CodePrefix = "TEST-EN",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -192,9 +214,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotUpdateContainerTypeBecauseEmptyDefaultUnit(string? unit)
     {
         // Arrange
-        var request = new UpdateContainerTypeDto("Valid-Name", "TEST-VU", unit!, "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = "Valid-Name",
+            CodePrefix = "TEST-VU",
+            DefaultUnit = unit!,
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(
@@ -211,9 +238,14 @@ public class ContainerTypesUpdateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongName = new string('U', 101);
-        var request = new UpdateContainerTypeDto(tooLongName, "TEST-LG", "л", "{\"test\":\"meta\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        var request = new UpdateContainerTypeDto
+        {
+            Name = tooLongName,
+            CodePrefix = "TEST-LG",
+            DefaultUnit = "л",
+            Meta = "{\"test\":\"meta\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
 
         // Act
         var response = await Client.PutAsJsonAsync(

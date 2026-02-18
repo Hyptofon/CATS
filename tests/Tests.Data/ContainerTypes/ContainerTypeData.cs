@@ -32,24 +32,26 @@ public static class ContainerTypeData
     public static CreateContainerTypeDto CreateTestContainerTypeDto(string prefix = "Test")
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        return new CreateContainerTypeDto(
-            $"{prefix}-{uniqueId}-Tank-100L",
-            "TEST",
-            "л",
-            "{\"description\":\"Металевий резервуар 100 літрів\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        return new CreateContainerTypeDto
+        {
+            Name = $"{prefix}-{uniqueId}-Tank-100L",
+            CodePrefix = "TEST",
+            DefaultUnit = "л",
+            Meta = "{\"description\":\"Металевий резервуар 100 літрів\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
     }
     
     public static UpdateContainerTypeDto UpdateTestContainerTypeDto(string prefix = "UpdatedTest")
     {
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        return new UpdateContainerTypeDto(
-            $"{prefix}-{uniqueId}-Tank-200L",
-            "TEST-UPD",
-            "л",
-            "{\"description\":\"Оновлений металевий резервуар 200 літрів\"}",
-            AllowedProductTypeIds: new List<int>()
-        );
+        return new UpdateContainerTypeDto
+        {
+            Name = $"{prefix}-{uniqueId}-Tank-200L",
+            CodePrefix = "TEST-UPD",
+            DefaultUnit = "л",
+            Meta = "{\"description\":\"Оновлений металевий резервуар 200 літрів\"}",
+            AllowedProductTypeIds = new List<int>()
+        };
     }
 }

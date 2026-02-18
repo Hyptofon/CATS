@@ -30,7 +30,7 @@ public class ProductsSearchTests : BaseIntegrationTest, IAsyncLifetime
         var searchTerm = "Product";
 
         // Act
-        var response = await Client.GetAsync($"{BaseRoute}/search?searchTerm={searchTerm}");
+        var response = await Client.GetAsync($"{BaseRoute}/search?search={searchTerm}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -63,7 +63,7 @@ public class ProductsSearchTests : BaseIntegrationTest, IAsyncLifetime
 
         // Act
         var response = await Client.GetAsync(
-            $"{BaseRoute}/search?searchTerm=Product&productTypeId={_firstProductType.Id}");
+            $"{BaseRoute}/search?search=Product&productTypeId={_firstProductType.Id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -79,7 +79,7 @@ public class ProductsSearchTests : BaseIntegrationTest, IAsyncLifetime
         var searchTerm = "product"; // lowercase
 
         // Act
-        var response = await Client.GetAsync($"{BaseRoute}/search?searchTerm={searchTerm}");
+        var response = await Client.GetAsync($"{BaseRoute}/search?search={searchTerm}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -60,14 +60,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateContainerDto(
-            $"QR-{uniqueId}-NULL",
-            "Test-NullMeta-Container",
-            50.0m,
-            "л",
-            _testContainerType.Id,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}-NULL",
+            Name = "Test-NullMeta-Container",
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = _testContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -106,14 +107,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldNotCreateContainerBecauseDuplicateCode()
     {
         // Arrange
-        var request = new CreateContainerDto(
-            _existingContainer!.Code,
-            "Test-Duplicate-Container",
-            50.0m,
-            "л",
-            _testContainerType.Id,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = _existingContainer!.Code,
+            Name = "Test-Duplicate-Container",
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = _testContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -130,14 +132,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateContainerDto(
-            $"QR-{uniqueId}",
-            name!,
-            50.0m,
-            "л",
-            _testContainerType.Id,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}",
+            Name = name!,
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = _testContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -154,14 +157,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateContainerDto(
-            $"QR-{uniqueId}",
-            "Test-Container",
-            50.0m,
-            unit!,
-            _testContainerType.Id,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}",
+            Name = "Test-Container",
+            Volume = 50.0m,
+            Unit = unit!,
+            ContainerTypeId = _testContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -178,14 +182,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateContainerDto(
-            $"QR-{uniqueId}",
-            "Valid-Name",
-            volume,
-            "л",
-            _testContainerType.Id,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}",
+            Name = "Valid-Name",
+            Volume = volume,
+            Unit = "л",
+            ContainerTypeId = _testContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -200,14 +205,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var tooLongCode = new string('C', 51);
-        var request = new CreateContainerDto(
-            tooLongCode,
-            "Test-Long-Code",
-            50.0m,
-            "л",
-            _testContainerType.Id,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = tooLongCode,
+            Name = "Test-Long-Code",
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = _testContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -223,14 +229,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
         var tooLongName = new string('N', 101);
-        var request = new CreateContainerDto(
-            $"QR-{uniqueId}-LONG",
-            tooLongName,
-            50.0m,
-            "л",
-            _testContainerType.Id,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}-LONG",
+            Name = tooLongName,
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = _testContainerType.Id,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -245,14 +252,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateContainerDto(
-            $"QR-{uniqueId}",
-            "Test-Container",
-            50.0m,
-            "л",
-            999999,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}",
+            Name = "Test-Container",
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = 999999,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
@@ -267,14 +275,15 @@ public class ContainersCreateTests : BaseIntegrationTest, IAsyncLifetime
     {
         // Arrange
         var uniqueId = Guid.NewGuid().ToString()[..8];
-        var request = new CreateContainerDto(
-            $"QR-{uniqueId}",
-            "Test-Container",
-            50.0m,
-            "л",
-            0,
-            null
-        );
+        var request = new CreateContainerDto
+        {
+            Code = $"QR-{uniqueId}",
+            Name = "Test-Container",
+            Volume = 50.0m,
+            Unit = "л",
+            ContainerTypeId = 0,
+            Meta = null
+        };
 
         // Act
         var response = await Client.PostAsJsonAsync(BaseRoute, request);
