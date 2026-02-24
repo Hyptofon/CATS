@@ -2,6 +2,7 @@ using Api.Dtos;
 using Api.Modules.Errors;
 using Application.Invitations.Commands;
 using Application.Invitations.Queries;
+using Application.Users.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -58,5 +59,44 @@ public class InvitationsController(ISender sender) : ControllerBase
         return result.Match<IActionResult>(
             invitation => Ok(InvitationDto.FromDomainModel(invitation)),
             () => NotFound("Invalid or expired invitation."));
+    }
+
+    /// <summary>
+    /// Отримати список всіх запрошень (тільки Admin)
+    /// </summary>
+    /// <returns>Список всіх запрошень</returns>
+    /// <response code="200">Список запрошень</response>
+    [Authorize(Roles = "Admin", Policy = "MustBeActive")]
+    [HttpGet]
+    [ProducesResponseType(typeof(List<InvitationDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll()
+    {
+        var invitations = await sender.Send(new GetInvitationsQuery());
+        return Ok(invitations.Select(InvitationDto.FromDomainModel).ToList());
+    }
+
+    /// <summary>
+    /// Повторно надіслати існуюче запрошення (тільки Admin)
+    /// </summary>
+    /// <param name="id">Ідентифікатор запрошення для повторної відправки</param>
+    /// <returns>Оновлене запрошення з новим терміном дії</returns>
+    /// <response code="200">Запрошення успішно перевідправлено</response>
+    /// <response code="404">Запрошення не знайдено</response>
+    /// <response code="400">Запрошення вже було використано</response>
+    [Authorize(Roles = "Admin", Policy = "MustBeActive")]
+    [HttpPost("{id}/resend")]
+    [ProducesResponseType(typeof(InvitationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Resend(Guid id)
+    {
+        var command = new ResendInvitationCommand { InvitationId = id };
+        var result = await sender.Send(command);
+        
+        return result.Match<IActionResult>(
+            invitation => Ok(InvitationDto.FromDomainModel(invitation)),
+            exception => exception is InvitationNotFoundException
+                ? NotFound(exception.Message)
+                : BadRequest(exception.Message));
     }
 }

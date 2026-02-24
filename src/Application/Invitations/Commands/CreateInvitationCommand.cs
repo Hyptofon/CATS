@@ -32,25 +32,28 @@ public class CreateInvitationCommandHandler(
             return new UserAlreadyExistsException(request.Email);
         }
         
-        var existingInvite = await dbContext.UserInvitations
+        var invitation = await dbContext.UserInvitations
             .FirstOrDefaultAsync(i => 
                 i.Email == request.Email && !i.IsUsed && i.ExpiresAt > DateTime.UtcNow, cancellationToken);
 
-        if (existingInvite != null)
+        if (invitation != null)
         {
-            return new InvitationAlreadyExistsException(request.Email);
+            invitation.Role = request.Role;
+            invitation.ExpiresAt = DateTime.UtcNow.AddDays(1);
         }
-        
-        var invitation = new UserInvitation
+        else
         {
-            Id = Guid.NewGuid(), 
-            Email = request.Email,
-            Role = request.Role,
-            ExpiresAt = DateTime.UtcNow.AddDays(1),
-            IsUsed = false,
-        };
+            invitation = new UserInvitation
+            {
+                Id = Guid.NewGuid(), 
+                Email = request.Email,
+                Role = request.Role,
+                ExpiresAt = DateTime.UtcNow.AddDays(1),
+                IsUsed = false,
+            };
+            dbContext.UserInvitations.Add(invitation);
+        }
 
-        dbContext.UserInvitations.Add(invitation);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         // Send Email (Fire and forget to not block)

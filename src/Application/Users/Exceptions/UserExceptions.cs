@@ -37,3 +37,9 @@ public class SelfDeactivationException : UserException
     public SelfDeactivationException()
         : base("You cannot deactivate your own account.") { }
 }
+
+public class InvitationNotFoundException : UserException
+{
+    public InvitationNotFoundException(Guid id)
+        : base($"Invitation with ID {id} was not found.") { }
+}
