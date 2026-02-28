@@ -96,8 +96,14 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_container_types");
 
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_container_types_created_by_id");
+
                     b.HasIndex("IsDeleted")
                         .HasDatabaseName("ix_container_types_is_deleted");
+
+                    b.HasIndex("LastModifiedById")
+                        .HasDatabaseName("ix_container_types_last_modified_by_id");
 
                     b.HasIndex("Name")
                         .IsUnique()
@@ -225,6 +231,9 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ContainerTypeId")
                         .HasDatabaseName("ix_containers_container_type_id");
 
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_containers_created_by_id");
+
                     b.HasIndex("CurrentFillId")
                         .IsUnique()
                         .HasDatabaseName("ix_containers_current_fill_id");
@@ -243,6 +252,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("LastEmptiedAt")
                         .HasDatabaseName("ix_containers_last_emptied_at");
+
+                    b.HasIndex("LastModifiedById")
+                        .HasDatabaseName("ix_containers_last_modified_by_id");
 
                     b.HasIndex("LastProductId")
                         .HasDatabaseName("ix_containers_last_product_id");
@@ -312,11 +324,17 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ContainerId")
                         .HasDatabaseName("ix_container_fills_container_id");
 
+                    b.HasIndex("EmptiedByUserId")
+                        .HasDatabaseName("ix_container_fills_emptied_by_user_id");
+
                     b.HasIndex("EmptiedDate")
                         .HasDatabaseName("ix_container_fills_emptied_date");
 
                     b.HasIndex("ExpirationDate")
                         .HasDatabaseName("ix_container_fills_expiration_date");
+
+                    b.HasIndex("FilledByUserId")
+                        .HasDatabaseName("ix_container_fills_filled_by_user_id");
 
                     b.HasIndex("FilledDate")
                         .HasDatabaseName("ix_container_fills_filled_date");
@@ -391,9 +409,15 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_users_created_by_id");
+
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasDatabaseName("ix_users_email");
+
+                    b.HasIndex("LastModifiedById")
+                        .HasDatabaseName("ix_users_last_modified_by_id");
 
                     b.ToTable("users", (string)null);
                 });
@@ -446,8 +470,14 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_invitations");
 
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_user_invitations_created_by_id");
+
                     b.HasIndex("Email")
                         .HasDatabaseName("ix_user_invitations_email");
+
+                    b.HasIndex("LastModifiedById")
+                        .HasDatabaseName("ix_user_invitations_last_modified_by_id");
 
                     b.ToTable("user_invitations", (string)null);
                 });
@@ -509,8 +539,14 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_products");
 
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_products_created_by_id");
+
                     b.HasIndex("IsDeleted")
                         .HasDatabaseName("ix_products_is_deleted");
+
+                    b.HasIndex("LastModifiedById")
+                        .HasDatabaseName("ix_products_last_modified_by_id");
 
                     b.HasIndex("Name")
                         .HasDatabaseName("ix_products_name");
@@ -574,8 +610,14 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_product_types");
 
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_product_types_created_by_id");
+
                     b.HasIndex("IsDeleted")
                         .HasDatabaseName("ix_product_types_is_deleted");
+
+                    b.HasIndex("LastModifiedById")
+                        .HasDatabaseName("ix_product_types_last_modified_by_id");
 
                     b.HasIndex("Name")
                         .IsUnique()
@@ -602,6 +644,25 @@ namespace Infrastructure.Migrations
                         .HasConstraintName("fk_container_type_allowed_products_container_types_compatible_con");
                 });
 
+            modelBuilder.Entity("Domain.ContainerTypes.ContainerType", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_container_types_users_created_by_id");
+
+                    b.HasOne("Domain.Entities.User", "LastModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_container_types_users_last_modified_by_id");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("LastModifiedByUser");
+                });
+
             modelBuilder.Entity("Domain.Containers.Container", b =>
                 {
                     b.HasOne("Domain.ContainerTypes.ContainerType", "ContainerType")
@@ -611,15 +672,31 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_containers_container_types_id");
 
+                    b.HasOne("Domain.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_containers_users_created_by_id");
+
                     b.HasOne("Domain.Products.Product", "CurrentProduct")
                         .WithMany()
                         .HasForeignKey("CurrentProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_containers_products_current_product_id");
 
+                    b.HasOne("Domain.Entities.User", "LastModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_containers_users_last_modified_by_id");
+
                     b.Navigation("ContainerType");
 
+                    b.Navigation("CreatedByUser");
+
                     b.Navigation("CurrentProduct");
+
+                    b.Navigation("LastModifiedByUser");
                 });
 
             modelBuilder.Entity("Domain.Containers.ContainerFill", b =>
@@ -631,6 +708,19 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_container_fills_containers_id");
 
+                    b.HasOne("Domain.Entities.User", "EmptiedByUser")
+                        .WithMany()
+                        .HasForeignKey("EmptiedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_container_fills_users_emptied_by_user_id");
+
+                    b.HasOne("Domain.Entities.User", "FilledByUser")
+                        .WithMany()
+                        .HasForeignKey("FilledByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_container_fills_users_filled_by_user_id");
+
                     b.HasOne("Domain.Products.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -640,11 +730,65 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Container");
 
+                    b.Navigation("EmptiedByUser");
+
+                    b.Navigation("FilledByUser");
+
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_users_users_created_by_id");
+
+                    b.HasOne("Domain.Entities.User", "LastModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_users_users_last_modified_by_id");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("LastModifiedByUser");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserInvitation", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_user_invitations_users_created_by_id");
+
+                    b.HasOne("Domain.Entities.User", "LastModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_user_invitations_users_last_modified_by_id");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("LastModifiedByUser");
                 });
 
             modelBuilder.Entity("Domain.Products.Product", b =>
                 {
+                    b.HasOne("Domain.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_products_users_created_by_id");
+
+                    b.HasOne("Domain.Entities.User", "LastModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_products_users_last_modified_by_id");
+
                     b.HasOne("Domain.Products.ProductType", "ProductType")
                         .WithMany()
                         .HasForeignKey("ProductTypeId")
@@ -652,7 +796,30 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_products_product_types_id");
 
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("LastModifiedByUser");
+
                     b.Navigation("ProductType");
+                });
+
+            modelBuilder.Entity("Domain.Products.ProductType", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_product_types_users_created_by_id");
+
+                    b.HasOne("Domain.Entities.User", "LastModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_product_types_users_last_modified_by_id");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("LastModifiedByUser");
                 });
 #pragma warning restore 612, 618
         }

@@ -21,6 +21,8 @@ public class ContainerFill
     // Navigation properties
     public Container? Container { get; private set; }
     public Product? Product { get; private set; }
+    public Domain.Entities.User? FilledByUser { get; private set; }
+    public Domain.Entities.User? EmptiedByUser { get; private set; }
 
     private ContainerFill(
         int containerId,

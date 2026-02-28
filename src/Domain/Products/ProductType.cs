@@ -1,9 +1,10 @@
 ﻿namespace Domain.Products;
 
 
+using Domain.Common;
 using Domain.ContainerTypes;
 
-public class ProductType
+public class ProductType : BaseAuditableEntity
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
@@ -12,12 +13,6 @@ public class ProductType
     public string? Meta { get; private set; }
 
     public virtual ICollection<ContainerType> CompatibleContainerTypes { get; private set; } = new List<ContainerType>();
-    
-    public DateTime CreatedAt { get; private set; }
-    public Guid? CreatedById { get; private set; }
-    public DateTime? UpdatedAt { get; private set; }
-    public Guid? LastModifiedById { get; private set; }
-    public bool IsDeleted { get; private set; }
 
     private ProductType(
         string name,

@@ -42,6 +42,16 @@ public record ContainerDto
     public string? Meta { get; init; }
     /// <summary>Дата та час створення контейнера в системі</summary>
     public required DateTime CreatedAt { get; init; }
+    /// <summary>ID користувача, який створив запис</summary>
+    public Guid? CreatedById { get; init; }
+    /// <summary>Ім'я користувача, який створив запис</summary>
+    public string? CreatedByName { get; init; }
+    /// <summary>Дата та час останнього оновлення</summary>
+    public DateTime? UpdatedAt { get; init; }
+    /// <summary>ID користувача, який останнім оновив запис</summary>
+    public Guid? LastModifiedById { get; init; }
+    /// <summary>Ім'я користувача, який останнім оновив запис</summary>
+    public string? LastModifiedByName { get; init; }
 
     public static ContainerDto FromDomainModel(Container container)
         => new()
@@ -61,7 +71,12 @@ public record ContainerDto
             CurrentExpirationDate = container.CurrentExpirationDate,
             CurrentFilledAt = container.CurrentFilledAt,
             Meta = container.Meta,
-            CreatedAt = container.CreatedAt
+            CreatedAt = container.CreatedAt,
+            CreatedById = container.CreatedById,
+            CreatedByName = container.CreatedByUser != null ? $"{container.CreatedByUser.FirstName} {container.CreatedByUser.LastName}".Trim() : null,
+            UpdatedAt = container.UpdatedAt,
+            LastModifiedById = container.LastModifiedById,
+            LastModifiedByName = container.LastModifiedByUser != null ? $"{container.LastModifiedByUser.FirstName} {container.LastModifiedByUser.LastName}".Trim() : null
         };
 }
 

@@ -106,7 +106,7 @@ public class ProductsDeleteTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             _testContainerType.Id,
             null,
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.Containers.AddAsync(_containerWithProduct);
         await SaveChangesAsync();
@@ -119,7 +119,7 @@ public class ProductsDeleteTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             DateTime.UtcNow,
             DateTime.UtcNow.AddDays(30),
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.ContainerFills.AddAsync(containerFill);
         await SaveChangesAsync();

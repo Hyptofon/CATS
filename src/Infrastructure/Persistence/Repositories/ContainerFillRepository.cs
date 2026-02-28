@@ -13,6 +13,8 @@ public class ContainerFillRepository(ApplicationDbContext context)
     {
         var fill = await context.ContainerFills
             .Include(f => f.Product)
+            .Include(f => f.FilledByUser)
+            .Include(f => f.EmptiedByUser)
             .FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
 
         return fill == null ? Option<ContainerFill>.None : Option<ContainerFill>.Some(fill);
@@ -25,6 +27,8 @@ public class ContainerFillRepository(ApplicationDbContext context)
         return await context.ContainerFills
             .Include(f => f.Product)
             .Include(f => f.Container)
+            .Include(f => f.FilledByUser)
+            .Include(f => f.EmptiedByUser)
             .Where(f => f.ContainerId == containerId)
             .OrderByDescending(f => f.FilledDate)
             .ToListAsync(cancellationToken);
@@ -43,6 +47,8 @@ public class ContainerFillRepository(ApplicationDbContext context)
             .AsNoTracking()
             .Include(f => f.Product)
             .Include(f => f.Container)
+            .Include(f => f.FilledByUser)
+            .Include(f => f.EmptiedByUser)
             .WithProductId(productId)
             .WithProductTypeId(productTypeId)
             .WithContainerIdFilter(containerId)

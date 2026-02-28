@@ -412,7 +412,7 @@ public class ContainersFillTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             DateTime.UtcNow.AddDays(-1),
             DateTime.UtcNow.AddDays(30),
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.ContainerFills.AddAsync(_existingFill);
         await SaveChangesAsync();
@@ -425,7 +425,7 @@ public class ContainersFillTests : BaseIntegrationTest, IAsyncLifetime
             _existingFill.ProductionDate,
             _existingFill.ExpirationDate,
             _existingFill.Id,
-            Guid.NewGuid()
+            MockUserId
         );
         Context.Containers.Update(_fullContainer);
         await SaveChangesAsync();

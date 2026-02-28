@@ -28,6 +28,26 @@ public class ApplicationDbContext(
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(BaseAuditableEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                modelBuilder.Entity(entityType.ClrType)
+                    .HasOne(typeof(User), "CreatedByUser")
+                    .WithMany()
+                    .HasForeignKey("CreatedById")
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                modelBuilder.Entity(entityType.ClrType)
+                    .HasOne(typeof(User), "LastModifiedByUser")
+                    .WithMany()
+                    .HasForeignKey("LastModifiedById")
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+            }
+        }
     }
 
     public async Task<IDbTransaction> BeginTransactionAsync(CancellationToken cancellationToken)

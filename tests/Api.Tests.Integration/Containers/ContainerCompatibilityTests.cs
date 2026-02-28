@@ -157,17 +157,17 @@ public class ContainerCompatibilityTests : BaseIntegrationTest, IAsyncLifetime
         await SaveChangesAsync();
 
         // Setup Products
-        _allowedProduct = Product.New("Allowed Product", null, _allowedProductType!.Id, null, null, Guid.Empty);
-        _disallowedProduct = Product.New("Disallowed Product", null, _disallowedProductType.Id, null, null, Guid.Empty);
+        _allowedProduct = Product.New("Allowed Product", null, _allowedProductType!.Id, null, null, MockUserId);
+        _disallowedProduct = Product.New("Disallowed Product", null, _disallowedProductType.Id, null, null, MockUserId);
         
         // Product with specific shelf life (overriding type's shelf life which is 10)
-        _shelfLifeProduct = Product.New("Shelf Life Product", null, _allowedProductType.Id, 5, null, Guid.Empty); 
+        _shelfLifeProduct = Product.New("Shelf Life Product", null, _allowedProductType.Id, 5, null, MockUserId); 
 
         await Context.Products.AddRangeAsync(_allowedProduct, _disallowedProduct, _shelfLifeProduct);
         await SaveChangesAsync();
 
         // Setup Container
-        _container = Container.New("BOX-001", "Test Box", 100m, "kg", _restrictedContainerType.Id, null, Guid.Empty);
+        _container = Container.New("BOX-001", "Test Box", 100m, "kg", _restrictedContainerType.Id, null, MockUserId);
         await Context.Containers.AddAsync(_container);
         await SaveChangesAsync();
     }

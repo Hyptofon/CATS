@@ -148,12 +148,12 @@ public class ContainersHistoryTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             DateTime.UtcNow.AddDays(-10),
             DateTime.UtcNow.AddDays(20),
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.ContainerFills.AddAsync(firstFill);
         await SaveChangesAsync();
 
-        firstFill.Close(Guid.NewGuid());
+        firstFill.Close(MockUserId);
         Context.ContainerFills.Update(firstFill);
         await SaveChangesAsync();
 
@@ -165,7 +165,7 @@ public class ContainersHistoryTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             DateTime.UtcNow.AddDays(-2),
             DateTime.UtcNow.AddDays(28),
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.ContainerFills.AddAsync(secondFill);
         await SaveChangesAsync();
@@ -178,7 +178,7 @@ public class ContainersHistoryTests : BaseIntegrationTest, IAsyncLifetime
             secondFill.ProductionDate,
             secondFill.ExpirationDate,
             secondFill.Id,
-            Guid.NewGuid()
+            MockUserId
         );
         Context.Containers.Update(_containerWithHistory);
         await SaveChangesAsync();

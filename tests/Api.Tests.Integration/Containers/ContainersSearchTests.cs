@@ -265,7 +265,7 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             _firstContainerType.Id,
             null,
-            new Guid("00000000-0000-0000-0000-000000000001")
+            MockUserId
         );
 
         await Context.Containers.AddRangeAsync(_emptyContainer, _fullContainer, _expiredContainer);
@@ -279,7 +279,7 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             DateTime.UtcNow,
             DateTime.UtcNow.AddDays(30),
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.ContainerFills.AddAsync(containerFill);
         await SaveChangesAsync();
@@ -292,7 +292,7 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
             containerFill.ProductionDate,
             containerFill.ExpirationDate,
             containerFill.Id,
-            Guid.NewGuid()
+            MockUserId
         );
         Context.Containers.Update(_fullContainer);
         await SaveChangesAsync();
@@ -305,7 +305,7 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             DateTime.UtcNow.AddDays(-60),
             DateTime.UtcNow.AddDays(-10), // already expired
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.ContainerFills.AddAsync(expiredFill);
         await SaveChangesAsync();
@@ -318,7 +318,7 @@ public class ContainersSearchTests : BaseIntegrationTest, IAsyncLifetime
             expiredFill.ProductionDate,
             expiredFill.ExpirationDate,
             expiredFill.Id,
-            Guid.NewGuid()
+            MockUserId
         );
         Context.Containers.Update(_expiredContainer);
         await SaveChangesAsync();

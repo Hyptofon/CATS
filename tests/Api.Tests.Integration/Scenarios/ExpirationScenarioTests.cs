@@ -125,17 +125,17 @@ public class ExpirationScenarioTests : BaseIntegrationTest, IAsyncLifetime
         await Context.ProductTypes.AddRangeAsync(_hoursProductType, _daysProductType, _mixedProductType);
         await SaveChangesAsync();
 
-        _productHours = Product.New("Hours Product", null, _hoursProductType.Id, null, null, Guid.Empty);
-        _productDays = Product.New("Days Product", null, _daysProductType.Id, null, null, Guid.Empty);
-        _productMixed = Product.New("Mixed Product", null, _mixedProductType.Id, null, null, Guid.Empty);
+        _productHours = Product.New("Hours Product", null, _hoursProductType.Id, null, null, MockUserId);
+        _productDays = Product.New("Days Product", null, _daysProductType.Id, null, null, MockUserId);
+        _productMixed = Product.New("Mixed Product", null, _mixedProductType.Id, null, null, MockUserId);
         
         // Override: Type has 2 days, Product has 0 days, 5 hours
-        _productOverride = Product.New("Override Product", null, _daysProductType.Id, 0, 5, Guid.Empty);
+        _productOverride = Product.New("Override Product", null, _daysProductType.Id, 0, 5, MockUserId);
 
         await Context.Products.AddRangeAsync(_productHours, _productDays, _productMixed, _productOverride);
         await SaveChangesAsync();
 
-        _container = Container.New("EXP-001", "Test Box", 100m, "kg", _testContainerType.Id, null, Guid.Empty);
+        _container = Container.New("EXP-001", "Test Box", 100m, "kg", _testContainerType.Id, null, MockUserId);
         await Context.Containers.AddAsync(_container);
         await SaveChangesAsync();
         

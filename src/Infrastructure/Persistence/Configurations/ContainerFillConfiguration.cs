@@ -61,6 +61,19 @@ public class ContainerFillConfiguration : IEntityTypeConfiguration<ContainerFill
             .HasConstraintName("fk_container_fills_products_id")
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(x => x.FilledByUser)
+            .WithMany()
+            .HasForeignKey(x => x.FilledByUserId)
+            .HasConstraintName("fk_container_fills_users_filled_by_user_id")
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(x => x.EmptiedByUser)
+            .WithMany()
+            .HasForeignKey(x => x.EmptiedByUserId)
+            .HasConstraintName("fk_container_fills_users_emptied_by_user_id")
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasIndex(x => x.ContainerId);
         builder.HasIndex(x => x.ProductId);
         builder.HasIndex(x => x.ProductionDate);

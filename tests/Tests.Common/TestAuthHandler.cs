@@ -19,7 +19,9 @@ public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions
         var claims = new[] 
         { 
             new Claim(ClaimTypes.Name, "Test user"), 
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, BaseIntegrationTest.MockUserId.ToString()),
+            new Claim(ClaimTypes.Email, "test@example.com"),
+            new Claim("UserId", BaseIntegrationTest.MockUserId.ToString()),
             new Claim("Status", "active") // Satisfy MustBeActive policy
         };
         var identity = new ClaimsIdentity(claims, "Test");

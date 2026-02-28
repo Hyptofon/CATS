@@ -17,6 +17,8 @@ public class ContainerRepository(ApplicationDbContext context)
         var entity = await context.Containers
             .Include(x => x.ContainerType)
             .Include(x => x.CurrentProduct)
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.LastModifiedByUser)
             .FirstOrDefaultAsync(
                 x => x.Code.ToLower() == code.ToLower() && !x.IsDeleted, 
                 cancellationToken);
@@ -32,6 +34,8 @@ public class ContainerRepository(ApplicationDbContext context)
             .Include(x => x.ContainerType)
                 .ThenInclude(ct => ct.AllowedProductTypes)
             .Include(x => x.CurrentProduct)
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.LastModifiedByUser)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
 
         return entity ?? Option<Container>.None;
@@ -43,6 +47,8 @@ public class ContainerRepository(ApplicationDbContext context)
         return await context.Containers
             .Include(x => x.ContainerType)
             .Include(x => x.CurrentProduct)
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.LastModifiedByUser)
             .AsNoTracking()
             .Where(x => !x.IsDeleted)
             .OrderBy(x => x.Name)
@@ -65,6 +71,8 @@ public class ContainerRepository(ApplicationDbContext context)
             .AsNoTracking()
             .Include(x => x.ContainerType)
             .Include(x => x.CurrentProduct)
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.LastModifiedByUser)
             .Where(x => !x.IsDeleted)
             .WithSearchTerm(searchTerm)
             .WithContainerType(containerTypeId)

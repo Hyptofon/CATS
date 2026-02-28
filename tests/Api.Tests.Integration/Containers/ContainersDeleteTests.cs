@@ -130,7 +130,7 @@ public class ContainersDeleteTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             _testContainerType.Id,
             null,
-            new Guid("00000000-0000-0000-0000-000000000001")
+            MockUserId
         );
 
         await Context.Containers.AddRangeAsync(_containerToDelete, _containerToKeep, _containerWithFills);
@@ -144,13 +144,13 @@ public class ContainersDeleteTests : BaseIntegrationTest, IAsyncLifetime
             "л",
             DateTime.UtcNow.AddDays(-5),
             DateTime.UtcNow.AddDays(25),
-            Guid.NewGuid()
+            MockUserId
         );
         await Context.ContainerFills.AddAsync(fill);
         await SaveChangesAsync();
 
         // Close the fill (empty the container) so it has history
-        fill.Close(Guid.NewGuid());
+        fill.Close(MockUserId);
         Context.ContainerFills.Update(fill);
         await SaveChangesAsync();
     }

@@ -15,6 +15,8 @@ public class ProductRepository(ApplicationDbContext context)
     {
         var product = await context.Products
             .Include(p => p.ProductType)
+            .Include(p => p.CreatedByUser)
+            .Include(p => p.LastModifiedByUser)
             .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted, cancellationToken);
 
         return product == null ? Option<Product>.None : Option<Product>.Some(product);
@@ -24,6 +26,8 @@ public class ProductRepository(ApplicationDbContext context)
     {
         return await context.Products
             .Include(p => p.ProductType)
+            .Include(p => p.CreatedByUser)
+            .Include(p => p.LastModifiedByUser)
             .Where(p => !p.IsDeleted)
             .OrderBy(p => p.Name)
             .ToListAsync(cancellationToken);
@@ -43,6 +47,8 @@ public class ProductRepository(ApplicationDbContext context)
         return await context.Products
             .AsNoTracking()
             .Include(p => p.ProductType)
+            .Include(p => p.CreatedByUser)
+            .Include(p => p.LastModifiedByUser)
             .Where(p => !p.IsDeleted)
             .WithSearchTerm(searchTerm)
             .WithProductType(productTypeId)

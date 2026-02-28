@@ -1,20 +1,15 @@
 namespace Domain.ContainerTypes;
 
 using Products;
+using Domain.Common;
 
-public class ContainerType
+public class ContainerType : BaseAuditableEntity
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
     public string DefaultUnit { get; private set; }
     public string CodePrefix { get; private set; }
     public string? Meta { get; private set; }
-    
-    public DateTime CreatedAt { get; private set; }
-    public Guid? CreatedById { get; private set; }
-    public DateTime? UpdatedAt { get; private set; }
-    public Guid? LastModifiedById { get; private set; }
-    public bool IsDeleted { get; private set; }
 
     public virtual ICollection<ProductType> AllowedProductTypes { get; private set; } = new List<ProductType>();
 

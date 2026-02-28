@@ -15,6 +15,8 @@ public class ProductTypeRepository(ApplicationDbContext context)
     {
         var entity = await context.ProductTypes
             .AsNoTracking()
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.LastModifiedByUser)
             .FirstOrDefaultAsync(
                 x => x.Name.ToLower() == name.ToLower() && !x.IsDeleted, 
                 cancellationToken);
@@ -28,6 +30,8 @@ public class ProductTypeRepository(ApplicationDbContext context)
     {
         var entity = await context.ProductTypes
             .AsNoTracking()
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.LastModifiedByUser)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
 
         return entity ?? Option<ProductType>.None;
@@ -38,6 +42,8 @@ public class ProductTypeRepository(ApplicationDbContext context)
     {
         return await context.ProductTypes
             .AsNoTracking()
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.LastModifiedByUser)
             .Where(x => !x.IsDeleted)
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);

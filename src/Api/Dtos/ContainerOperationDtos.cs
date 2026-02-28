@@ -82,8 +82,12 @@ public record ContainerFillDto
     public DateTime? EmptiedDate { get; init; }
     /// <summary>ID користувача, який наповнив контейнер</summary>
     public required Guid FilledByUserId { get; init; }
+    /// <summary>Ім'я користувача, який наповнив контейнер</summary>
+    public string? FilledByUserName { get; init; }
     /// <summary>ID користувача, який спорожнив контейнер (null якщо ще наповнений)</summary>
     public Guid? EmptiedByUserId { get; init; }
+    /// <summary>Ім'я користувача, який спорожнив контейнер</summary>
+    public string? EmptiedByUserName { get; init; }
 
     public static ContainerFillDto FromDomainModel(Domain.Containers.ContainerFill fill)
     {
@@ -101,7 +105,9 @@ public record ContainerFillDto
             ExpirationDate = fill.ExpirationDate,
             EmptiedDate = fill.EmptiedDate,
             FilledByUserId = fill.FilledByUserId,
-            EmptiedByUserId = fill.EmptiedByUserId
+            FilledByUserName = fill.FilledByUser != null ? $"{fill.FilledByUser.FirstName} {fill.FilledByUser.LastName}".Trim() : null,
+            EmptiedByUserId = fill.EmptiedByUserId,
+            EmptiedByUserName = fill.EmptiedByUser != null ? $"{fill.EmptiedByUser.FirstName} {fill.EmptiedByUser.LastName}".Trim() : null
         };
     }
 }
